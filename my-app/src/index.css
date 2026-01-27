@@ -1,1 +1,66 @@
 @import "tailwindcss";
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+@keyframes letterSpacing {
+  0% {
+    letter-spacing: -0.05em;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  70% {
+    letter-spacing: 0.02em;
+    opacity: 0.8;
+    transform: translateY(0);
+  }
+  100% {
+    letter-spacing: 0em;
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-letterSpacing {
+  animation: letterSpacing 0.8s ease-out forwards;
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fadeInLeft {
+  animation: fadeInLeft 0.7s ease-out forwards;
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(2rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fadeInLeft {
+  animation: fadeInLeft 0.7s ease-out forwards;
+}
