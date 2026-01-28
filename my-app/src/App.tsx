@@ -1,10 +1,12 @@
 import Profile from "./assets/Profile.png";
 import { useEffect, useState } from "react";
 import "./index.css";
-import { useInView } from "react-intersection-observer";
+import { animate, motion } from "framer-motion";
+import { ArrowDown } from "lucide-react";
+// import { useInView } from "react-intersection-observer";
 
 function App() {
-  const name = "Chey Rotana";
+  const name = "CHEY ROTANA";
   const skills = [
     { name: "Flutter", image: Profile },
     { name: "Dart", image: Profile },
@@ -28,186 +30,242 @@ function App() {
     },
   ];
 
-  const AboutMe = ({ name }: { name: string }) => {
-    const { ref, inView } = useInView({
-      // triggerOnce: false,
-      threshold: 0.5,
-    });
+  const [greeting, setGreeting] = useState("");
 
-    return (
-      <>
-        {/* <header className="flex flex-row items-center justify-between bg-green-500 text-white p-12 gap-8">
-        <div className="flex-1 pl-24 opacity-0 translate-w-10 animate-fadeIn">
-          <h1 className="text-5xl font-bold mb-4 opacity-0 animate-fadeInLeft">
-            Hello, I'm <b>{name}</b>
-          </h1>
-          <p className="text-xl opacity-0 animate-fadeInLeft delay-200">
-            Welcome to my portfolio
-          </p>
-        </div>
-        <div className="flex-2">
-          <Carousel />
-        </div>
-      </header> */}
-        <section
-          ref={ref}
-          className="flex flex-row items-center justify-between bg-green-500 text-white p-12 gap-8 min-h-[70vh]"
+  useEffect(() => {
+    const updateGreeting = () => {
+      const hour = new Date().getHours();
+
+      if (hour < 12) setGreeting("Good Morning");
+      else if (hour < 18) setGreeting("Good Afternoon");
+      else setGreeting("Good Evening");
+    };
+
+    updateGreeting();
+
+    const interval = setInterval(updateGreeting, 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <>
+      <motion.section
+        className="flex flex-col min-h-screen bg-green-500 text-white"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ amount: 0.3 }}
+      >
+        <motion.header 
+          className="fixed top-5 z-10 shadow-lg pr-6 pt-4 pb-4 flex justify-center items-center rounded-full bg-white max-w-4xl mx-auto left-1/2 transform -translate-x-1/2"
+          initial={{ y: -100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
         >
-          {/* Left Text */}
-          <div
-            className={`flex-1 pl-24 transform transition-all duration-700 ease-out ${
-              inView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
-            }`}
+          <nav className="flex gap-6 ml-8">
+            <a
+              href="#home"
+              className="text-gray-700 hover:text-green-500 transition-colors"
+            >
+              Home
+            </a>
+            <a
+              href="#about"
+              className="text-gray-700 hover:text-green-500 transition-colors"
+            >
+              About
+            </a>
+            <a
+              href="#projects"
+              className="text-gray-700 hover:text-green-500 transition-colors"
+            >
+              Projects
+            </a>
+            <a
+              href="#contact"
+              className="text-gray-700 hover:text-green-500 transition-colors"
+            >
+              Contact
+            </a>
+          </nav>            
+        </motion.header>
+        <div className="flex-1 flex items-center justify-center">
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: -100 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: { duration: 0.7, ease: "easeOut" },
+              },
+            }}
           >
-            <h1 className="text-5xl font-bold mb-4">
-              Hello, I'm <b>{name}</b>
+            <h1 className="text-8xl font-bold mb-4 text-center uppercase">
+              <b>{greeting}</b>
             </h1>
-            <p className={`text-xl transition-opacity duration-700 ease-out delay-200 ${inView ? "opacity-100" : "opacity-0"}`}>
+
+            <motion.p
+              className="text-xl text-center"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: { delay: 0.5, duration: 0.7, ease: "easeOut" },
+                },
+              }}
+            >
               Welcome to my portfolio
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
+        </div>
 
-          {/* Right Portrait / Carousel */}
-          <div
-            className={`flex-1 transform transition-all duration-700 ease-out ${
-              inView
-                ? "opacity-100 translate-x-0 scale-100"
-                : "opacity-0 translate-x-10 scale-95"
-            }`}
-          >
-            <Carousel />
-          </div>
+        <motion.div
+          className="flex items-center justify-center pb-8 text-white rounded-full"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: { delay: 0.5, ease: "easeInOut" },
+            },
+          }}
+          animate={{
+            y: [0, 10, 0],
+          }}
+          transition={{
+            duration: 1,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        >
+          <ArrowDown size={32} />
+        </motion.div>
+      </motion.section>
+
+      <section className="text-center bg-red-500 text-white">
+        <header className="text-3xl pt-5">
+          <h1>Tech Stacks</h1>
+        </header>
+        <section className="grid grid-cols-4 gap-8 pl-12 pb-12 pt-10">
+          {skills.map((skill, index) => (
+            <div
+              key={index}
+              className="flex flex-col items-center justify-center gap-2"
+            >
+              <img
+                src={skill.image}
+                alt="technology"
+                className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 object-cover rounded-xl"
+              />
+              <p>{skill.name}</p>
+            </div>
+          ))}
         </section>
+      </section>
+      <section className="bg-pink-500 text-center">
+        <header className="text-3xl pt-5 text-white">
+          <h1>Projects</h1>
+        </header>
 
-        <section className="text-center bg-red-500 text-white">
-          <header className="text-3xl pt-5">
-            <h1>Tech Stacks</h1>
-          </header>
-          <section className="grid grid-cols-4 gap-8 pl-12 pb-12 pt-10">
-            {skills.map((skill, index) => (
-              <div
+        <div className="flex flex-col gap-10 p-12">
+          <div className="flex flex-col">
+            <h2 className="text-xl font-bold text-white mb-4">Project 1</h2>
+            <div className="flex flex-row">
+              <div className="flex justify-start bg-blue-500">
+                <img
+                  src={Profile}
+                  alt="Project"
+                  className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 object-cover"
+                />
+              </div>
+              <div className="ml-24 bg-red-500">
+                <p>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Nostrum, in aperiam animi fugit minima aliquam ratione odit
+                  molestiae qui? Sed autem sit sunt suscipit sapiente
+                  dignissimos natus libero cum mollitia!
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col">
+            <h2 className="text-xl font-bold text-white mb-4">Project 2</h2>
+            <div className="flex flex-row">
+              <div className="mr-24 bg-red-500">
+                <p>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Nostrum, in aperiam animi fugit minima aliquam ratione odit
+                  molestiae qui? Sed autem sit sunt suscipit sapiente
+                  dignissimos natus libero cum mollitia!
+                </p>
+              </div>
+              <div className=" justify-end bg-green-500">
+                <img
+                  src={Profile}
+                  alt="Project"
+                  className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 object-cover"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col">
+            <h2 className="text-xl font-bold text-white mb-4">Project 3</h2>
+            <div className="flex flex-row">
+              <div className="flex justify-start bg-blue-500">
+                <img
+                  src={Profile}
+                  alt="Project"
+                  className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 object-cover"
+                />
+              </div>
+              <div className="ml-24 bg-red-500">
+                <p>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Nostrum, in aperiam animi fugit minima aliquam ratione odit
+                  molestiae qui? Sed autem sit sunt suscipit sapiente
+                  dignissimos natus libero cum mollitia!
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <footer className="flex flex-row  ">
+        <div className="flex-1 flex flex-col justify-center bg-gradient-to-br from-green-400 to-green-600 gap-6 p-8">
+          <h3 className="text-white text-xl font-bold text-center mb-4">
+            Connect With Me
+          </h3>
+          <div className="flex flex-col gap-4">
+            {socialMedia.map((sMedia, index) => (
+              <a
                 key={index}
-                className="flex flex-col items-center justify-center gap-2"
+                href={sMedia.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-4 p-4 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:shadow-lg group"
               >
                 <img
-                  src={skill.image}
-                  alt="technology"
-                  className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 object-cover rounded-xl"
+                  src={sMedia.image}
+                  alt={sMedia.name}
+                  className="w-10 h-10 object-cover rounded-md border-2 border-white/30 group-hover:border-white transition-colors"
                 />
-                <p>{skill.name}</p>
-              </div>
+                <span className="text-white font-medium group-hover:text-yellow-200 transition-colors">
+                  {sMedia.name}
+                </span>
+              </a>
             ))}
-          </section>
-        </section>
-
-        <section className="bg-pink-500 text-center">
-          <header className="text-3xl pt-5 text-white">
-            <h1>Projects</h1>
-          </header>
-
-          <div className="flex flex-col gap-10 p-12">
-            <div className="flex flex-col">
-              <h2 className="text-xl font-bold text-white mb-4">Project 1</h2>
-              <div className="flex flex-row">
-                <div className="flex justify-start bg-blue-500">
-                  <img
-                    src={Profile}
-                    alt="Project"
-                    className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 object-cover"
-                  />
-                </div>
-                <div className="ml-24 bg-red-500">
-                  <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Nostrum, in aperiam animi fugit minima aliquam ratione odit
-                    molestiae qui? Sed autem sit sunt suscipit sapiente
-                    dignissimos natus libero cum mollitia!
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col">
-              <h2 className="text-xl font-bold text-white mb-4">Project 2</h2>
-              <div className="flex flex-row">
-                <div className="mr-24 bg-red-500">
-                  <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Nostrum, in aperiam animi fugit minima aliquam ratione odit
-                    molestiae qui? Sed autem sit sunt suscipit sapiente
-                    dignissimos natus libero cum mollitia!
-                  </p>
-                </div>
-                <div className=" justify-end bg-green-500">
-                  <img
-                    src={Profile}
-                    alt="Project"
-                    className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 object-cover"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col">
-              <h2 className="text-xl font-bold text-white mb-4">Project 3</h2>
-              <div className="flex flex-row">
-                <div className="flex justify-start bg-blue-500">
-                  <img
-                    src={Profile}
-                    alt="Project"
-                    className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 object-cover"
-                  />
-                </div>
-                <div className="ml-24 bg-red-500">
-                  <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Nostrum, in aperiam animi fugit minima aliquam ratione odit
-                    molestiae qui? Sed autem sit sunt suscipit sapiente
-                    dignissimos natus libero cum mollitia!
-                  </p>
-                </div>
-              </div>
-            </div>
           </div>
-        </section>
-
-        <footer className="flex flex-row  ">
-          <div className="flex-1 flex flex-col justify-center bg-gradient-to-br from-green-400 to-green-600 gap-6 p-8">
-            <h3 className="text-white text-xl font-bold text-center mb-4">
-              Connect With Me
-            </h3>
-            <div className="flex flex-col gap-4">
-              {socialMedia.map((sMedia, index) => (
-                <a
-                  key={index}
-                  href={sMedia.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-4 p-4 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:shadow-lg group"
-                >
-                  <img
-                    src={sMedia.image}
-                    alt={sMedia.name}
-                    className="w-10 h-10 object-cover rounded-md border-2 border-white/30 group-hover:border-white transition-colors"
-                  />
-                  <span className="text-white font-medium group-hover:text-yellow-200 transition-colors">
-                    {sMedia.name}
-                  </span>
-                </a>
-              ))}
-            </div>
-          </div>
-          <div className="flex-1 bg-yellow-500 items-center justify-center">
-            <ContactForm />
-          </div>
-        </footer>
-      </>
-    );
-    // Close AboutMe component
-  };
-
-  return <AboutMe name={name} />;
+        </div>
+        <div className="flex-1 bg-yellow-500 items-center justify-center">
+          <ContactForm />
+        </div>
+      </footer>
+    </>
+  );
+  // Close AboutMe component
 }
+
+// return <AboutMe name={name} />;
 
 function ContactForm() {
   const [formData, setFormData] = useState({
