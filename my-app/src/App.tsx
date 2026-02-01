@@ -1,12 +1,46 @@
 import Profile from "./assets/Profile.png";
 import { useEffect, useState } from "react";
 import "./index.css";
-import { animate, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowDown } from "lucide-react";
-// import { useInView } from "react-intersection-observer";
+import { useScroll, useMotionValueEvent } from "framer-motion";
 
 function App() {
-  const name = "CHEY ROTANA";
+  const { scrollY } = useScroll();
+  const [hidden, setHidden] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = scrollY.getPrevious();
+    if (previous !== undefined && latest > previous && latest > 150) {
+      setHidden(true);
+    } else {
+      setHidden(false);
+    }
+  });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ["home", "about", "projects", "contact"];
+      const scrollY = window.scrollY + 100; // offset for navbar height
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const { offsetTop, offsetHeight } = element;
+          if (scrollY >= offsetTop && scrollY < offsetTop + offsetHeight) {
+            setActiveSection(section);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // initial check
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const name = "Chey Rotana";
   const skills = [
     { name: "Flutter", image: Profile },
     { name: "Dart", image: Profile },
@@ -20,9 +54,7 @@ function App() {
       url: "https://linkedin.com/in/your-profile",
       image: Profile,
     },
-
     { name: "GitHub", url: "https://github.com/your-username", image: Profile },
-
     {
       name: "Facebook",
       url: "https://facebook.com/your-profile",
@@ -35,61 +67,92 @@ function App() {
   useEffect(() => {
     const updateGreeting = () => {
       const hour = new Date().getHours();
-
       if (hour < 12) setGreeting("Good Morning");
       else if (hour < 18) setGreeting("Good Afternoon");
       else setGreeting("Good Evening");
     };
 
     updateGreeting();
-
     const interval = setInterval(updateGreeting, 60 * 1000);
     return () => clearInterval(interval);
   }, []);
 
   return (
     <>
+      {/* HERO SECTION - Responsive */}
       <motion.section
-        className="flex flex-col min-h-screen bg-green-500 text-white"
+        id="home"
+        className="flex flex-col min-h-screen bg-green-500 text-white overflow-hidden"
         initial="hidden"
         whileInView="visible"
         viewport={{ amount: 0.3 }}
       >
-        <motion.header 
-          className="fixed top-5 z-10 shadow-lg pr-6 pt-4 pb-4 flex justify-center items-center rounded-full bg-white max-w-4xl mx-auto left-1/2 transform -translate-x-1/2"
+        {/* HEADER - Responsive Navigation */}
+        <motion.header
+          className="fixed top-3 sm:top-5 left-1/2 -translate-x-1/2 z-10 shadow-lg rounded-full bg-white w-fit"
           initial={{ y: -100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          animate={hidden ? { y: -100, opacity: 0 } : { y: 0, opacity: 1 }}
+          transition={{ duration: 0.3 }}
         >
-          <nav className="flex gap-6 ml-8">
-            <a
+          <motion.nav
+            className="flex gap-3 sm:gap-4 md:gap-6 px-4 sm:px-6 md:px-8 py-3 sm:py-4 justify-center items-center"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: { staggerChildren: 0.1 },
+              },
+            }}
+            initial="hidden"
+            animate="visible"
+          >
+            <motion.a
               href="#home"
-              className="text-gray-700 hover:text-green-500 transition-colors"
+              className={`text-xs sm:text-sm md:text-base font-medium transition-colors ${activeSection === "home" ? "text-green-500 font-bold" : "text-gray-700 hover:text-green-500"}`}
+              variants={{
+                hidden: { opacity: 0, y: -20 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+              }}
             >
               Home
-            </a>
-            <a
+            </motion.a>
+            <motion.a
               href="#about"
-              className="text-gray-700 hover:text-green-500 transition-colors"
+              className={`text-xs sm:text-sm md:text-base font-medium transition-colors ${activeSection === "about" ? "text-green-500 font-bold" : "text-gray-700 hover:text-green-500"}`}
+              variants={{
+                hidden: { opacity: 0, y: -20 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+              }}
             >
               About
-            </a>
-            <a
+            </motion.a>
+            <motion.a
               href="#projects"
-              className="text-gray-700 hover:text-green-500 transition-colors"
+              className={`text-xs sm:text-sm md:text-base font-medium transition-colors ${activeSection === "projects" ? "text-green-500 font-bold" : "text-gray-700 hover:text-green-500"}`}
+              variants={{
+                hidden: { opacity: 0, y: -20 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+              }}
             >
               Projects
-            </a>
-            <a
+            </motion.a>
+            <motion.a
               href="#contact"
-              className="text-gray-700 hover:text-green-500 transition-colors"
+              className={`text-xs sm:text-sm md:text-base font-medium transition-colors ${activeSection === "contact" ? "text-green-500 font-bold" : "text-gray-700 hover:text-green-500"}`}
+              variants={{
+                hidden: { opacity: 0, y: -20 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+              }}
             >
               Contact
-            </a>
-          </nav>            
+            </motion.a>
+          </motion.nav>
         </motion.header>
-        <div className="flex-1 flex items-center justify-center">
+
+        {/* HERO CONTENT */}
+        <div className="flex-1 flex items-center justify-center px-4 sm:px-6 md:px-8">
           <motion.div
+            className="max-w-5xl w-full"
             variants={{
               hidden: { opacity: 0, y: -100 },
               visible: {
@@ -99,12 +162,12 @@ function App() {
               },
             }}
           >
-            <h1 className="text-8xl font-bold mb-4 text-center uppercase">
-              <b>{greeting}</b>
+            <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-4 text-center uppercase break-words leading-tight">
+              <b>{name}</b>
             </h1>
 
             <motion.p
-              className="text-xl text-center"
+              className="text-base sm:text-lg md:text-xl text-center px-4"
               variants={{
                 hidden: { opacity: 0 },
                 visible: {
@@ -118,8 +181,58 @@ function App() {
           </motion.div>
         </div>
 
+        {/* BOTTOM INFO - Location and Education */}
+        <div className="absolute bottom-20 sm:bottom-24 left-0 right-0 flex justify-between items-end px-4 sm:px-6 md:px-8 lg:px-12">
+          {/* Location - Bottom Left */}
+          <motion.div
+            className="flex flex-col items-start"
+            variants={{
+              hidden: { opacity: 0, x: -50 },
+              visible: {
+                opacity: 1,
+                x: 0,
+                transition: { delay: 0.8, duration: 0.7, ease: "easeOut" },
+              },
+            }}
+          >
+            <span className="text-xs sm:text-sm text-white/60 uppercase tracking-wider mb-1">
+              Based in
+            </span>
+            <span className="text-sm sm:text-base md:text-lg font-semibold">
+              Phnom Penh, Cambodia
+            </span>
+          </motion.div>
+
+          {/* Education - Bottom Right */}
+          <motion.div
+            className="flex flex-col items-end text-right"
+            variants={{
+              hidden: { opacity: 0, x: 50 },
+              visible: {
+                opacity: 1,
+                x: 0,
+                transition: { delay: 0.8, duration: 0.7, ease: "easeOut" },
+              },
+            }}
+          >
+            <span className="text-xs sm:text-sm text-white/60 uppercase tracking-wider mb-1">
+              Education
+            </span>
+            <span className="text-sm sm:text-base md:text-lg font-semibold max-w-xs">
+              Bachelor of Computer Science
+            </span>
+            <span className="text-xs sm:text-sm text-white/80">CADT</span>
+          </motion.div>
+        </div>
+
+        {/* SCROLL INDICATOR */}
         <motion.div
-          className="flex items-center justify-center pb-8 text-white rounded-full"
+          className="flex items-center justify-center pb-6 sm:pb-8 text-white cursor-pointer"
+          onClick={() =>
+            document
+              .getElementById("about")
+              ?.scrollIntoView({ behavior: "smooth" })
+          }
           variants={{
             hidden: { opacity: 0 },
             visible: {
@@ -127,57 +240,126 @@ function App() {
               transition: { delay: 0.5, ease: "easeInOut" },
             },
           }}
-          animate={{
-            y: [0, 10, 0],
-          }}
+          animate={{ y: [0, 10, 0] }}
           transition={{
             duration: 1,
             repeat: Infinity,
             ease: "easeInOut",
           }}
         >
-          <ArrowDown size={32} />
+          <ArrowDown size={32} className="sm:w-10 sm:h-10 md:w-11 md:h-11" />
         </motion.div>
       </motion.section>
 
-      <section className="text-center bg-red-500 text-white">
-        <header className="text-3xl pt-5">
+      {/* ABOUT SECTION - Responsive */}
+      <section
+        id="about"
+        className="flex flex-col lg:flex-row items-center justify-center min-h-screen lg:min-h-[70vh] bg-blue-500 py-12 lg:py-0"
+      >
+        <div className="flex-1 text-white px-6 sm:px-8 md:px-12 lg:px-20 mb-8 lg:mb-0 lg:order-1 order-2">
+          <motion.div
+            initial={{ x: -100, opacity: 0 }}
+            whileInView={{ x: 0, opacity: 1 }}
+            viewport={{ once: false, amount: 0.3 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+          >
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 break-words text-center">
+              About Me
+            </h2>
+            <p className="text-base sm:text-lg md:text-xl mb-6 leading-relaxed break-words text-center max-w-2xl mx-auto">
+              {greeting}, I'm <b>{name}</b>, a developer with experience in
+              Flutter, Dart, React, and TypeScript. I love creating beneficial
+              and functional applications that solve real-world problems.
+            </p>
+            <div className="flex flex-wrap gap-4 justify-center">
+              <a
+                href={socialMedia[1].url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-white text-blue-500 font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-lg hover:bg-gray-100 transition-all duration-300 text-sm sm:text-base"
+              >
+                GitHub
+              </a>
+              <a
+                href={socialMedia[0].url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-white text-blue-500 font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-lg hover:bg-gray-100 transition-all duration-300 text-sm sm:text-base"
+              >
+                LinkedIn
+              </a>
+            </div>
+          </motion.div>
+        </div>
+        <div className="flex-1 flex justify-center items-center p-6 sm:p-8 w-full lg:order-2 order-1">
+          <motion.div
+            initial={{ x: 100, opacity: 0 }}
+            whileInView={{ x: 0, opacity: 1 }}
+            viewport={{ once: false, amount: 0.3 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="w-full max-w-md"
+          >
+            <Carousel />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* TECH STACK SECTION - Responsive */}
+      <section className="text-center bg-red-500 text-white py-8 sm:py-12">
+        <header className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8">
           <h1>Tech Stacks</h1>
         </header>
-        <section className="grid grid-cols-4 gap-8 pl-12 pb-12 pt-10">
+        <section className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8 px-6 sm:px-8 md:px-12 pb-8 sm:pb-12">
           {skills.map((skill, index) => (
-            <div
+            <motion.div
               key={index}
-              className="flex flex-col items-center justify-center gap-2"
+              className="flex flex-col items-center justify-center gap-2 sm:gap-3 p-4 bg-white/10 rounded-xl hover:bg-white/20 transition-all duration-300 hover:scale-105"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
             >
               <img
                 src={skill.image}
-                alt="technology"
+                alt={skill.name}
                 className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 object-cover rounded-xl"
               />
-              <p>{skill.name}</p>
-            </div>
+              <p className="text-sm sm:text-base md:text-lg font-medium">
+                {skill.name}
+              </p>
+            </motion.div>
           ))}
         </section>
       </section>
-      <section className="bg-pink-500 text-center">
-        <header className="text-3xl pt-5 text-white">
+
+      {/* PROJECTS SECTION - Responsive */}
+      <section id="projects" className="bg-pink-500 text-center py-8 sm:py-12">
+        <header className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-6 sm:mb-8">
           <h1>Projects</h1>
         </header>
 
-        <div className="flex flex-col gap-10 p-12">
-          <div className="flex flex-col">
-            <h2 className="text-xl font-bold text-white mb-4">Project 1</h2>
-            <div className="flex flex-row">
-              <div className="flex justify-start bg-blue-500">
+        <div className="flex flex-col gap-8 sm:gap-10 md:gap-12 px-4 sm:px-6 md:px-8 lg:px-12 pb-8 sm:pb-12">
+          {/* Project 1 */}
+          <motion.div
+            className="flex flex-col"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">
+              Project 1
+            </h2>
+            <div className="flex flex-col md:flex-row gap-4 sm:gap-6 md:gap-8 lg:gap-12 items-center bg-white/10 backdrop-blur-sm p-4 sm:p-6 md:p-8 rounded-2xl">
+              <div className="flex-shrink-0">
                 <img
                   src={Profile}
-                  alt="Project"
-                  className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 object-cover"
+                  alt="Project 1"
+                  className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 object-cover rounded-xl shadow-lg"
                 />
               </div>
-              <div className="ml-24 bg-red-500">
-                <p>
+              <div className="flex-1 text-white text-left">
+                <p className="text-sm sm:text-base md:text-lg leading-relaxed">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit.
                   Nostrum, in aperiam animi fugit minima aliquam ratione odit
                   molestiae qui? Sed autem sit sunt suscipit sapiente
@@ -185,41 +367,59 @@ function App() {
                 </p>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="flex flex-col">
-            <h2 className="text-xl font-bold text-white mb-4">Project 2</h2>
-            <div className="flex flex-row">
-              <div className="mr-24 bg-red-500">
-                <p>
+          {/* Project 2 */}
+          <motion.div
+            className="flex flex-col"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">
+              Project 2
+            </h2>
+            <div className="flex flex-col md:flex-row-reverse gap-4 sm:gap-6 md:gap-8 lg:gap-12 items-center bg-white/10 backdrop-blur-sm p-4 sm:p-6 md:p-8 rounded-2xl">
+              <div className="flex-shrink-0">
+                <img
+                  src={Profile}
+                  alt="Project 2"
+                  className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 object-cover rounded-xl shadow-lg"
+                />
+              </div>
+              <div className="flex-1 text-white text-left md:text-right">
+                <p className="text-sm sm:text-base md:text-lg leading-relaxed">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit.
                   Nostrum, in aperiam animi fugit minima aliquam ratione odit
                   molestiae qui? Sed autem sit sunt suscipit sapiente
                   dignissimos natus libero cum mollitia!
                 </p>
               </div>
-              <div className=" justify-end bg-green-500">
-                <img
-                  src={Profile}
-                  alt="Project"
-                  className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 object-cover"
-                />
-              </div>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="flex flex-col">
-            <h2 className="text-xl font-bold text-white mb-4">Project 3</h2>
-            <div className="flex flex-row">
-              <div className="flex justify-start bg-blue-500">
+          {/* Project 3 */}
+          <motion.div
+            className="flex flex-col"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">
+              Project 3
+            </h2>
+            <div className="flex flex-col md:flex-row gap-4 sm:gap-6 md:gap-8 lg:gap-12 items-center bg-white/10 backdrop-blur-sm p-4 sm:p-6 md:p-8 rounded-2xl">
+              <div className="flex-shrink-0">
                 <img
                   src={Profile}
-                  alt="Project"
-                  className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 object-cover"
+                  alt="Project 3"
+                  className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 object-cover rounded-xl shadow-lg"
                 />
               </div>
-              <div className="ml-24 bg-red-500">
-                <p>
+              <div className="flex-1 text-white text-left">
+                <p className="text-sm sm:text-base md:text-lg leading-relaxed">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit.
                   Nostrum, in aperiam animi fugit minima aliquam ratione odit
                   molestiae qui? Sed autem sit sunt suscipit sapiente
@@ -227,45 +427,47 @@ function App() {
                 </p>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
-      <footer className="flex flex-row  ">
-        <div className="flex-1 flex flex-col justify-center bg-gradient-to-br from-green-400 to-green-600 gap-6 p-8">
-          <h3 className="text-white text-xl font-bold text-center mb-4">
+
+      {/* FOOTER - Responsive */}
+      <footer
+        id="contact"
+        className="flex flex-col lg:flex-row min-h-screen lg:min-h-[600px]"
+      >
+        <div className="flex-1 flex flex-col justify-center bg-gradient-to-br from-green-400 to-green-600 gap-4 sm:gap-6 p-6 sm:p-8 md:p-12">
+          <h3 className="text-white text-2xl sm:text-3xl font-bold text-center mb-2 sm:mb-4">
             Connect With Me
           </h3>
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3 sm:gap-4 max-w-md mx-auto w-full">
             {socialMedia.map((sMedia, index) => (
               <a
                 key={index}
                 href={sMedia.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-4 p-4 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:shadow-lg group"
+                className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:shadow-lg group"
               >
                 <img
                   src={sMedia.image}
                   alt={sMedia.name}
-                  className="w-10 h-10 object-cover rounded-md border-2 border-white/30 group-hover:border-white transition-colors"
+                  className="w-8 h-8 sm:w-10 sm:h-10 object-cover rounded-md border-2 border-white/30 group-hover:border-white transition-colors"
                 />
-                <span className="text-white font-medium group-hover:text-yellow-200 transition-colors">
+                <span className="text-white text-sm sm:text-base font-medium group-hover:text-yellow-200 transition-colors">
                   {sMedia.name}
                 </span>
               </a>
             ))}
           </div>
         </div>
-        <div className="flex-1 bg-yellow-500 items-center justify-center">
+        <div className="flex-1 bg-yellow-500 flex items-center justify-center">
           <ContactForm />
         </div>
       </footer>
     </>
   );
-  // Close AboutMe component
 }
-
-// return <AboutMe name={name} />;
 
 function ContactForm() {
   const [formData, setFormData] = useState({
