@@ -305,31 +305,47 @@ function App() {
       </section>
 
       {/* TECH STACK SECTION - Responsive */}
-      <section className="text-center bg-red-500 text-white py-8 sm:py-12">
+      <section className="text-center bg-red-500 text-white py-8 sm:py-12 overflow-hidden">
         <header className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8">
           <h1>Tech Stacks</h1>
         </header>
-        <section className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8 px-6 sm:px-8 md:px-12 pb-8 sm:pb-12">
-          {skills.map((skill, index) => (
-            <motion.div
-              key={index}
-              className="flex flex-col items-center justify-center gap-2 sm:gap-3 p-4 bg-white/10 rounded-xl hover:bg-white/20 transition-all duration-300 hover:scale-105"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <img
-                src={skill.image}
-                alt={skill.name}
-                className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 object-cover rounded-xl"
-              />
-              <p className="text-sm sm:text-base md:text-lg font-medium">
-                {skill.name}
-              </p>
-            </motion.div>
-          ))}
-        </section>
+
+        <div className="relative">
+          <motion.div
+            className="flex gap-8 pb-8 sm:pb-12"
+            animate={{
+              x: ["0%", `-${100 / 3}%`], // Divide by number of repetitions
+            }}
+            transition={{
+              x: {
+                repeat: Infinity,
+                repeatType: "loop",
+                duration: 10, // Increase duration for wider screens
+                ease: "linear",
+              },
+            }}
+          >
+            {/* Repeat 4 times to ensure coverage */}
+            {Array(4)
+              .fill(skills)
+              .flat()
+              .map((skill, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col items-center justify-center gap-2 sm:gap-3 p-4 bg-white/10 rounded-xl hover:bg-white/20 transition-all duration-300 hover:scale-105 min-w-[140px] flex-shrink-0"
+                >
+                  <img
+                    src={skill.image}
+                    alt={skill.name}
+                    className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 object-cover rounded-xl"
+                  />
+                  <p className="text-sm sm:text-base md:text-lg font-medium">
+                    {skill.name}
+                  </p>
+                </div>
+              ))}
+          </motion.div>
+        </div>
       </section>
 
       {/* PROJECTS SECTION - Responsive */}
