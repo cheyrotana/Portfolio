@@ -45,7 +45,7 @@ function ProjectsSection() {
             className="flex flex-col"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
+            viewport={{ once: false, amount: 0.3 }}
             transition={{ duration: 0.6, delay: index * 0.1 }}
           >
             <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">
