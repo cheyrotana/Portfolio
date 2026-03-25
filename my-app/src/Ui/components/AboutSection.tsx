@@ -35,11 +35,38 @@ function AboutSection({ greeting, name, socialMedia }: AboutSectionProps) {
           <h2 className="hidden lg:block text-4xl xl:text-5xl font-bold mb-3 sm:mb-4 break-words text-center text-stone-900">
             About Me
           </h2>
-          <p className="text-xs sm:text-sm md:text-base lg:text-base xl:text-lg mb-4 lg:mb-6 leading-relaxed break-words text-center max-w-3xl mx-auto text-stone-600">
-            {greeting}, I'm <b className="text-stone-800">{name}</b>, a developer with experience in
-            Flutter, Dart, React, and TypeScript. I love creating beneficial and
-            functional applications that solve real-world problems.
+          <p className="text-xs sm:text-sm md:text-base lg:text-base xl:text-lg mb-4 lg:mb-5 leading-relaxed break-words text-center max-w-3xl mx-auto text-stone-600">
+            {greeting}, I'm <b className="text-stone-800">{name}</b>, a third-year Computer Science
+            student at <b className="text-stone-800">CADT</b> (Cambodia Academy of Digital Technology),
+            based in <b className="text-stone-800">Phnom Penh, Cambodia</b>. I have experience building
+            mobile and web applications with Flutter, Dart, React, and TypeScript, and I love creating
+            beneficial, functional apps that solve real-world problems.
           </p>
+
+          {/* Info pills */}
+          <div className="flex flex-wrap gap-2 justify-center mb-4 lg:mb-5">
+            <span className="inline-flex items-center gap-1.5 bg-stone-100 border border-stone-200 text-stone-600 text-xs px-3 py-1.5 rounded-full font-medium">
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Phnom Penh, Cambodia
+            </span>
+            <span className="inline-flex items-center gap-1.5 bg-stone-100 border border-stone-200 text-stone-600 text-xs px-3 py-1.5 rounded-full font-medium">
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+              </svg>
+              B.Sc. Computer Science · Year 3
+            </span>
+            <span className="inline-flex items-center gap-1.5 bg-stone-100 border border-stone-200 text-stone-600 text-xs px-3 py-1.5 rounded-full font-medium">
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+              CADT
+            </span>
+          </div>
+
           <div className="flex flex-wrap gap-3 justify-center">
             <a
               href={socialMedia[1].url}
