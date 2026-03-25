@@ -12,37 +12,23 @@ interface FooterSectionProps {
 
 function FooterSection({ socialMedia }: FooterSectionProps) {
   return (
-    <footer
-      id="contact"
-      className="flex flex-col lg:flex-row min-h-screen lg:min-h-[600px]"
-    >
-      <div className="flex-1 flex flex-col justify-center bg-gradient-to-br from-green-400 to-green-600 gap-4 sm:gap-6 p-6 sm:p-8 md:p-12 hidden lg:flex">
-        <h3 className="text-white text-2xl sm:text-3xl font-bold text-center mb-2 sm:mb-4">
-          Connect With Me
-        </h3>
-        <div className="flex flex-col gap-3 sm:gap-4 max-w-md mx-auto w-full">
-          {socialMedia.map((sMedia, index) => (
-            <a
-              key={index}
-              href={sMedia.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:shadow-lg group"
-            >
-              <img
-                src={sMedia.image}
-                alt={sMedia.name}
-                className="w-8 h-8 sm:w-10 sm:h-10 object-cover rounded-md border-2 border-white/30 group-hover:border-white transition-colors"
-              />
-              <span className="text-white text-sm sm:text-base font-medium group-hover:text-yellow-200 transition-colors">
-                {sMedia.name}
-              </span>
-            </a>
-          ))}
-        </div>
-      </div>
-      <div className="flex-1 bg-yellow-500 flex items-center justify-center">
+    <footer id="contact" className="bg-stone-900">
+      <div className="max-w-xl lg:max-w-2xl mx-auto px-4 sm:px-8 py-12 sm:py-16 lg:py-20">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white text-center mb-3 lg:mb-5">
+          Get In Touch
+        </h2>
+        <p className="text-stone-400 text-center text-sm sm:text-base lg:text-lg mb-8 sm:mb-10">
+          Have a project in mind or just want to say hi? Feel free to reach out.
+        </p>
+
         <ContactForm socialMedia={socialMedia} />
+      </div>
+
+      {/* Bottom bar */}
+      <div className="border-t border-white/10 py-6">
+        <p className="text-stone-500 text-sm text-center">
+          &copy; {new Date().getFullYear()} Chey Rotana. All rights reserved.
+        </p>
       </div>
     </footer>
   );

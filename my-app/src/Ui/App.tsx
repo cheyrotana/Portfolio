@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import "../index.css";
 import { useScroll, useMotionValueEvent } from "framer-motion";
-import Profile from "../assets/Profile.png";
 import HeroSection from "./components/HeroSection";
 import AboutSection from "./components/AboutSection";
 import TechStackSection from "./components/TechStackSection";
@@ -45,23 +44,34 @@ function App() {
 
   const name = "Chey Rotana";
   const skills = [
-    { name: "Flutter", image: Profile },
-    { name: "Dart", image: Profile },
-    { name: "React", image: Profile },
-    { name: "TypeScript", image: Profile },
+    { name: "Flutter", image: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg" },
+    { name: "Dart", image: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/dart/dart-original.svg" },
+    { name: "React", image: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" },
+    { name: "TypeScript", image: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg" },
+    { name: "JavaScript", image: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg" },
+    { name: "C#", image: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/csharp/csharp-original.svg" },
+    { name: "Unity", image: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/unity/unity-original.svg" },
+    { name: "Express", image: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/express/express-original.svg" },
+    { name: "Sequelize", image: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sequelize/sequelize-original.svg" },
+    { name: "GitHub", image: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" },
+    { name: "Figma", image: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg" },
   ];
 
   const socialMedia = [
     {
       name: "LinkedIn",
-      url: "https://linkedin.com/in/your-profile",
-      image: Profile,
+      url: "https://www.linkedin.com/in/rotana-chey-92b572396/",
+      image: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linkedin/linkedin-original.svg",
     },
-    { name: "GitHub", url: "https://github.com/your-username", image: Profile },
+    {
+      name: "GitHub",
+      url: "https://github.com/cheyrotana",
+      image: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg",
+    },
     {
       name: "Facebook",
       url: "https://facebook.com/your-profile",
-      image: Profile,
+      image: "https://cdn.simpleicons.org/facebook/1877F2",
     },
   ];
 

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import emailjs from "@emailjs/browser";
 
 interface SocialMedia {
   name: string;
@@ -18,19 +19,19 @@ function ContactForm({ socialMedia }: ContactFormProps) {
   });
 
   const [error, setError] = useState("");
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
 
-  interface ChangeEventType extends React.ChangeEvent<
-    HTMLInputElement | HTMLTextAreaElement
-  > {}
-
-  const handleChange = (e: ChangeEventType) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!formData.name || !formData.email || !formData.message) {
@@ -39,81 +40,113 @@ function ContactForm({ socialMedia }: ContactFormProps) {
     }
 
     setError("");
-    console.log("Form submitted:", formData);
+    setSending(true);
 
-    // Reset form
-    setFormData({ name: "", email: "", message: "" });
+    try {
+      await emailjs.send(
+        "service_n31f1lt",
+        "template_jh510rc",
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          message: formData.message,
+        },
+        "zuC8j77Q0CqjMRaNQ"
+      );
+      setSent(true);
+      setFormData({ name: "", email: "", message: "" });
+      setTimeout(() => setSent(false), 4000);
+    } catch {
+      setError("Failed to send. Please try again.");
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
-    <div className="w-full h-full flex items-center justify-center p-8 ">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-lg flex flex-col gap-6 bg-yellow-500 p-8 rounded-2xl "
+    <form onSubmit={handleSubmit} className="w-full flex flex-col gap-5 lg:gap-6">
+      {error && (
+        <div className="bg-red-500/20 border border-red-400/40 text-red-300 px-4 py-2 rounded-lg text-center text-sm">
+          {error}
+        </div>
+      )}
+
+      <div>
+        <label className="block text-stone-300 text-sm lg:text-base font-medium mb-2">
+          Name
+        </label>
+        <input
+          type="text"
+          name="name"
+          placeholder="Your name"
+          value={formData.name}
+          onChange={handleChange}
+          className="w-full px-3 py-2.5 lg:px-4 lg:py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all duration-300 text-sm lg:text-base"
+        />
+      </div>
+
+      <div>
+        <label className="block text-stone-300 text-sm lg:text-base font-medium mb-2">
+          Email
+        </label>
+        <input
+          type="email"
+          name="email"
+          placeholder="your.email@example.com"
+          value={formData.email}
+          onChange={handleChange}
+          className="w-full px-3 py-2.5 lg:px-4 lg:py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all duration-300 text-sm lg:text-base"
+        />
+      </div>
+
+      <div>
+        <label className="block text-stone-300 text-sm lg:text-base font-medium mb-2">
+          Message
+        </label>
+        <textarea
+          name="message"
+          placeholder="Tell me about your project..."
+          value={formData.message}
+          onChange={handleChange}
+          rows={4}
+          className="w-full px-3 py-2.5 lg:px-4 lg:py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all duration-300 resize-none text-sm lg:text-base"
+        />
+      </div>
+
+      {sent && (
+        <div className="bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 px-4 py-2 rounded-lg text-center text-sm">
+          Message sent! I'll get back to you soon.
+        </div>
+      )}
+
+      <button
+        type="submit"
+        disabled={sending}
+        className="w-full bg-emerald-600 text-white font-bold py-2.5 px-5 lg:py-3 text-sm lg:text-base rounded-xl hover:bg-emerald-500 transition-all duration-300 shadow-lg shadow-emerald-600/20 hover:shadow-emerald-500/30 mt-1 disabled:opacity-60 disabled:cursor-not-allowed"
       >
-        <h3 className="text-white text-2xl font-bold text-center mb-2">
-          Get In Touch
-        </h3>
+        {sending ? "Sending..." : "Send Message"}
+      </button>
 
-        {error && (
-          <div className="bg-red-500/20 border border-red-400 text-white px-4 py-2 rounded-lg text-center">
-            {error}
-          </div>
-        )}
-
-        <div className="space-y-4">
-          <div>
-            <label className="block text-white font-medium mb-2">Email</label>
-            <input
-              type="email"
-              name="email"
-              placeholder="your.email@example.com"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-white/50 transition-all duration-300"
+      {/* Social icons */}
+      <div className="flex justify-center gap-4 lg:gap-5 mt-4">
+        {socialMedia.map((sMedia, index) => (
+          <a
+            key={index}
+            href={sMedia.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-11 h-11 lg:w-13 lg:h-13 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 hover:scale-110"
+            title={sMedia.name}
+          >
+            <img
+              src={sMedia.image}
+              alt={sMedia.name}
+              className="w-5 h-5 lg:w-6 lg:h-6 object-contain"
             />
-          </div>
-
-          <div>
-            <label className="block text-white font-medium mb-2">Message</label>
-            <textarea
-              name="message"
-              placeholder="Tell me about your project..."
-              value={formData.message}
-              onChange={handleChange}
-              rows={4}
-              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-white/50 transition-all duration-300 resize-none"
-            />
-          </div>
-        </div>
-
-        <button
-          type="submit"
-          className="w-full bg-white text-yellow-600 font-bold py-3 px-6 rounded-lg hover:bg-yellow-50 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
-        >
-          Send Message
-        </button>
-
-        <div className="flex justify-center gap-4 mt-6 lg:hidden">
-          {socialMedia.map((sMedia, index) => (
-            <a
-              key={index}
-              href={sMedia.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 hover:scale-110 hover:shadow-lg group"
-              title={sMedia.name}
-            >
-              <img
-                src={sMedia.image}
-                alt={sMedia.name}
-                className="w-6 h-6 object-cover rounded-full"
-              />
-            </a>
-          ))}
-        </div>
-      </form>
-    </div>
+          </a>
+        ))}
+      </div>
+    </form>
   );
 }
 
