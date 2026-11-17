@@ -36,9 +36,10 @@ function AboutSection({ greeting, name, socialMedia }: AboutSectionProps) {
             About Me
           </h2>
           <p className="text-xs sm:text-sm md:text-base lg:text-base xl:text-lg mb-4 lg:mb-5 leading-relaxed break-words text-center max-w-3xl mx-auto text-stone-600">
-            {greeting}, I'm <b className="text-stone-800">{name}</b>, a third-year Computer Science
-            student at <b className="text-stone-800">CADT</b> (Cambodia Academy of Digital Technology),
-            based in <b className="text-stone-800">Phnom Penh, Cambodia</b>. I have experience building
+            {greeting}, I'm <b className="text-stone-800">{name}</b>, a fourth-year Computer Science
+            student at <b className="text-stone-800">CADT</b> (Cambodia Academy of Digital Technology)
+            and an intern at <b className="text-stone-800">MLMUPC</b>, based in{" "}
+            <b className="text-stone-800">Phnom Penh, Cambodia</b>. I have experience building
             mobile and web applications with Flutter, Dart, React, and TypeScript, and I love creating
             beneficial, functional apps that solve real-world problems.
           </p>
@@ -57,7 +58,13 @@ function AboutSection({ greeting, name, socialMedia }: AboutSectionProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
               </svg>
-              B.Sc. Computer Science · Year 3
+              B.Sc. Computer Science · Year 4
+            </span>
+            <span className="inline-flex items-center gap-1.5 bg-stone-100 border border-stone-200 text-stone-600 text-xs px-3 py-1.5 rounded-full font-medium">
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              Intern at MLMUPC
             </span>
             <span className="inline-flex items-center gap-1.5 bg-stone-100 border border-stone-200 text-stone-600 text-xs px-3 py-1.5 rounded-full font-medium">
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

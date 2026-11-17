@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import unifinder0 from "../../assets/Unifinder pictures/0.png";
 import unifinder1 from "../../assets/Unifinder pictures/1.png";
 import unifinder2 from "../../assets/Unifinder pictures/2.png";
@@ -30,6 +30,29 @@ import modula9 from "../../assets/Modula/9.png";
 import modula10 from "../../assets/Modula/10.png";
 import modula11 from "../../assets/Modula/11.png";
 import modula12 from "../../assets/Modula/12.png";
+import hrmMlmupc1 from "../../assets/HRM/mlmupc-1.jpg";
+import hrmMlmupc2 from "../../assets/HRM/mlmupc-2.jpg";
+import hrmMlmupc3 from "../../assets/HRM/mlmupc-3.jpg";
+import hrmMlmupc4 from "../../assets/HRM/mlmupc-4.jpg";
+import hrmMlmupc5 from "../../assets/HRM/mlmupc-5.jpg";
+import hrmNis1 from "../../assets/HRM/nis-1.jpg";
+import hrmNis2 from "../../assets/HRM/nis-2.jpg";
+import faceScan1 from "../../assets/FaceScan/1.jpg";
+import phumiYerng1 from "../../assets/PhumiYerng/1.jpg";
+import phumiYerng2 from "../../assets/PhumiYerng/2.jpg";
+import phumiYerng3 from "../../assets/PhumiYerng/3.jpg";
+import phumiYerng4 from "../../assets/PhumiYerng/4.jpg";
+import phumiYerng5 from "../../assets/PhumiYerng/5.jpg";
+
+const hrmImages = [
+  hrmMlmupc1, hrmMlmupc2, hrmMlmupc3, hrmMlmupc4, hrmMlmupc5, hrmNis1, hrmNis2,
+];
+
+const faceScanImages = [faceScan1];
+
+const phumiYerngImages = [
+  phumiYerng1, phumiYerng2, phumiYerng3, phumiYerng4, phumiYerng5,
+];
 
 const unifinderImages = [
   unifinder0, unifinder1, unifinder2, unifinder3, unifinder4,
@@ -195,64 +218,240 @@ interface SlideshowProps {
   onImageClick: (index: number) => void;
 }
 
+// Images narrower than this (width / height) are phone screenshots; up to three
+// are fanned out together on one slide.
+const PORTRAIT_MAX_RATIO = 0.8;
+const PHONES_PER_SLIDE = 3;
+
+type RGB = [number, number, number];
+
+interface ImageMeta {
+  ratio: number;
+  tint: RGB; // the image's average colour, used to tint the stage behind it
+}
+
+const DEFAULT_TINT: RGB = [120, 113, 108]; // stone
+
+function readImageMeta(img: HTMLImageElement): ImageMeta {
+  const ratio = img.naturalWidth / img.naturalHeight;
+  let tint = DEFAULT_TINT;
+  try {
+    const size = 16;
+    const canvas = document.createElement("canvas");
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      ctx.drawImage(img, 0, 0, size, size);
+      const { data } = ctx.getImageData(0, 0, size, size);
+      const sum = [0, 0, 0];
+      for (let o = 0; o < data.length; o += 4) {
+        sum[0] += data[o]; sum[1] += data[o + 1]; sum[2] += data[o + 2];
+      }
+      const n = data.length / 4;
+      tint = [sum[0] / n, sum[1] / n, sum[2] / n].map(Math.round) as RGB;
+    }
+  } catch {
+    // Canvas unavailable: keep the neutral tint.
+  }
+  return { ratio, tint };
+}
+
+const mix = (c: RGB, target: number, t: number): string =>
+  `rgb(${c.map((v) => Math.round(v + (target - v) * t)).join(",")})`;
+
+const stageBackground = (tint: RGB) => {
+  // Near-white images would turn the stage a dull grey, so darken them less.
+  const light = 0.299 * tint[0] + 0.587 * tint[1] + 0.114 * tint[2] > 200;
+  const edge = light ? 0.18 : 0.45;
+  return `radial-gradient(130% 130% at 20% 10%, ${mix(tint, 255, 0.6)} 0%, ${mix(tint, 0, light ? 0.03 : 0.1)} 55%, ${mix(tint, 0, edge)} 100%)`;
+};
+
+const DOT_GRID: React.CSSProperties = {
+  backgroundImage: "radial-gradient(rgba(255,255,255,0.55) 1px, transparent 1px)",
+  backgroundSize: "18px 18px",
+};
+
+// Where each phone sits in a fan: horizontal shift (% of its width), rotation, scale.
+const FAN_LAYOUTS: Record<number, { x: number; r: number; s: number; z: number }[]> = {
+  1: [{ x: 0, r: 0, s: 1, z: 1 }],
+  2: [{ x: -32, r: -6, s: 0.94, z: 1 }, { x: 32, r: 6, s: 0.94, z: 2 }],
+  3: [{ x: -62, r: -9, s: 0.86, z: 1 }, { x: 0, r: 0, s: 1, z: 3 }, { x: 62, r: 9, s: 0.86, z: 2 }],
+};
+
 function ImageSlideshow({ images, alt, onImageClick }: SlideshowProps) {
   const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [meta, setMeta] = useState<(ImageMeta | undefined)[]>([]);
 
-  const prev = (e: React.MouseEvent) => { e.stopPropagation(); setIndex((i) => (i - 1 + images.length) % images.length); };
-  const next = (e: React.MouseEvent) => { e.stopPropagation(); setIndex((i) => (i + 1) % images.length); };
+  // Measure every image up front so slides can be laid out before they are shown.
+  useEffect(() => {
+    let cancelled = false;
+    images.forEach((src, i) => {
+      const img = new Image();
+      img.onload = () => {
+        if (cancelled || !img.naturalHeight) return;
+        const m = readImageMeta(img);
+        setMeta((prev) => { const next = [...prev]; next[i] = m; return next; });
+      };
+      img.src = src;
+    });
+    return () => { cancelled = true; };
+  }, [images]);
+
+  const isPortrait = useCallback((i: number) => (meta[i]?.ratio ?? 1) < PORTRAIT_MAX_RATIO, [meta]);
+
+  // Group runs of phone screenshots into fans; every other image gets its own slide.
+  const pages = useMemo(() => {
+    const out: number[][] = [];
+    let i = 0;
+    while (i < images.length) {
+      if (!isPortrait(i)) { out.push([i]); i++; continue; }
+      let j = i;
+      while (j < images.length && isPortrait(j)) j++;
+      const run = Array.from({ length: j - i }, (_, k) => i + k);
+      const perPage = Math.min(run.length, PHONES_PER_SLIDE);
+      for (let k = 0; k < run.length; k += perPage) {
+        // Top up a short last fan by wrapping to the start of the run.
+        out.push(Array.from({ length: perPage }, (_, n) => run[(k + n) % run.length]));
+      }
+      i = j;
+    }
+    return out;
+  }, [images.length, isPortrait]);
+
+  const pageCount = pages.length;
+  const current = index % pageCount;
+
+  const prev = (e: React.MouseEvent) => { e.stopPropagation(); setIndex((i) => (i % pageCount - 1 + pageCount) % pageCount); };
+  const next = (e: React.MouseEvent) => { e.stopPropagation(); setIndex((i) => (i % pageCount + 1) % pageCount); };
 
   useEffect(() => {
-    if (paused) return;
+    if (hovered || pageCount < 2) return;
     const timer = setInterval(() => {
-      setIndex((i) => (i + 1) % images.length);
-    }, 2500);
+      setIndex((i) => (i % pageCount + 1) % pageCount);
+    }, 3200);
     return () => clearInterval(timer);
-  }, [images.length, paused]);
+  }, [pageCount, hovered]);
+
+  const open = (i: number) => (e: React.MouseEvent) => { e.stopPropagation(); onImageClick(i); };
+
+  const renderFan = (page: number[], active: boolean) => {
+    const layout = FAN_LAYOUTS[page.length];
+    const spread = hovered ? 1.15 : 1;
+    return page.map((i, n) => {
+      const f = layout[n];
+      return (
+        <img
+          key={`${i}-${n}`}
+          src={images[i]}
+          alt={`${alt} screenshot ${i + 1}`}
+          onClick={open(i)}
+          className="absolute left-1/2 top-1/2 h-[86%] w-auto max-w-none rounded-xl sm:rounded-2xl shadow-2xl ring-1 ring-black/10 transition-transform duration-700 ease-out"
+          style={{
+            zIndex: f.z,
+            transform: active
+              ? `translate(-50%, -50%) translateX(${f.x * spread}%) rotate(${f.r * spread}deg) scale(${f.s})`
+              : "translate(-50%, -44%) scale(0.85)",
+          }}
+        />
+      );
+    });
+  };
+
+  const renderPhoto = (i: number, active: boolean) => {
+    // Another wide image peeks out from behind, like a stack of prints.
+    const behind = images.length > 1 ? (i + 1) % images.length : null;
+    const showBehind = behind !== null && behind !== i && !isPortrait(behind);
+    const photo = "absolute left-1/2 top-1/2 w-auto h-auto max-w-[84%] max-h-[78%] rounded-lg sm:rounded-xl ring-1 ring-black/10 transition-transform duration-700 ease-out";
+    return (
+      <>
+        {showBehind && (
+          <img
+            src={images[behind]}
+            alt=""
+            aria-hidden="true"
+            className={`${photo} shadow-xl brightness-90`}
+            style={{
+              transform: active
+                ? `translate(-50%, -50%) translate(6%, 5%) rotate(${hovered ? 6 : 4}deg) scale(0.94)`
+                : "translate(-50%, -50%) scale(0.88)",
+            }}
+          />
+        )}
+        <img
+          src={images[i]}
+          alt={`${alt} screenshot ${i + 1}`}
+          onClick={open(i)}
+          className={`${photo} shadow-2xl`}
+          style={{
+            transform: active
+              ? `translate(-50%, -50%) rotate(${hovered ? 0 : -2.5}deg) scale(${hovered ? 1.03 : 1})`
+              : "translate(-50%, -44%) scale(0.9)",
+          }}
+        />
+      </>
+    );
+  };
 
   return (
     <div
-      className="relative w-full h-full overflow-hidden bg-stone-900 group"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      className="relative w-full h-full overflow-hidden bg-stone-800 group"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
-      {/* Images */}
-      {images.map((src, i) => (
-        <img
-          key={i}
-          src={src}
-          alt={`${alt} screenshot ${i + 1}`}
-          className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-700 cursor-zoom-in ${
-            i === index ? "opacity-100" : "opacity-0"
-          }`}
-          onClick={() => onImageClick(index)}
-        />
-      ))}
+      {/* Slides */}
+      {pages.map((page, p) => {
+        const active = p === current;
+        return (
+          <div
+            key={page.join("-")}
+            className={`absolute inset-0 transition-opacity duration-700 cursor-zoom-in ${
+              active ? "opacity-100" : "opacity-0 pointer-events-none"
+            }`}
+            style={{ background: stageBackground(meta[page[0]]?.tint ?? DEFAULT_TINT) }}
+            onClick={open(page[0])}
+          >
+            <div className="absolute inset-0 opacity-40" style={DOT_GRID} />
+            {page.length > 1 || isPortrait(page[0]) ? renderFan(page, active) : renderPhoto(page[0], active)}
+          </div>
+        );
+      })}
 
-      {/* Prev arrow */}
-      <button
-        className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all duration-200 z-10"
-        onClick={prev}
-      >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
+      {/* Soft shade so the dots stay visible on light images */}
+      <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/35 to-transparent pointer-events-none z-[5]" />
 
-      {/* Next arrow */}
-      <button
-        className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all duration-200 z-10"
-        onClick={next}
-      >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
+      {pageCount > 1 && (
+        <>
+          {/* Prev arrow */}
+          <button
+            aria-label="Previous"
+            className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all duration-200 z-10"
+            onClick={prev}
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+
+          {/* Next arrow */}
+          <button
+            aria-label="Next"
+            className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all duration-200 z-10"
+            onClick={next}
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </>
+      )}
 
       {/* Expand button */}
       <button
+        aria-label="Open gallery"
         className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all duration-200 z-10"
-        onClick={() => onImageClick(index)}
+        onClick={open(pages[current]?.[0] ?? 0)}
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
@@ -260,17 +459,20 @@ function ImageSlideshow({ images, alt, onImageClick }: SlideshowProps) {
       </button>
 
       {/* Dots */}
-      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-        {images.map((_, i) => (
-          <button
-            key={i}
-            onClick={(e) => { e.stopPropagation(); setIndex(i); }}
-            className={`rounded-full transition-all duration-300 ${
-              i === index ? "w-4 h-1.5 bg-white" : "w-1.5 h-1.5 bg-white/50 hover:bg-white/80"
-            }`}
-          />
-        ))}
-      </div>
+      {pageCount > 1 && (
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+          {pages.map((_, p) => (
+            <button
+              key={p}
+              aria-label={`Show slide ${p + 1}`}
+              onClick={(e) => { e.stopPropagation(); setIndex(p); }}
+              className={`rounded-full transition-all duration-300 ${
+                p === current ? "w-4 h-1.5 bg-white" : "w-1.5 h-1.5 bg-white/50 hover:bg-white/80"
+              }`}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -292,7 +494,41 @@ function PlaceholderImage({ label }: { label: string }) {
 
 // ── Projects data ────────────────────────────────────────────────────────────
 
-const projects = [
+interface Project {
+  id: number;
+  title: string;
+  alt: string;
+  description: string;
+  githubUrl?: string;
+  demoUrl?: string;
+  images?: string[];
+}
+
+const projects: Project[] = [
+  {
+    id: 4,
+    title: "HRM System (MLMUPC, NIS) – Mobile & Web Developer",
+    alt: "HRM System",
+    description:
+      "A government HR management platform used by the Ministry of Land Management, Urban Planning and Construction (MLMUPC) and the National Institute of Statistics (NIS). In the Flutter mobile app I built attendance tracking and reports, mission and leave requests, organization admin screens and a Telegram Mini App with automatic sign-in. In the Angular web app I worked on officer CVs and profiles, organization statistics, attendance timelines and settings.",
+    images: hrmImages,
+  },
+  {
+    id: 5,
+    title: "Face Scan Connector for HRM – Full-Stack Developer",
+    alt: "Face Scan Connector",
+    description:
+      "Connects Raspberry Pi face-scanner machines and Dahua face terminals to the HRM system. A Python connector on the Pi registers the device and shows a pairing QR code. Admins pair it and assign staff from the web app, then a NestJS worker syncs their face photos to the Dahua scanner so each scan is recorded as attendance automatically.",
+    images: faceScanImages,
+  },
+  {
+    id: 6,
+    title: "PhumiYerng – Mobile Developer",
+    alt: "PhumiYerng",
+    description:
+      "PhumiYerng (ភូមិយើង, \"Our Village\") is a marketplace and community-tourism platform for rural communities in Cambodia's LASED III land program. I'm building the Flutter mobile app (MVVM) from the ground up: OTP sign-in, product shop, cart and checkout, trips and homestays, community pages and live notifications. Currently in development.",
+    images: phumiYerngImages,
+  },
   {
     id: 1,
     title: "UniFinder – Frontend Developer",
@@ -347,7 +583,7 @@ function ProjectsSection() {
               viewport={{ once: false, amount: 0.3 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              <div className="md:w-1/2 h-72 sm:h-80 md:h-auto md:min-h-[320px] lg:min-h-[360px] xl:min-h-[400px]">
+              <div className="md:w-[55%] md:flex-shrink-0 aspect-video md:aspect-auto md:min-h-[320px] lg:min-h-[360px] xl:min-h-[400px]">
                 {project.images ? (
                   <ImageSlideshow
                     images={project.images}
@@ -359,7 +595,7 @@ function ProjectsSection() {
                 )}
               </div>
               <div
-                className="md:w-1/2 flex flex-col justify-center p-5 sm:p-6 lg:p-8 text-left items-start"
+                className="md:flex-1 flex flex-col justify-center p-5 sm:p-6 lg:p-8 text-left items-start"
               >
                 <h2 className="text-base sm:text-lg lg:text-xl xl:text-2xl font-bold text-stone-900 mb-2 lg:mb-3">
                   {project.title}
@@ -368,6 +604,7 @@ function ProjectsSection() {
                   {project.description}
                 </p>
                 <div className="flex flex-wrap gap-2">
+                  {project.githubUrl && (
                   <a
                     href={project.githubUrl}
                     target="_blank"
@@ -379,6 +616,7 @@ function ProjectsSection() {
                     </svg>
                     View on GitHub
                   </a>
+                  )}
                   {project.demoUrl && (
                     <a
                       href={project.demoUrl}
