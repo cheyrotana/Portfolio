@@ -1,152 +1,253 @@
-import { useState } from "react";
 import emailjs from "@emailjs/browser";
+import { AnimatePresence, motion, useInView } from "framer-motion";
+import { RotateCcw, Send } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { unlock } from "../achievements";
+import { play } from "../sound";
 
-interface SocialMedia {
-  name: string;
-  url: string;
-  image: string;
+// EmailJS settings (unchanged from the original contact form).
+const SERVICE_ID = "service_n31f1lt";
+const TEMPLATE_ID = "template_jh510rc";
+const PUBLIC_KEY = "zuC8j77Q0CqjMRaNQ";
+
+type Step = "name" | "email" | "message" | "confirm" | "sending" | "sent" | "failed";
+
+interface Bubble {
+  id: number;
+  from: "me" | "you";
+  text: string;
 }
 
-interface ContactFormProps {
-  socialMedia: SocialMedia[];
-}
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-function ContactForm({ socialMedia }: ContactFormProps) {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
+// A contact form that feels like a chat: one question at a time.
+function ContactForm() {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(rootRef, { once: true, amount: 0.4 });
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const counter = useRef(0);
+  const started = useRef(false);
 
-  const [error, setError] = useState("");
-  const [sending, setSending] = useState(false);
-  const [sent, setSent] = useState(false);
+  const [bubbles, setBubbles] = useState<Bubble[]>([]);
+  const [typing, setTyping] = useState(false);
+  const [step, setStep] = useState<Step>("name");
+  const [input, setInput] = useState("");
+  const [data, setData] = useState({ name: "", email: "", message: "" });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
+  const add = (from: Bubble["from"], text: string) =>
+    setBubbles((b) => [...b, { id: ++counter.current, from, text }]);
+
+  // "Me" replies after a short typing pause.
+  const say = useCallback((texts: string[], then?: () => void) => {
+    let delay = 0;
+    texts.forEach((text, i) => {
+      delay += 450 + Math.min(900, text.length * 12);
+      window.setTimeout(() => setTyping(true), delay - 420);
+      window.setTimeout(() => {
+        setTyping(false);
+        setBubbles((b) => [...b, { id: ++counter.current, from: "me", text }]);
+        play("pop");
+        if (i === texts.length - 1) then?.();
+      }, delay);
     });
+  }, []);
+
+  // Start the conversation once the chat scrolls into view.
+  useEffect(() => {
+    if (!inView || started.current) return;
+    started.current = true;
+    say(["Hi! 👋 I'm Rotana.", "What's your name?"]);
+  }, [inView, say]);
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+  }, [bubbles, typing]);
+
+  const restart = () => {
+    setBubbles([]);
+    setData({ name: "", email: "", message: "" });
+    setStep("name");
+    setInput("");
+    say(["Let's start again 🙂", "What's your name?"]);
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (!formData.name || !formData.email || !formData.message) {
-      setError("All fields are required.");
-      return;
-    }
-
-    setError("");
-    setSending(true);
-
+  const send = async (payload = data) => {
+    setStep("sending");
+    setTyping(true);
     try {
       await emailjs.send(
-        "service_n31f1lt",
-        "template_jh510rc",
-        {
-          from_name: formData.name,
-          from_email: formData.email,
-          message: formData.message,
-        },
-        "zuC8j77Q0CqjMRaNQ"
+        SERVICE_ID,
+        TEMPLATE_ID,
+        { from_name: payload.name, from_email: payload.email, message: payload.message },
+        PUBLIC_KEY,
       );
-      setSent(true);
-      setFormData({ name: "", email: "", message: "" });
-      setTimeout(() => setSent(false), 4000);
+      setTyping(false);
+      setStep("sent");
+      play("send");
+      unlock("penpal");
+      say([`Sent! 🎉 Thanks, ${payload.name.split(" ")[0]} — I'll reply to ${payload.email} soon.`]);
     } catch {
-      setError("Failed to send. Please try again.");
-    } finally {
-      setSending(false);
+      setTyping(false);
+      setStep("failed");
+      say(["Hmm, that didn't go through 😕 Want to try again?"]);
     }
   };
 
+  const submit = () => {
+    const text = input.trim();
+    if (!text || typing) return;
+    setInput("");
+    add("you", text);
+    play("click");
+
+    if (step === "name") {
+      setData((d) => ({ ...d, name: text }));
+      setStep("email");
+      say([`Nice to meet you, ${text.split(" ")[0]}!`, "What's your email, so I can write back?"]);
+    } else if (step === "email") {
+      if (!EMAIL_RE.test(text)) {
+        say(["Hmm, that doesn't look like an email address — mind checking it?"]);
+        return;
+      }
+      setData((d) => ({ ...d, email: text }));
+      setStep("message");
+      say(["Got it 👍", "What would you like to talk about? An internship, a role, a project — anything."]);
+    } else if (step === "message") {
+      setData((d) => ({ ...d, message: text }));
+      setStep("confirm");
+      say(["Thanks! Ready for me to send this?"]);
+    }
+  };
+
+  const placeholder =
+    step === "name" ? "Your name…" : step === "email" ? "you@example.com" : step === "message" ? "Type your message…" : "";
+  const canType = step === "name" || step === "email" || step === "message";
+
   return (
-    <form onSubmit={handleSubmit} className="w-full flex flex-col gap-5 lg:gap-6">
-      {error && (
-        <div className="bg-red-500/20 border border-red-400/40 text-red-300 px-4 py-2 rounded-lg text-center text-sm">
-          {error}
-        </div>
-      )}
-
-      <div>
-        <label className="block text-stone-300 text-sm lg:text-base font-medium mb-2">
-          Name
-        </label>
-        <input
-          type="text"
-          name="name"
-          placeholder="Your name"
-          value={formData.name}
-          onChange={handleChange}
-          className="w-full px-3 py-2.5 lg:px-4 lg:py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all duration-300 text-sm lg:text-base"
-        />
+    <div ref={rootRef} className="chat card flex flex-col h-[480px] overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center gap-3 px-5 py-3.5 border-b border-line">
+        <span className="chat-avatar grid place-items-center w-10 h-10 heading text-sm">CR</span>
+        <span className="flex-1">
+          <span className="block font-semibold text-fg">Chat with Rotana</span>
+          <span className="flex items-center gap-1.5 text-xs text-muted">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e]" /> Messages go straight to my inbox
+          </span>
+        </span>
+        {bubbles.length > 2 && (
+          <button type="button" className="icon-btn !w-9 !h-9" onClick={restart} aria-label="Start over" data-cursor="Restart">
+            <RotateCcw size={15} />
+          </button>
+        )}
       </div>
 
-      <div>
-        <label className="block text-stone-300 text-sm lg:text-base font-medium mb-2">
-          Email
-        </label>
-        <input
-          type="email"
-          name="email"
-          placeholder="your.email@example.com"
-          value={formData.email}
-          onChange={handleChange}
-          className="w-full px-3 py-2.5 lg:px-4 lg:py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all duration-300 text-sm lg:text-base"
-        />
+      {/* Conversation */}
+      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 space-y-2.5" aria-live="polite">
+        <AnimatePresence initial={false}>
+          {bubbles.map((b) => (
+            <motion.div
+              key={b.id}
+              className={`flex ${b.from === "you" ? "justify-end" : "justify-start"}`}
+              initial={{ opacity: 0, y: 10, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ type: "spring", stiffness: 420, damping: 30 }}
+            >
+              <p className={`chat-bubble ${b.from === "you" ? "chat-you" : "chat-me"} whitespace-pre-wrap`}>{b.text}</p>
+            </motion.div>
+          ))}
+
+          {step === "confirm" && !typing && (
+            <motion.div key="summary" className="flex justify-start" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+              <div className="chat-bubble chat-me w-full max-w-[90%] space-y-1">
+                <p className="text-xs text-muted">From</p>
+                <p className="font-semibold">
+                  {data.name} · {data.email}
+                </p>
+                <p className="text-xs text-muted pt-1">Message</p>
+                <p className="whitespace-pre-wrap">{data.message}</p>
+                <div className="flex flex-wrap gap-2 pt-2">
+                  <button type="button" className="btn btn-primary !py-2" onClick={() => void send()}>
+                    Send it <Send size={14} />
+                  </button>
+                  <button type="button" className="btn btn-ghost !py-2" onClick={restart}>
+                    Start over
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {typing && (
+            <motion.div key="typing" className="flex justify-start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <span className="chat-bubble chat-me flex items-center gap-1 !py-3" aria-label="Typing">
+                {[0, 1, 2].map((i) => (
+                  <motion.span
+                    key={i}
+                    className="w-1.5 h-1.5 rounded-full bg-muted"
+                    animate={{ y: [0, -4, 0] }}
+                    transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.12 }}
+                  />
+                ))}
+              </span>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      <div>
-        <label className="block text-stone-300 text-sm lg:text-base font-medium mb-2">
-          Message
-        </label>
-        <textarea
-          name="message"
-          placeholder="Tell me about your project..."
-          value={formData.message}
-          onChange={handleChange}
-          rows={4}
-          className="w-full px-3 py-2.5 lg:px-4 lg:py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all duration-300 resize-none text-sm lg:text-base"
-        />
-      </div>
-
-      {sent && (
-        <div className="bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 px-4 py-2 rounded-lg text-center text-sm">
-          Message sent! I'll get back to you soon.
-        </div>
-      )}
-
-      <button
-        type="submit"
-        disabled={sending}
-        className="w-full bg-emerald-600 text-white font-bold py-2.5 px-5 lg:py-3 text-sm lg:text-base rounded-xl hover:bg-emerald-500 transition-all duration-300 shadow-lg shadow-emerald-600/20 hover:shadow-emerald-500/30 mt-1 disabled:opacity-60 disabled:cursor-not-allowed"
-      >
-        {sending ? "Sending..." : "Send Message"}
-      </button>
-
-      {/* Social icons */}
-      <div className="flex justify-center gap-4 lg:gap-5 mt-4">
-        {socialMedia.map((sMedia, index) => (
-          <a
-            key={index}
-            href={sMedia.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-11 h-11 lg:w-13 lg:h-13 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 hover:scale-110"
-            title={sMedia.name}
+      {/* Input */}
+      <div className="border-t border-line p-3">
+        {step === "failed" ? (
+          <div className="flex gap-2">
+            <button type="button" className="btn btn-primary flex-1" onClick={() => void send()}>
+              Try again
+            </button>
+            <button type="button" className="btn btn-ghost" onClick={restart}>
+              Start over
+            </button>
+          </div>
+        ) : step === "sent" ? (
+          <button type="button" className="btn btn-ghost w-full" onClick={restart}>
+            Send another message
+          </button>
+        ) : (
+          <form
+            className="flex items-end gap-2"
+            onSubmit={(e) => {
+              e.preventDefault();
+              submit();
+            }}
           >
-            <img
-              src={sMedia.image}
-              alt={sMedia.name}
-              className="w-5 h-5 lg:w-6 lg:h-6 object-contain"
+            <textarea
+              ref={inputRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  submit();
+                }
+              }}
+              rows={step === "message" ? 3 : 1}
+              placeholder={canType ? placeholder : "…"}
+              disabled={!canType || typing}
+              className="field resize-none flex-1 !py-2.5"
+              aria-label={placeholder || "Message"}
+              autoComplete={step === "email" ? "email" : step === "name" ? "name" : "off"}
             />
-          </a>
-        ))}
+            <button
+              type="submit"
+              className="btn btn-primary !px-3.5 !py-2.5"
+              disabled={!canType || typing || !input.trim()}
+              aria-label="Send"
+            >
+              <Send size={16} />
+            </button>
+          </form>
+        )}
+        {step === "message" && <p className="mt-1.5 text-[11px] text-muted">Enter to send · Shift + Enter for a new line</p>}
       </div>
-    </form>
+    </div>
   );
 }
 

@@ -1,13 +1,126 @@
 @import "tailwindcss";
 
+/* ── Theme tokens ─────────────────────────────────────────────────────────────
+   Every colour, font, radius and shadow comes from these variables, so one
+   data-theme attribute on <html> restyles the whole site.                    */
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-alt: var(--bg-alt);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-2: var(--accent-2);
+  --color-accent-3: var(--accent-3);
+  --font-display: var(--t-font-display);
+  --font-body: var(--t-font-body);
+  --font-mono: var(--t-font-mono);
+}
+
+:root,
+[data-theme="persona"] {
+  color-scheme: dark;
+  --bg: #0a0a0a;
+  --bg-alt: #160204;
+  --surface: #111111;
+  --surface-2: #1c1c1c;
+  --fg: #ffffff;
+  --muted: #cfc7c7;
+  --line: #ffffff;
+  --accent: #ff1f3d;
+  --accent-fg: #ffffff;
+  --accent-2: #ffffff;
+  --accent-3: #ff1f3d;
+  --radius: 0px;
+  --radius-sm: 0px;
+  --t-font-display: "Anton", "Impact", "Arial Narrow", sans-serif;
+  --t-font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --t-font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --card-border: 2px solid var(--line);
+  --card-shadow: 7px 7px 0 var(--accent);
+  --card-shadow-hover: 11px 11px 0 var(--accent);
+  --btn-shadow: none;
+  --heading-weight: 400;
+  --heading-tracking: 0.01em;
+}
+
+[data-theme="editorial"] {
+  color-scheme: light;
+  --bg: #f7f4ee;
+  --bg-alt: #efeae0;
+  --surface: #fffdf9;
+  --surface-2: #f2ede4;
+  --fg: #1b1916;
+  --muted: #6b655c;
+  --line: #e0d9cb;
+  --accent: #c2410c;
+  --accent-fg: #ffffff;
+  --accent-2: #1e3a8a;
+  --accent-3: #4d7c0f;
+  --radius: 6px;
+  --radius-sm: 4px;
+  --t-font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --t-font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --t-font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --card-border: 1px solid var(--line);
+  --card-shadow: none;
+  --card-shadow-hover: 0 22px 44px -28px rgb(27 25 22 / 0.45);
+  --btn-shadow: none;
+  --heading-weight: 600;
+  --heading-tracking: -0.025em;
+}
+
+[data-theme="pop"] {
+  color-scheme: light;
+  --bg: #fff4dc;
+  --bg-alt: #ffe8b8;
+  --surface: #ffffff;
+  --surface-2: #fff8ea;
+  --fg: #141414;
+  --muted: #4a4640;
+  --line: #141414;
+  --accent: #ff5a36;
+  --accent-fg: #ffffff;
+  --accent-2: #6c4dff;
+  --accent-3: #18c29c;
+  --radius: 22px;
+  --radius-sm: 14px;
+  --t-font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --t-font-body: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --t-font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --card-border: 2.5px solid var(--line);
+  --card-shadow: 6px 6px 0 var(--line);
+  --card-shadow-hover: 10px 10px 0 var(--line);
+  --btn-shadow: 4px 4px 0 var(--line);
+  --heading-weight: 800;
+  --heading-tracking: -0.045em;
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────────── */
+
 html {
   scroll-behavior: smooth;
-  overflow-x: hidden;
+  overflow-x: clip;
+  background: var(--bg);
 }
 
 body {
   margin: 0;
-  overflow-x: hidden;
+  overflow-x: clip;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--t-font-body);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-fg);
 }
 
 /* Hide scrollbars */
@@ -20,68 +133,1291 @@ body {
   display: none;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ── Building blocks ──────────────────────────────────────────────────────── */
+
+@layer components {
+  .heading {
+    font-family: var(--t-font-display);
+    font-weight: var(--heading-weight);
+    letter-spacing: var(--heading-tracking);
+    line-height: 1.02;
   }
-  to {
-    opacity: 1;
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--t-font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .card {
+    background: var(--surface);
+    border: var(--card-border);
+    border-radius: var(--radius);
+    box-shadow: var(--card-shadow);
+    transition: box-shadow 0.3s ease, transform 0.3s ease, background-color 0.4s ease, border-color 0.4s ease;
+  }
+
+  .card-hover:hover {
+    box-shadow: var(--card-shadow-hover);
+    transform: translateY(-4px);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.25rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.9rem;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, filter 0.2s ease, translate 0.25s ease-out;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--accent-fg);
+    box-shadow: var(--btn-shadow);
+  }
+
+  .btn-primary:hover {
+    filter: brightness(1.08);
+    transform: translateY(-2px);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--fg);
+    border: 1px solid var(--line);
+  }
+
+  .btn-ghost:hover {
+    background: var(--surface-2);
+    transform: translateY(-2px);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.28rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--surface-2);
+    color: var(--muted);
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    color: var(--fg);
+    background: var(--surface);
+    transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, translate 0.25s ease-out;
+  }
+
+  .icon-btn:hover {
+    color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .field {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    color: var(--fg);
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .field::placeholder {
+    color: var(--muted);
+    opacity: 0.7;
+  }
+
+  .field:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+  }
+
+  /* Text that should only appear in one theme */
+  .only-editorial,
+  .only-pop,
+  .only-persona {
+    display: none;
   }
 }
 
-.animate-fadeIn {
-  animation: fadeIn 0.6s ease-out forwards;
+[data-theme="editorial"] .only-editorial,
+[data-theme="pop"] .only-pop,
+[data-theme="persona"] .only-persona {
+  display: contents;
 }
 
-@keyframes letterSpacing {
+/* ── Editorial extras: hairlines, serif italics, quiet chips ──────────────── */
+
+[data-theme="editorial"] .eyebrow {
+  font-family: var(--t-font-body);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+}
+
+[data-theme="editorial"] .accent-text {
+  font-style: italic;
+  color: var(--accent);
+}
+
+[data-theme="editorial"] .chip {
+  border-radius: 3px;
+  background: transparent;
+}
+
+[data-theme="editorial"] .bg-decor {
+  background-image: linear-gradient(to bottom, transparent calc(100% - 1px), var(--line) 1px);
+  background-size: 100% 2.25rem;
+  opacity: 0.35;
+  mask-image: linear-gradient(to bottom, #000, transparent 85%);
+}
+
+/* ── Pop extras: thick outlines, hard shadows, a little wobble ────────────── */
+
+[data-theme="pop"] .eyebrow {
+  padding: 0.3rem 0.8rem;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  background: var(--accent-3);
+  color: var(--fg);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  box-shadow: 3px 3px 0 var(--line);
+  transform: rotate(-2deg);
+}
+
+[data-theme="pop"] .accent-text {
+  color: var(--accent);
+  -webkit-text-stroke: 0;
+}
+
+[data-theme="pop"] .card-hover:hover {
+  transform: translate(-4px, -4px) rotate(-0.4deg);
+}
+
+[data-theme="pop"] .btn {
+  border: 2.5px solid var(--line);
+}
+
+[data-theme="pop"] .btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--line);
+  filter: none;
+}
+
+[data-theme="pop"] .btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--line);
+}
+
+[data-theme="pop"] .btn-ghost {
+  background: var(--surface);
+  box-shadow: var(--btn-shadow);
+}
+
+[data-theme="pop"] .chip {
+  border: 2px solid var(--line);
+  background: var(--surface);
+  color: var(--fg);
+  font-weight: 600;
+}
+
+[data-theme="pop"] .icon-btn {
+  border: 2.5px solid var(--line);
+  box-shadow: 3px 3px 0 var(--line);
+}
+
+[data-theme="pop"] .field {
+  border: 2.5px solid var(--line);
+  background: var(--surface);
+}
+
+[data-theme="pop"] .field:focus {
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+[data-theme="pop"] .bg-decor {
+  background-image: radial-gradient(color-mix(in srgb, var(--line) 22%, transparent) 1.5px, transparent 1.5px);
+  background-size: 22px 22px;
+  mask-image: linear-gradient(to bottom, #000 40%, transparent);
+}
+
+/* ── Persona extras: red/black/white, sharp angles, ransom-note lettering ── */
+
+[data-theme="persona"] .heading {
+  text-transform: uppercase;
+  line-height: 0.95;
+}
+
+/* Highlighted words look cut out and pasted in, alternating red and white */
+[data-theme="persona"] .accent-text {
+  display: inline-block;
+  padding: 0 0.14em 0.02em;
+  margin: 0.02em 0.04em;
+  background: var(--accent);
+  color: #fff;
+  line-height: 1;
+  transform: rotate(-3deg) skewX(-8deg);
+  box-shadow: 0.07em 0.07em 0 #fff;
+}
+
+[data-theme="persona"] .accent-text:nth-of-type(2n) {
+  background: #fff;
+  color: #0a0a0a;
+  transform: rotate(2deg) skewX(-8deg);
+  box-shadow: 0.07em 0.07em 0 var(--accent);
+}
+
+[data-theme="persona"] .eyebrow {
+  padding: 0.35rem 1.1rem;
+  background: #fff;
+  color: #0a0a0a;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  clip-path: polygon(4% 0, 100% 0, 96% 100%, 0 100%);
+  transform: rotate(-2deg);
+}
+
+[data-theme="persona"] .card-hover:hover {
+  transform: translate(-4px, -4px) rotate(-0.6deg);
+}
+
+/* Parallelogram buttons */
+[data-theme="persona"] .btn {
+  padding-left: 1.6rem;
+  padding-right: 1.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 800;
+  clip-path: polygon(7% 0, 100% 0, 93% 100%, 0 100%);
+}
+
+[data-theme="persona"] .btn-primary:hover {
+  background: #fff;
+  color: #0a0a0a;
+  filter: none;
+}
+
+[data-theme="persona"] .btn-ghost {
+  border: none;
+  background: #fff;
+  color: #0a0a0a;
+}
+
+[data-theme="persona"] .btn-ghost:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+[data-theme="persona"] .chip {
+  border: 1.5px solid var(--line);
+  background: #0a0a0a;
+  color: #fff;
+  font-family: var(--t-font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+[data-theme="persona"] .icon-btn {
+  border: 2px solid var(--line);
+  background: #0a0a0a;
+  transform: rotate(45deg) scale(0.8);
+}
+
+[data-theme="persona"] .icon-btn > * {
+  transform: rotate(-45deg);
+}
+
+[data-theme="persona"] .icon-btn:hover {
+  background: var(--accent);
+  color: #fff;
+  transform: rotate(45deg) scale(0.88);
+}
+
+[data-theme="persona"] .field {
+  border: 2px solid var(--line);
+  background: #0a0a0a;
+}
+
+[data-theme="persona"] .field:focus {
+  box-shadow: 5px 5px 0 var(--accent);
+}
+
+/* Halftone dots with a red slash cutting across */
+[data-theme="persona"] .bg-decor {
+  background-image:
+    linear-gradient(115deg, transparent 60%, var(--accent) 60%, var(--accent) 61.2%, transparent 61.2%,
+      transparent 63%, var(--accent) 63%, var(--accent) 78%, transparent 78%),
+    radial-gradient(color-mix(in srgb, var(--accent) 45%, transparent) 1.3px, transparent 1.5px);
+  background-size: 100% 100%, 11px 11px;
+  mask-image: linear-gradient(to bottom, #000 55%, transparent);
+}
+
+/* ── Slot machine ─────────────────────────────────────────────────────────── */
+
+/* The machine always has the Pop look — a chunky violet toy with a yellow sign — whatever the theme. */
+.slot-machine {
+  --cab: #6c4dff;
+  --cab-dark: #4b2fd6;
+  --trim: #141414;
+  --sign: #ffd23f;
+  --sign-fg: #141414;
+  --bulb: #ff5a36;
+  --reel-bg: #ffffff;
+  --reel-fg: #141414;
+  --led-bg: #141414;
+  --led-fg: #18c29c;
+  --knob: #ff5a36;
+  --cab-radius: 32px;
+  filter: drop-shadow(8px 8px 0 #141414);
+  font-family: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+}
+
+.slot-sign {
+  background: var(--sign);
+  border: 4px solid var(--trim);
+  border-bottom: none;
+  border-radius: calc(var(--cab-radius) + 6px) calc(var(--cab-radius) + 6px) 0 0;
+}
+
+.slot-sign-text {
+  color: var(--sign-fg);
+  text-shadow: 0 0 14px color-mix(in srgb, var(--sign-fg) 70%, transparent);
+  line-height: 1;
+}
+
+.slot-sign-sub {
+  color: color-mix(in srgb, var(--sign-fg) 75%, #fff);
+  margin-top: 0.35rem;
+}
+
+.slot-cabinet {
+  background: linear-gradient(180deg, var(--cab) 0%, var(--cab-dark) 100%);
+  border: 4px solid var(--trim);
+  border-radius: 10px 10px var(--cab-radius) var(--cab-radius);
+  box-shadow: inset 0 2px 0 rgb(255 255 255 / 0.25), inset 0 -10px 20px rgb(0 0 0 / 0.25);
+}
+
+.slot-window {
+  background: #0b0b0b;
+  border: 4px solid var(--trim);
+  border-radius: 14px;
+  box-shadow: inset 0 6px 14px rgb(0 0 0 / 0.6);
+}
+
+.slot-glass {
+  border-radius: 10px;
+  background: linear-gradient(160deg, rgb(255 255 255 / 0.22) 0%, rgb(255 255 255 / 0.04) 35%, transparent 36%);
+}
+
+.slot-reel {
+  background: linear-gradient(180deg, #cfcfcf 0%, var(--reel-bg) 22%, var(--reel-bg) 78%, #cfcfcf 100%);
+  border-radius: 8px;
+  transition: box-shadow 0.3s ease;
+}
+
+.slot-reel-won {
+  box-shadow: 0 0 0 3px var(--bulb), 0 0 18px var(--bulb);
+}
+
+.slot-symbol {
+  border-radius: 14px;
+  background: var(--sym);
+  color: #fff;
+  box-shadow: inset 0 -4px 0 rgb(0 0 0 / 0.2), 0 3px 6px rgb(0 0 0 / 0.25);
+}
+
+.slot-symbol-label {
+  color: var(--reel-fg);
+}
+
+.slot-payline {
+  border-top: 2px solid color-mix(in srgb, var(--accent) 85%, transparent);
+  border-bottom: 2px solid color-mix(in srgb, var(--accent) 85%, transparent);
+}
+
+.slot-led {
+  background: var(--led-bg);
+  color: var(--led-fg);
+  border-radius: 6px;
+  border: 2px solid var(--trim);
+  text-shadow: 0 0 8px var(--led-fg);
+  letter-spacing: 0.08em;
+}
+
+.slot-led-win {
+  animation: led-flash 0.4s steps(1, end) infinite;
+}
+
+@keyframes led-flash {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.slot-spin-btn {
+  width: 4.25rem;
+  height: 4.25rem;
+  flex-shrink: 0;
+  border-radius: 999px;
+  border: 4px solid var(--trim);
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, #fff 40%, var(--knob)), var(--knob) 60%);
+  color: #fff;
+  text-transform: uppercase;
+  box-shadow: 0 6px 0 var(--cab-dark), 0 10px 18px rgb(0 0 0 / 0.35);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  cursor: pointer;
+}
+
+.slot-spin-btn:hover {
+  filter: brightness(1.08);
+}
+
+.slot-spin-btn:active,
+.slot-spin-btn:disabled {
+  transform: translateY(5px);
+  box-shadow: 0 1px 0 var(--cab-dark), 0 4px 8px rgb(0 0 0 / 0.3);
+}
+
+.slot-tray {
+  background: #0b0b0b;
+  border: 4px solid var(--trim);
+  border-top-width: 6px;
+  border-radius: 0 0 18px 18px;
+  box-shadow: inset 0 6px 10px rgb(0 0 0 / 0.7);
+}
+
+.slot-bulb {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bulb) 25%, #222);
+  animation: bulb-blink var(--blink, 1.2s) steps(1, end) infinite;
+}
+
+.slot-bulb:nth-child(2n) {
+  animation-delay: calc(var(--blink, 1.2s) / 2);
+}
+
+@keyframes bulb-blink {
   0% {
-    letter-spacing: -0.05em;
-    opacity: 0;
-    transform: translateY(10px);
+    background: var(--bulb);
+    box-shadow: 0 0 10px var(--bulb);
   }
-  70% {
-    letter-spacing: 0.02em;
-    opacity: 0.8;
-    transform: translateY(0);
+  50% {
+    background: color-mix(in srgb, var(--bulb) 25%, #222);
+    box-shadow: none;
+  }
+}
+
+.slot-lever-rod {
+  border-radius: 999px;
+  background: linear-gradient(90deg, #9ca3af, #f9fafb 45%, #6b7280);
+}
+
+.slot-lever-knob {
+  border-radius: 999px;
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, #fff 50%, var(--knob)), var(--knob) 55%, color-mix(in srgb, var(--knob) 60%, #000));
+  box-shadow: 0 6px 12px rgb(0 0 0 / 0.35);
+}
+
+.slot-lever-mount {
+  border-radius: 6px 12px 12px 6px;
+  background: linear-gradient(180deg, var(--trim), color-mix(in srgb, var(--trim) 60%, #000));
+  box-shadow: 0 4px 8px rgb(0 0 0 / 0.3);
+}
+
+.slot-hint {
+  color: var(--accent);
+}
+
+/* Pop details: chunky type, thick outlines, hard shadows */
+.slot-machine .heading {
+  font-family: inherit;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  text-transform: none;
+  font-style: normal;
+}
+
+.slot-machine .slot-sign-text {
+  text-shadow: 3px 3px 0 #fff;
+}
+
+.slot-machine .slot-symbol {
+  border: 2.5px solid #141414;
+}
+
+.slot-machine .slot-payline {
+  border-color: #ff5a36;
+  background: rgb(255 90 54 / 0.06);
+}
+
+.slot-machine .slot-lever-knob {
+  border: 3px solid #141414;
+  box-shadow: 3px 3px 0 #141414;
+}
+
+.slot-machine .slot-lever-rod,
+.slot-machine .slot-lever-mount {
+  background: #141414;
+}
+
+.slot-machine .slot-hint {
+  color: #ff5a36;
+}
+
+/* On the dark Persona background a black shadow would vanish, so it casts a white one */
+[data-theme="persona"] .slot-machine {
+  filter: drop-shadow(8px 8px 0 #fff);
+}
+
+/* ── Interactive: cursor, click bursts, tilt cards ───────────────────────── */
+
+.cursor-ring {
+  border: 2px solid var(--accent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent-fg);
+}
+
+.cursor-ring:has(.cursor-label) {
+  background: var(--accent);
+}
+
+.cursor-dot {
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+[data-theme="persona"] .cursor-ring {
+  border-radius: 0;
+  border-color: #fff;
+  background: color-mix(in srgb, var(--accent) 35%, transparent);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  border: none;
+}
+
+[data-theme="persona"] .cursor-ring:has(.cursor-label) {
+  background: var(--accent);
+}
+
+[data-theme="persona"] .cursor-dot {
+  border-radius: 0;
+  background: #fff;
+  transform: rotate(45deg);
+}
+
+[data-theme="pop"] .cursor-ring {
+  border: 2.5px solid var(--line);
+  background: color-mix(in srgb, var(--accent-3) 45%, transparent);
+  color: var(--fg);
+}
+
+[data-theme="pop"] .cursor-ring:has(.cursor-label) {
+  background: var(--accent-3);
+}
+
+[data-theme="editorial"] .cursor-ring {
+  border-width: 1px;
+  border-color: var(--fg);
+  background: transparent;
+  color: var(--bg);
+}
+
+[data-theme="editorial"] .cursor-ring:has(.cursor-label) {
+  background: var(--fg);
+}
+
+.burst-bit {
+  width: 7px;
+  height: 7px;
+  margin: -3.5px 0 0 -3.5px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.burst-bit:nth-child(3n) {
+  background: var(--accent-2);
+}
+
+[data-theme="persona"] .burst-bit {
+  border-radius: 0;
+  width: 9px;
+  height: 9px;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+[data-theme="persona"] .burst-bit:nth-child(2n) {
+  background: #fff;
+}
+
+[data-theme="pop"] .burst-bit:nth-child(3n + 1) {
+  background: var(--accent-3);
+}
+
+/* Cards that tilt towards the cursor, with a glow that follows it */
+.tilt {
+  position: relative;
+  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.25s ease-out, box-shadow 0.3s ease, background-color 0.4s ease, border-color 0.4s ease;
+}
+
+.tilt.card-hover:hover {
+  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(-4px);
+}
+
+[data-theme="pop"] .tilt.card-hover:hover,
+[data-theme="persona"] .tilt.card-hover:hover {
+  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translate(-4px, -4px);
+}
+
+.tilt::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--accent) 16%, transparent), transparent 45%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.tilt:hover::after {
+  opacity: 1;
+}
+
+/* While the custom cursor is running (set by CustomCursor), hide the system pointer */
+.has-custom-cursor,
+.has-custom-cursor * {
+  cursor: none !important;
+}
+
+.has-custom-cursor :is(input, textarea, select) {
+  cursor: text !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tilt,
+  .tilt.card-hover:hover {
+    transform: none;
+  }
+}
+
+/* ── Journey: route timeline with a vehicle ───────────────────────────────── */
+
+.journey-route {
+  stroke: color-mix(in srgb, var(--muted) 55%, transparent);
+  stroke-width: 2;
+  stroke-dasharray: 2 10;
+  stroke-linecap: round;
+}
+
+
+.journey-road-line {
+  display: none;
+}
+
+.journey-flown {
+  stroke: var(--accent);
+  stroke-width: 4;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent) 50%, transparent));
+}
+
+
+/* Road vehicles: the routes become roads with a dashed centre line */
+[data-mode="road"] .journey-route {
+  stroke: color-mix(in srgb, var(--fg) 16%, var(--bg));
+  stroke-width: 18;
+  stroke-dasharray: none;
+}
+
+
+[data-mode="road"] .journey-road-line {
+  display: inline;
+  stroke: color-mix(in srgb, var(--fg) 45%, transparent);
+  stroke-width: 1.5;
+  stroke-dasharray: 10 12;
+}
+
+[data-mode="road"] .journey-flown {
+  stroke-width: 5;
+  filter: none;
+}
+
+.journey-marker {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 2px solid var(--muted);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.journey-marker.is-reached {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.journey-cloud path {
+  fill: color-mix(in srgb, var(--fg) 8%, transparent);
+}
+
+/* Vehicle paint: main colour, light panels, dark tyres, outlines */
+.veh-main {
+  fill: var(--accent);
+}
+
+.veh-light {
+  fill: var(--surface);
+}
+
+.veh-dark {
+  fill: var(--fg);
+}
+
+.veh-outline {
+  stroke: var(--fg);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.veh-stroke {
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+.veh-spoke {
+  stroke: var(--surface);
+  stroke-width: 1.5;
+}
+
+
+.paper-top {
+  fill: var(--surface);
+  stroke: var(--fg);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.paper-fold {
+  fill: color-mix(in srgb, var(--accent) 55%, var(--surface));
+  stroke: var(--fg);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.journey-vehicle {
+  filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.3));
+}
+
+.paper-crease {
+  stroke: var(--fg);
+  stroke-width: 1.2;
+  stroke-opacity: 0.5;
+}
+
+/* Project stops on the route link to their card in the Work section */
+.journey-card.is-link {
+  cursor: pointer;
+}
+
+.journey-card.is-link:hover,
+.journey-card.is-link:focus-visible {
+  box-shadow: var(--card-shadow-hover);
+}
+
+.journey-card-link svg {
+  transition: transform 0.2s ease;
+}
+
+.journey-card.is-link:hover .journey-card-link svg {
+  transform: translateX(3px);
+}
+
+/* A project card pulses when another section sends you to it */
+.project-highlight {
+  animation: project-pulse 0.9s ease-out 3;
+}
+
+@keyframes project-pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 70%, transparent), var(--card-shadow);
   }
   100% {
-    letter-spacing: 0em;
-    opacity: 1;
-    transform: translateY(0);
+    box-shadow: 0 0 0 18px transparent, var(--card-shadow);
   }
 }
 
-.animate-letterSpacing {
-  animation: letterSpacing 0.8s ease-out forwards;
+/* Vehicle picker */
+.vehicle-picker {
+  background: var(--surface);
+  border: var(--card-border);
+  border-radius: var(--radius);
 }
 
-@keyframes fadeInLeft {
+.vehicle-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.35rem 0.55rem 0.4rem;
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  transition: background-color 0.2s ease, color 0.2s ease, translate 0.25s ease-out;
+}
+
+.vehicle-option:hover {
+  color: var(--fg);
+  background: var(--surface-2);
+}
+
+.vehicle-option.is-selected {
+  color: var(--accent-fg);
+  background: var(--accent);
+}
+
+.vehicle-icon {
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 1.7rem;
+  overflow: visible;
+}
+
+/* Squeeze each sprite into the picker button */
+.vehicle-icon > svg {
+  width: 2.6rem !important;
+  height: 2.6rem !important;
+  margin: -0.45rem 0;
+}
+
+.vehicle-option.is-selected .veh-main {
+  fill: var(--accent-fg);
+  stroke: var(--accent-fg);
+}
+
+.vehicle-option.is-selected .veh-main {
+  stroke: var(--fg);
+}
+
+/* Persona: white and red, sharp markers */
+[data-theme="persona"] .veh-light,
+[data-theme="persona"] .paper-top {
+  fill: #fff;
+}
+
+[data-theme="persona"] .veh-outline,
+[data-theme="persona"] .veh-stroke {
+  stroke: #0a0a0a;
+}
+
+[data-theme="persona"] .veh-dark {
+  fill: #0a0a0a;
+}
+
+[data-theme="persona"] .veh-spoke {
+  stroke: #fff;
+}
+
+[data-theme="persona"] .veh-stroke {
+  stroke: #fff;
+}
+
+[data-theme="persona"] .journey-marker {
+  border-radius: 0;
+  rotate: 45deg;
+  border-color: #fff;
+  background: #0a0a0a;
+}
+
+[data-theme="persona"] .journey-marker.is-reached {
+  background: var(--accent);
+  border-color: #fff;
+  box-shadow: 4px 4px 0 #fff;
+}
+
+[data-theme="persona"] .journey-flown {
+  filter: none;
+  stroke-width: 6;
+}
+
+[data-theme="persona"] .journey-vehicle {
+  filter: drop-shadow(6px 6px 0 var(--accent));
+}
+
+[data-theme="persona"] .vehicle-option {
+  clip-path: polygon(8% 0, 100% 0, 92% 100%, 0 100%);
+  padding-left: 0.8rem;
+  padding-right: 0.8rem;
+}
+
+[data-theme="persona"] .vehicle-option.is-selected .veh-dark {
+  fill: #fff;
+}
+
+/* Editorial: a folded paper plane instead of a jet, quieter trails */
+[data-theme="editorial"] .journey-flown {
+  stroke-width: 2.5;
+  filter: none;
+}
+
+
+[data-theme="editorial"] .journey-vehicle {
+  filter: drop-shadow(0 8px 6px rgb(60 40 10 / 0.18));
+}
+
+/* Pop: chunky outlines */
+[data-theme="pop"] .veh-outline {
+  stroke-width: 3;
+}
+
+[data-theme="pop"] .veh-main {
+  fill: var(--accent-2);
+}
+
+
+[data-theme="pop"] .journey-flown {
+  filter: none;
+  stroke-width: 5;
+}
+
+
+[data-theme="pop"] .journey-marker {
+  border: 2.5px solid var(--line);
+}
+
+[data-theme="pop"] .journey-vehicle {
+  filter: drop-shadow(4px 4px 0 var(--line));
+}
+
+[data-theme="pop"] .vehicle-option.is-selected {
+  box-shadow: 3px 3px 0 var(--line);
+}
+
+/* ── Terminal ─────────────────────────────────────────────────────────────── */
+
+.terminal {
+  background: #0d0f12;
+  color: #d6dde6;
+  border: 1px solid rgb(255 255 255 / 0.12);
+  border-radius: 12px;
+  box-shadow: 0 30px 80px -20px rgb(0 0 0 / 0.7);
+}
+
+.terminal-bar {
+  background: #1a1d22;
+  border-bottom: 1px solid rgb(255 255 255 / 0.08);
+  color: #d6dde6;
+}
+
+.term-user {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.term-path {
+  color: #60a5fa;
+}
+
+.term-dim {
+  color: #7d8794;
+}
+
+.term-accent {
+  color: var(--accent);
+}
+
+.term-err {
+  color: #f87171;
+}
+
+[data-theme="persona"] .terminal {
+  border: 2px solid #fff;
+  border-radius: 0;
+  box-shadow: 10px 10px 0 var(--accent);
+}
+
+[data-theme="pop"] .terminal {
+  border: 2.5px solid var(--line);
+  box-shadow: 8px 8px 0 var(--line);
+}
+
+[data-theme="editorial"] .term-accent,
+[data-theme="editorial"] .term-user {
+  color: #f59e6b;
+}
+
+/* ── Chat-style contact ──────────────────────────────────────────────────── */
+
+.chat-avatar {
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+.chat-bubble {
+  max-width: 82%;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  border-radius: 18px;
+}
+
+.chat-me {
+  background: var(--surface-2);
+  color: var(--fg);
+  border: 1px solid var(--line);
+  border-bottom-left-radius: 6px;
+}
+
+.chat-you {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-bottom-right-radius: 6px;
+}
+
+[data-theme="persona"] .chat-avatar,
+[data-theme="persona"] .chat-bubble {
+  border-radius: 0;
+}
+
+[data-theme="persona"] .chat-me {
+  background: #0a0a0a;
+  border: 1.5px solid #fff;
+}
+
+[data-theme="persona"] .chat-you {
+  clip-path: polygon(3% 0, 100% 0, 97% 100%, 0 100%);
+  padding-left: 1.1rem;
+  padding-right: 1.1rem;
+}
+
+[data-theme="pop"] .chat-bubble {
+  border: 2px solid var(--line);
+}
+
+[data-theme="pop"] .chat-you {
+  box-shadow: 3px 3px 0 var(--line);
+}
+
+[data-theme="editorial"] .chat-bubble {
+  border-radius: 10px;
+}
+
+/* ── HRM app demo (hero) ─────────────────────────────────────────────────── */
+/* Copies the HRM mobile app's own look: teal primary #0C7EA5, light slate surfaces, Kantumruy Pro. */
+
+.hrm-phone {
+  background: #111214;
+  border-radius: 2.2rem;
+  box-shadow: 0 30px 50px -18px rgb(0 0 0 / 0.55), inset 0 0 0 2px #2a2c30;
+}
+
+.hrm-screen {
+  border-radius: 1.8rem;
+  background: #f4f8fb;
+  color: #1e293b;
+  font-family: "Kantumruy Pro", "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+.hrm-scroll {
+  scrollbar-width: none;
+}
+
+.hrm-avatar {
+  background: #0C7EA5;
+  color: #fff;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px #28A745;
+}
+
+.hrm-lang {
+  background: #e8f4f9;
+  color: #0A6E90;
+  border: 1px solid #b9dcea;
+}
+
+.hrm-icon-btn {
+  background: #fff;
+  color: #475569;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.08);
+}
+
+.hrm-leave {
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+}
+
+.hrm-days {
+  background: #e8f4f9;
+  color: #0A6E90;
+  font-weight: 700;
+}
+
+.hrm-card {
+  background: #fff;
+  box-shadow: 0 4px 14px -6px rgb(15 23 42 / 0.15);
+}
+
+.hrm-date {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.hrm-row {
+  border: 1px solid #e2e8f0;
+}
+
+.hrm-row-icon {
+  background: #e8f4f9;
+  color: #0C7EA5;
+}
+
+.hrm-chip {
+  background: #fff;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+}
+
+.hrm-tile {
+  background: #fff;
+  border: 1px solid #edf2f7;
+}
+
+.hrm-nav {
+  background: #fff;
+  box-shadow: 0 -4px 12px -6px rgb(15 23 42 / 0.15);
+}
+
+.hrm-qr {
+  background: #0C7EA5;
+  color: #fff;
+  box-shadow: 0 0 0 4px #fff, 0 6px 14px -4px rgb(12 126 165 / 0.6);
+  transition: transform 0.15s ease;
+}
+
+.hrm-qr:active {
+  transform: scale(0.92);
+}
+
+.hrm-qr-ring {
+  border: 2px solid #0C7EA5;
+  animation: demo-ring 1.6s ease-out infinite;
+}
+
+@keyframes demo-ring {
   from {
-    opacity: 0;
-    transform: translateX(-20px);
+    transform: scale(1);
+    opacity: 0.8;
   }
   to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.animate-fadeInLeft {
-  animation: fadeInLeft 0.7s ease-out forwards;
-}
-
-@keyframes fadeInRight {
-  from {
+    transform: scale(1.5);
     opacity: 0;
-    transform: translateX(2rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
   }
 }
 
-/* Marquee animation — pure CSS for a seamless infinite loop */
+.hrm-scanner {
+  background: radial-gradient(120% 80% at 50% 40%, #1d5e78, #0b2a38 70%);
+}
+
+.demo-badge {
+  background: var(--accent);
+  color: var(--accent-fg);
+  rotate: 8deg;
+  box-shadow: 0 4px 10px rgb(0 0 0 / 0.25);
+}
+
+[data-theme="persona"] .hrm-phone {
+  box-shadow: 8px 8px 0 var(--accent), inset 0 0 0 2px #fff;
+}
+
+[data-theme="persona"] .demo-badge {
+  border-radius: 0;
+  clip-path: polygon(8% 0, 100% 0, 92% 100%, 0 100%);
+  padding-left: 0.8rem;
+  padding-right: 0.8rem;
+}
+
+[data-theme="pop"] .hrm-phone {
+  box-shadow: 6px 6px 0 var(--line), inset 0 0 0 2px #2a2c30;
+}
+
+[data-theme="pop"] .demo-badge {
+  border: 2px solid var(--line);
+  box-shadow: 3px 3px 0 var(--line);
+}
+
+/* ── Skills playground ───────────────────────────────────────────────────── */
+
+.playground {
+  background-image: radial-gradient(color-mix(in srgb, var(--fg) 12%, transparent) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+.playground-chip {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: 0 6px 14px -8px rgb(0 0 0 / 0.5);
+}
+
+[data-theme="persona"] .playground-chip {
+  border-radius: 0;
+  border: 1.5px solid #fff;
+  box-shadow: 3px 3px 0 var(--accent);
+}
+
+[data-theme="pop"] .playground-chip {
+  border: 2px solid var(--line);
+  box-shadow: 3px 3px 0 var(--line);
+}
+
+/* ── Achievement toast ───────────────────────────────────────────────────── */
+
+.achievement-toast {
+  border-left: 4px solid var(--accent);
+}
+
+/* ── Motion ───────────────────────────────────────────────────────────────── */
+
 @keyframes marquee {
   from {
     transform: translateX(0);
@@ -94,5 +1430,32 @@ body {
 .animate-marquee {
   display: flex;
   width: max-content;
-  animation: marquee 45s linear infinite;
+  animation: marquee 40s linear infinite;
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 6px transparent;
+  }
+}
+
+.pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -1,10 +1,38 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="persona">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Chey Rotana — mobile and full-stack developer in Phnom Penh building government HR, attendance and community platforms with Flutter, Angular and NestJS."
+    />
     <title>Chey Rotana | Portfolio</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Anton&family=Kantumruy+Pro:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700;12..96,800&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+
+    <!-- Apply the saved theme before first paint so the page never flashes the wrong one -->
+    <script>
+      (function () {
+        var theme;
+        try {
+          theme = localStorage.getItem("portfolio-theme");
+        } catch (e) {}
+        if (["persona", "editorial", "pop"].indexOf(theme) === -1) {
+          theme =
+            window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches
+              ? "editorial"
+              : "persona";
+        }
+        document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
