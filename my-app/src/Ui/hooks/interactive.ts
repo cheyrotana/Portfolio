@@ -2,6 +2,8 @@ import { useReducedMotion } from "framer-motion";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { getUnlocked, subscribeAchievements } from "../achievements";
 import { isSoundOn, subscribeSound } from "../sound";
+import { isBgmOn, subscribeBgm } from "../bgm";
+import { getSky, getSkyPick, getWeather, getWeatherPick, subscribeWeather } from "../weather";
 
 // True on devices with a precise pointer (mouse / trackpad) — hover effects make no sense on touch.
 export function useFinePointer() {
@@ -80,6 +82,30 @@ export function useInteractiveSurfaces() {
 /** Whether UI sounds are on (changes when toggled anywhere). */
 export function useSoundOn() {
   return useSyncExternalStore(subscribeSound, isSoundOn);
+}
+
+/** Whether the background music is on (changes when toggled anywhere). */
+export function useBgmOn() {
+  return useSyncExternalStore(subscribeBgm, isBgmOn);
+}
+
+/** Current Phnom Penh weather (or the visitor's pick); null until it has loaded. */
+export function useWeather() {
+  return useSyncExternalStore(subscribeWeather, getWeather);
+}
+
+/** "day" or "night" in Phnom Penh (or the visitor's pick). */
+export function useSky() {
+  return useSyncExternalStore(subscribeWeather, getSky);
+}
+
+/** The visitor's own weather and sky picks (null while following Phnom Penh live). */
+export function useWeatherPick() {
+  return useSyncExternalStore(subscribeWeather, getWeatherPick);
+}
+
+export function useSkyPick() {
+  return useSyncExternalStore(subscribeWeather, getSkyPick);
 }
 
 /** Ids of the achievements unlocked so far. */

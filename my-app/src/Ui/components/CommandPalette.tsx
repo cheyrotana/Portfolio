@@ -1,13 +1,15 @@
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  Car, Dices, FolderOpen, Hash, Link2, Palette, Plane, Search, SquareTerminal, Trophy, Volume2, VolumeX, type LucideIcon,
+  Car, CloudSun, Moon, Sun, FolderOpen, Hash, Link2, Music, Palette, Plane, Search, Smartphone, SquareTerminal, Trophy, Volume2, VolumeX, type LucideIcon,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { unlock } from "../achievements";
 import { socials } from "../data/profile";
 import { projects } from "../data/projects";
-import { goTo, openProject, setJourneyVehicle, spinSlotMachine } from "../events";
-import { useSoundOn } from "../hooks/interactive";
+import { goTo, openControls, openProject, setJourneyVehicle, launchRandomApp } from "../events";
+import { setBgm } from "../bgm";
+import { setSky, setWeather, WEATHER_KINDS } from "../weather";
+import { useBgmOn, useSoundOn } from "../hooks/interactive";
 import { play, setSound } from "../sound";
 import { THEMES, type ThemeId } from "../theme";
 import { NAV_SECTIONS } from "./Navbar";
@@ -33,6 +35,7 @@ interface CommandPaletteProps {
 
 export function CommandPalette({ open, onClose, theme, onThemeChange, onOpenTerminal, onOpenTrophies }: CommandPaletteProps) {
   const soundOn = useSoundOn();
+  const bgmOn = useBgmOn();
   const [query, setQuery] = useState("");
   const [index, setIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -68,7 +71,8 @@ export function CommandPalette({ open, onClose, theme, onThemeChange, onOpenTerm
       })),
       { id: "vehicle-plane", group: "Journey", label: "Fly the paper plane", keywords: "vehicle", icon: Plane, run: () => { setJourneyVehicle("plane"); goTo("journey"); } },
       { id: "vehicle-car", group: "Journey", label: "Drive the car", keywords: "vehicle", icon: Car, run: () => { setJourneyVehicle("car"); goTo("journey"); } },
-      { id: "spin", group: "Fun", label: "Spin the slot machine", keywords: "lucky jackpot random project", icon: Dices, run: spinSlotMachine },
+      { id: "controls", group: "Fun", label: "Sky & weather controls", keywords: "weather sky day night rain storm menu controller", icon: CloudSun, run: openControls },
+      { id: "spin", group: "Fun", label: "Launch a random project app", keywords: "random project phone app lucky spin", icon: Smartphone, run: launchRandomApp },
       { id: "terminal", group: "Fun", label: "Open the terminal", hint: "`", keywords: "console shell command line", icon: SquareTerminal, run: onOpenTerminal },
       { id: "trophies", group: "Fun", label: "Show achievements", keywords: "trophy badges", icon: Trophy, run: onOpenTrophies },
       {
@@ -79,6 +83,26 @@ export function CommandPalette({ open, onClose, theme, onThemeChange, onOpenTerm
         icon: soundOn ? VolumeX : Volume2,
         run: () => setSound(!soundOn),
       },
+      {
+        id: "bgm",
+        group: "Fun",
+        label: bgmOn ? "Stop the background music" : "Play the background music",
+        keywords: "bgm music song audio jazz",
+        icon: Music,
+        run: () => setBgm(!bgmOn),
+      },
+      { id: "sky-day", group: "Weather", label: "Sky: Day", keywords: "sun day light time", icon: Sun, run: () => setSky("day") },
+      { id: "sky-night", group: "Weather", label: "Sky: Night", keywords: "moon night dark time", icon: Moon, run: () => setSky("night") },
+      { id: "sky-live", group: "Weather", label: "Sky: Follow Phnom Penh time", keywords: "sun moon day night time", icon: CloudSun, run: () => setSky(null) },
+      { id: "weather-live", group: "Weather", label: "Live Phnom Penh weather", keywords: "weather forecast", icon: CloudSun, run: () => setWeather(null) },
+      ...WEATHER_KINDS.map((k) => ({
+        id: `weather-${k.id}`,
+        group: "Weather",
+        label: `Weather: ${k.label}`,
+        keywords: "weather rain storm sun cloud",
+        icon: CloudSun,
+        run: () => setWeather(k.id),
+      })),
       ...socials.map((s) => ({
         id: `link-${s.name}`,
         group: "Links",
@@ -87,7 +111,7 @@ export function CommandPalette({ open, onClose, theme, onThemeChange, onOpenTerm
         run: () => window.open(s.url, "_blank", "noopener,noreferrer"),
       })),
     ],
-    [theme, onThemeChange, onOpenTerminal, onOpenTrophies, soundOn],
+    [theme, onThemeChange, onOpenTerminal, onOpenTrophies, soundOn, bgmOn],
   );
 
   const results = useMemo(() => {

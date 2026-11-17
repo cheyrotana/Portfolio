@@ -1,12 +1,17 @@
 import { ArrowUp, ArrowUpRight } from "lucide-react";
 import { profile, socials } from "../data/profile";
 import ContactForm from "./ContactForm";
+import { P5Burst, P5Slab } from "./PersonaDecor";
+import { P5Clouds } from "./Weather";
+import { Ransom } from "./Ransom";
 import { Reveal, SectionHeader } from "./Reveal";
 
 function ContactSection() {
   return (
     <footer id="contact" className="relative overflow-hidden">
-      <div className="bg-decor absolute inset-0 pointer-events-none rotate-180" aria-hidden="true" />
+      <div className="bg-decor absolute inset-0 pointer-events-none rotate-180 not-persona-block" aria-hidden="true" />
+      <P5Slab side="right" />
+      <P5Clouds count={5} seed={6} />
 
       <div className="relative mx-auto max-w-6xl px-5 sm:px-8 py-24 sm:py-32">
         <SectionHeader
@@ -14,13 +19,18 @@ function ContactSection() {
           eyebrow="Contact"
           title={
             <>
-              Let's build something <span className="accent-text">together</span>.
+              <span className="not-persona">
+                Let's build something <span className="accent-text">together</span>.
+              </span>
+              <span className="only-persona">
+                <Ransom text="Send me a calling card" seed={5} />
+              </span>
             </>
           }
         />
 
         <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-16 items-start">
-          <Reveal>
+          <Reveal className="min-w-0">
             <p className="text-lg text-muted leading-relaxed">
               Have an internship, a role or a project in mind — or just want to say hi? Send a message and I'll get
               back to you.
@@ -39,7 +49,7 @@ function ContactSection() {
                     <span className="icon-btn !w-11 !h-11 group-hover:!text-accent">
                       <Icon size={20} />
                     </span>
-                    <span className="flex-1">
+                    <span className="flex-1 min-w-0">
                       <span className="block font-semibold text-fg">{name}</span>
                       <span className="block text-sm text-muted truncate">{url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span>
                     </span>
@@ -50,7 +60,11 @@ function ContactSection() {
             </ul>
           </Reveal>
 
-          <Reveal delay={0.1}>
+          <Reveal delay={0.1} className="calling-card">
+            <P5Burst className="p5-burst-corner p5-burst-br" />
+            <span className="only-persona">
+              <span className="calling-card-tag" aria-hidden="true">Calling card</span>
+            </span>
             <ContactForm />
           </Reveal>
         </div>

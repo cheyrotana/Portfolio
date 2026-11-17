@@ -1,5 +1,6 @@
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { Ransom } from "./Ransom";
 
 // Fades and lifts its children into place the first time they scroll into view.
 export function Reveal({ children, delay = 0, className }: { children: ReactNode; delay?: number; className?: string }) {
@@ -74,15 +75,29 @@ export function SectionHeader({
   intro?: ReactNode;
 }) {
   return (
-    <Reveal className="mb-10 sm:mb-14">
-      <span className="eyebrow">
+    <Reveal className="section-header relative mb-10 sm:mb-14">
+      <span className="only-persona">
+        <span className="p5-index" aria-hidden="true">{index}</span>
+      </span>
+      <span className="eyebrow relative">
         <span className="only-editorial">{`${index} —`}</span>
         <span className="only-pop">{`#${index}`}</span>
         <span className="only-persona">{`▶ ${index}`}</span>
         <span>{eyebrow}</span>
       </span>
-      <h2 className="heading mt-4 text-4xl sm:text-5xl lg:text-6xl text-fg">
-        {typeof title === "string" ? <ScrambleText text={title} /> : title}
+      <h2 className="heading relative mt-4 text-4xl sm:text-5xl lg:text-6xl text-fg">
+        {typeof title === "string" ? (
+          <>
+            <span className="not-persona">
+              <ScrambleText text={title} />
+            </span>
+            <span className="only-persona">
+              <Ransom text={title} seed={Number(index) || 0} />
+            </span>
+          </>
+        ) : (
+          title
+        )}
       </h2>
       {intro && <p className="mt-4 max-w-2xl text-base sm:text-lg text-muted leading-relaxed">{intro}</p>}
     </Reveal>

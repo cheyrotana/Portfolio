@@ -36,6 +36,18 @@ import hrmMlmupc5 from "../../assets/HRM/mlmupc-5.jpg";
 import hrmNis1 from "../../assets/HRM/nis-1.jpg";
 import hrmNis2 from "../../assets/HRM/nis-2.jpg";
 import faceScan1 from "../../assets/FaceScan/1.jpg";
+// App icons, copied from each app's own repo
+import faceScanLogo from "../../assets/logos/face-scan.svg";
+import faceScanGlyph from "../../assets/logos/face-scan-glyph.svg";
+import hrmMlmupcSplash from "../../assets/logos/hrm-mlmupc-splash.png";
+import hrmNisSplash from "../../assets/logos/hrm-nis-splash.png";
+import phumiYerngSplash from "../../assets/logos/phumiyerng-splash.png";
+import unifinderSplash from "../../assets/logos/unifinder-splash.png";
+import hrmMlmupcLogo from "../../assets/logos/hrm-mlmupc.png";
+import hrmNisLogo from "../../assets/logos/hrm-nis.png";
+import modulaLogo from "../../assets/logos/modula.svg";
+import phumiYerngLogo from "../../assets/logos/phumiyerng.png";
+import unifinderLogo from "../../assets/logos/unifinder.png";
 import phumiYerng1 from "../../assets/PhumiYerng/1.jpg";
 import phumiYerng2 from "../../assets/PhumiYerng/2.jpg";
 import phumiYerng3 from "../../assets/PhumiYerng/3.jpg";
@@ -53,6 +65,22 @@ export const CATEGORIES: { id: Category | "all"; label: string }[] = [
   { id: "game", label: "Game" },
 ];
 
+/** The app's launch screen, as its native splash config sets it: a colour and a centred logo. */
+export interface Splash {
+  bg: string;
+  logo?: string; // without one, the app icon's glyph is drawn in white
+}
+
+export interface ProjectApp {
+  id: string;
+  title: string;
+  client: string;
+  logo: string;
+  images: string[];
+  stat?: { value: string; label: string };
+  splash?: Splash;
+}
+
 export interface Project {
   id: string;
   title: string;
@@ -68,6 +96,10 @@ export interface Project {
   stat?: { value: string; label: string };
   tech: string[];
   images: string[];
+  logo?: string; // app icon; without one, ProjectPhone draws one from an icon and a colour
+  // Separate builds shown as their own apps on the project phone (HRM has one per institution)
+  apps?: ProjectApp[];
+  splash?: Splash;
   githubUrl?: string;
   demoUrl?: string;
 }
@@ -94,6 +126,25 @@ export const projects: Project[] = [
     stat: { value: "500+", label: "officers at NIS" },
     tech: ["Flutter", "Angular", "NestJS", "PostgreSQL", "Socket.IO"],
     images: [hrmMlmupc1, hrmMlmupc2, hrmMlmupc3, hrmMlmupc4, hrmMlmupc5, hrmNis1, hrmNis2],
+    apps: [
+      {
+        id: "hrm-mlmupc",
+        title: "HRM · MLMUPC",
+        client: "MLMUPC",
+        logo: hrmMlmupcLogo,
+        splash: { bg: "#0C7EA5", logo: hrmMlmupcSplash },
+        images: [hrmMlmupc1, hrmMlmupc2, hrmMlmupc3, hrmMlmupc4, hrmMlmupc5],
+      },
+      {
+        id: "hrm-nis",
+        title: "HRM · NIS",
+        client: "NIS",
+        logo: hrmNisLogo,
+        splash: { bg: "#FFFFFF", logo: hrmNisSplash },
+        images: [hrmNis1, hrmNis2],
+        stat: { value: "500+", label: "officers at NIS" },
+      },
+    ],
   },
   {
     id: "face-scan",
@@ -113,6 +164,8 @@ export const projects: Project[] = [
       "Wrote the setup manual and deployment checklist for staff and future developers",
     ],
     tech: ["Python", "Raspberry Pi", "NestJS", "Angular", "PostgreSQL"],
+    logo: faceScanLogo,
+    splash: { bg: "#1d4ed8", logo: faceScanGlyph },
     images: [faceScan1],
   },
   {
@@ -135,6 +188,8 @@ export const projects: Project[] = [
     ],
     stat: { value: "19", label: "partner communities" },
     tech: ["Flutter", "Dart", "MVVM", "NestJS", "Socket.IO"],
+    logo: phumiYerngLogo,
+    splash: { bg: "#2E7D32", logo: phumiYerngSplash },
     images: [phumiYerng1, phumiYerng2, phumiYerng3, phumiYerng4, phumiYerng5],
   },
   {
@@ -149,6 +204,8 @@ export const projects: Project[] = [
       "A Flutter mobile application that helps students, especially those living in rural areas of Cambodia, find their best-fit university majors and plan their academic futures — 100% offline.",
     highlights: [],
     tech: ["Flutter", "Dart", "go_router"],
+    logo: unifinderLogo,
+    splash: { bg: "#FFFFFF", logo: unifinderSplash },
     images: [
       unifinder1, unifinder2, unifinder3, unifinder4, unifinder5, unifinder6, unifinder0,
       unifinder7, unifinder8, unifinder9, unifinder10, unifinder11, unifinder12,
@@ -168,6 +225,8 @@ export const projects: Project[] = [
       "Modula is a modular POS designed to help small F&B businesses manage daily operations efficiently. The Flutter frontend is web-first, with mobile support planned.",
     highlights: [],
     tech: ["Flutter", "Riverpod", "Drift"],
+    logo: modulaLogo,
+    splash: { bg: "#3A3A3A", logo: modulaLogo },
     images: [
       modula1, modula2, modula3, modula4, modula5, modula6,
       modula7, modula8, modula9, modula10, modula11, modula12,
@@ -187,6 +246,7 @@ export const projects: Project[] = [
       "The Winter Siege is a tower defense strategy game where players defend their castle from waves of enemies in a magical, endless winter world. Players place and upgrade towers, manage resources, and plan strategically to survive increasingly difficult enemy waves.",
     highlights: [],
     tech: ["Unity", "C#"],
+    splash: { bg: "#0b1530" },
     images: [frostGuard1, frostGuard2, frostGuard3, frostGuard4, frostGuard5],
     githubUrl: "https://github.com/Ra-Fat/Frost-Guard.git",
     demoUrl: "https://youtu.be/mIUvftuUees?si=5U4Ct_zm97CKRLN2",

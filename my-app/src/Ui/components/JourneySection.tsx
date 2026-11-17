@@ -9,6 +9,9 @@ import { unlock } from "../achievements";
 import { SET_VEHICLE_EVENT, showProject } from "../events";
 import { play } from "../sound";
 import { ScrambleText } from "./Reveal";
+import { P5Skyline, P5Slab } from "./PersonaDecor";
+import { P5Clouds } from "./Weather";
+import { Ransom } from "./Ransom";
 import { CarSprite, PaperPlaneSprite } from "./JourneyVehicles";
 
 const TRACK_H = 560; // height of the route area before it's scaled to fit the screen
@@ -66,7 +69,7 @@ const ROAD_Y = [305, 245];
 
 function buildGeometry(vw: number, mode: Vehicle["mode"]): Geometry {
   const gap = Math.max(330, Math.min(540, vw * 0.52));
-  const start = Math.max(260, vw * 0.42);
+  const start = Math.max(210, vw * 0.28); // length of the take-off run before the first stop
   const ys = mode === "air" ? AIR_Y : ROAD_Y;
   const stops = journey.map((_, i) => ({ x: start + i * gap, y: ys[i % ys.length] }));
   const last = stops[stops.length - 1];
@@ -269,20 +272,31 @@ function JourneySection() {
       aria-label="Journey"
     >
       <div className="sticky top-0 h-screen overflow-hidden flex flex-col">
-        <div className="bg-decor absolute inset-0 pointer-events-none opacity-70" aria-hidden="true" />
+        <div className="bg-decor absolute inset-0 pointer-events-none opacity-70 not-persona-block" aria-hidden="true" />
+        <P5Slab variant="full" />
+        <P5Clouds count={5} to={70} seed={3} />
+        <P5Skyline className="p5-skyline-low" />
 
         {/* Heading + vehicle picker */}
-        <div className="relative mx-auto w-full max-w-6xl px-5 sm:px-8 pt-24 sm:pt-28">
-          <span className="eyebrow">
+        <div className="journey-head relative mx-auto w-full max-w-6xl px-5 sm:px-8 pt-24 sm:pt-28">
+          <span className="only-persona">
+            <span className="p5-index !top-12 sm:!top-16" aria-hidden="true">02</span>
+          </span>
+          <span className="eyebrow relative">
             <span className="only-editorial">02 —</span>
             <span className="only-pop">#02</span>
             <span className="only-persona">▶ 02</span>
             <span>Journey</span>
           </span>
-          <div className="mt-3 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+          <div className="relative mt-3 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
             <div>
               <h2 className="heading text-4xl sm:text-5xl lg:text-6xl text-fg">
-                <ScrambleText text="The journey so far" />
+                <span className="not-persona">
+                  <ScrambleText text="The journey so far" />
+                </span>
+                <span className="only-persona">
+                  <Ransom text="The journey so far" seed={2} />
+                </span>
               </h2>
               <p className="mt-2 flex items-center gap-2 text-sm text-muted">
                 Keep scrolling to {vehicle.verb} <MoveRight size={16} className="text-accent" />

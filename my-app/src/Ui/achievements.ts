@@ -12,13 +12,15 @@ export interface Achievement {
 export const ACHIEVEMENTS: Achievement[] = [
   { id: "explorer", emoji: "🧭", title: "Explorer", hint: "Visit every section", description: "Scrolled through every section of the site." },
   { id: "pilot", emoji: "✈️", title: "Frequent flyer", hint: "Finish the Journey", description: "Travelled the whole Journey, start to finish." },
-  { id: "jackpot", emoji: "🎰", title: "Jackpot", hint: "Pull the lever yourself", description: "Won the project slot machine." },
+  // id kept from the old slot machine so earlier unlocks still count
+  { id: "jackpot", emoji: "📲", title: "App hopper", hint: "Launch every app on the project phone", description: "Launched every project on the phone." },
   { id: "detective", emoji: "🔍", title: "Detective", hint: "Open 3 case studies", description: "Read three project case studies." },
   { id: "fashionista", emoji: "🎨", title: "Fashionista", hint: "Try every theme", description: "Tried on every theme." },
   { id: "speedrunner", emoji: "⚡", title: "Power user", hint: "Use the command palette", description: "Ran a command from the palette (Ctrl/⌘ K)." },
   { id: "hacker", emoji: "💻", title: "Hacker", hint: "Run a command in the terminal", description: "Ran a command in the terminal." },
-  { id: "tester", emoji: "📱", title: "QA tester", hint: "Check in on the demo phone", description: "Checked in on the demo HR app." },
-  { id: "juggler", emoji: "🤹", title: "Juggler", hint: "Toss the tools around", description: "Threw the skill icons around the playground." },
+  { id: "tester", emoji: "📱", title: "QA tester", hint: "Swipe through an app's screenshots", description: "Swiped to the last screenshot of an app on the project phone." },
+  // id kept from the old playground achievement so earlier unlocks still count
+  { id: "juggler", emoji: "🧰", title: "Well-rounded", hint: "Open every group of skills", description: "Looked through every group in the skill menu." },
   { id: "penpal", emoji: "💌", title: "Pen pal", hint: "Send me a message", description: "Sent a message through the chat." },
   { id: "konami", emoji: "🕹️", title: "Old school", hint: "↑ ↑ ↓ ↓ ← → ← → B A", description: "Entered the Konami code." },
 ];

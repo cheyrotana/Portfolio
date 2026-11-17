@@ -7,10 +7,15 @@ import JourneySection from "./components/JourneySection";
 import { ClickBursts, CustomCursor, ScrollProgress } from "./components/Interactive";
 import { AchievementToasts } from "./components/Achievements";
 import { CommandPalette } from "./components/CommandPalette";
+import { IntroSplash } from "./components/IntroSplash";
+import { WeatherFx } from "./components/Weather";
+import { P5Stars } from "./components/PersonaDecor";
 import { Terminal } from "./components/Terminal";
+import { SkyControls } from "./components/SkyControls";
+import { SettingsMenu } from "./components/SettingsMenu";
 import { track, unlock } from "./achievements";
 import { useInteractiveSurfaces, useKonami } from "./hooks/interactive";
-import { OPEN_TERMINAL_EVENT } from "./events";
+import { OPEN_CONTROLS_EVENT, OPEN_TERMINAL_EVENT } from "./events";
 import { play } from "./sound";
 import { NAV_SECTIONS, Navbar } from "./components/Navbar";
 import ProjectsSection from "./components/ProjectsSection";
@@ -36,6 +41,15 @@ function ThemeWipe({ accent, edge, onDone }: { accent: string; edge: string; onD
         <span className="absolute inset-y-0 left-0 w-[3%]" style={{ background: edge }} />
       </motion.div>
     </motion.div>
+  );
+}
+
+// Persona theme: a striped band that slices diagonally between two sections.
+function P5Divider({ flip = false }: { flip?: boolean }) {
+  return (
+    <div className="only-persona">
+      <div className={`p5-divider ${flip ? "p5-divider-flip" : ""}`} aria-hidden="true" />
+    </div>
   );
 }
 
@@ -66,10 +80,14 @@ function App() {
 
   useInteractiveSurfaces();
 
-  // Overlays: command palette (Ctrl/⌘ K), terminal (` key) and the achievements panel.
+  // Overlays: command palette (Ctrl/⌘ K), terminal (Alt+T, ` or Ctrl/⌘ `) and the achievements panel.
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [terminalOpen, setTerminalOpen] = useState(false);
   const [trophiesOpen, setTrophiesOpen] = useState(false);
+  const [controlsOpen, setControlsOpen] = useState(false); // sky & weather menu (Alt+W)
+  const closeControls = useCallback(() => setControlsOpen(false), []);
+  const [settingsOpen, setSettingsOpen] = useState(false); // everything from the navbar, in one menu
+  const closeSettings = useCallback(() => setSettingsOpen(false), []);
   const closePalette = useCallback(() => setPaletteOpen(false), []);
   const closeTerminal = useCallback(() => setTerminalOpen(false), []);
   const openTerminal = useCallback(() => setTerminalOpen(true), []);
@@ -83,18 +101,35 @@ function App() {
         setPaletteOpen((o) => !o);
         return;
       }
-      if (e.key === "`" && !(e.target as Element | null)?.closest("input, textarea, select, [contenteditable=true]")) {
+      // Alt+T (T for terminal) works on every keyboard layout; Ctrl/⌘ + ` and plain ` too.
+      const altT = e.altKey && !e.ctrlKey && !e.metaKey && e.code === "KeyT";
+      const ctrlBacktick = altT || ((e.ctrlKey || e.metaKey) && e.code === "Backquote");
+      const typing = e.target instanceof Element && e.target.closest("input, textarea, select, [contenteditable=true]");
+      // The terminal's own input handles the key while it is open (it closes itself)
+      if (e.defaultPrevented) return;
+      // Alt+W: the sky & weather menu
+      if (e.altKey && !e.ctrlKey && !e.metaKey && e.code === "KeyW") {
+        e.preventDefault();
+        setPaletteOpen(false);
+        setTerminalOpen(false);
+        setControlsOpen((o) => !o);
+        return;
+      }
+      if (ctrlBacktick || (e.key === "`" && !typing)) {
         e.preventDefault();
         setPaletteOpen(false);
         setTerminalOpen((o) => !o);
       }
     };
     const onOpenTerminal = () => setTerminalOpen(true);
+    const onOpenControls = () => setControlsOpen(true);
     window.addEventListener("keydown", onKey);
     window.addEventListener(OPEN_TERMINAL_EVENT, onOpenTerminal);
+    window.addEventListener(OPEN_CONTROLS_EVENT, onOpenControls);
     return () => {
       window.removeEventListener("keydown", onKey);
       window.removeEventListener(OPEN_TERMINAL_EVENT, onOpenTerminal);
+      window.removeEventListener(OPEN_CONTROLS_EVENT, onOpenControls);
     };
   }, []);
 
@@ -168,6 +203,8 @@ function App() {
         theme={theme}
         onThemeChange={changeTheme}
         onOpenPalette={() => setPaletteOpen(true)}
+        onOpenTerminal={openTerminal}
+        onOpenSettings={() => setSettingsOpen(true)}
         trophiesOpen={trophiesOpen}
         onTrophiesChange={setTrophiesOpen}
       />
@@ -180,18 +217,37 @@ function App() {
         onOpenTrophies={openTrophies}
       />
       <Terminal open={terminalOpen} onClose={closeTerminal} onThemeChange={changeTheme} />
+      <SkyControls open={controlsOpen} onClose={closeControls} />
+      <SettingsMenu
+        open={settingsOpen}
+        onClose={closeSettings}
+        theme={theme}
+        onThemeChange={changeTheme}
+        onOpenPalette={() => setPaletteOpen(true)}
+        onOpenTerminal={openTerminal}
+        onOpenControls={() => setControlsOpen(true)}
+        onOpenTrophies={openTrophies}
+      />
       <AchievementToasts />
       <AnimatePresence>
         {wipe && <ThemeWipe key={wipe.key} accent={wipe.accent} edge={wipe.edge} onDone={() => setWipe(null)} />}
       </AnimatePresence>
+      <P5Stars />
       <main>
         <HeroSection />
+        <P5Divider />
         <AboutSection />
+        <P5Divider flip />
         <JourneySection />
+        <P5Divider />
         <SkillsSection />
+        <P5Divider flip />
         <ProjectsSection />
+        <P5Divider />
       </main>
       <ContactSection />
+      <WeatherFx />
+      <IntroSplash />
     </>
   );
 }

@@ -3,7 +3,9 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ACHIEVEMENTS, getUnlocked, unlock } from "../achievements";
 import { profile, skillGroups, socials } from "../data/profile";
 import { projects } from "../data/projects";
-import { goTo, openProject, setJourneyVehicle, spinSlotMachine } from "../events";
+import { goTo, openControls, openProject, setJourneyVehicle, launchRandomApp } from "../events";
+import { setBgm } from "../bgm";
+import { describeWeather, getSky, getWeather, setSky, setWeather, WEATHER_KINDS, type WeatherKind } from "../weather";
 import { play, setSound } from "../sound";
 import { THEMES, type ThemeId } from "../theme";
 
@@ -27,13 +29,17 @@ const COMMANDS: { name: string; usage?: string; about: string }[] = [
   { name: "projects", about: "list my projects" },
   { name: "open", usage: "open <project>", about: "open a project's case study" },
   { name: "journey", about: "jump to my journey" },
-  { name: "spin", about: "pull the slot machine's lever" },
+  { name: "launch", about: "launch a random project on the phone" },
+  { name: "controls", about: "open the sky & weather menu (Alt+W)" },
   { name: "theme", usage: "theme [name]", about: "list or switch themes" },
   { name: "vehicle", usage: "vehicle <plane|car>", about: "choose the Journey vehicle" },
   { name: "socials", about: "where to find me" },
   { name: "hire", about: "get in touch" },
   { name: "achievements", about: "your progress" },
   { name: "sound", usage: "sound <on|off>", about: "UI sounds" },
+  { name: "bgm", usage: "bgm <on|off>", about: "background music" },
+  { name: "sky", usage: "sky [day|night|live]", about: "sun or moon" },
+  { name: "weather", usage: "weather [clear|rain|storm|live]", about: "Phnom Penh weather" },
   { name: "clear", about: "clear the screen" },
   { name: "exit", about: "close the terminal" },
 ];
@@ -170,9 +176,14 @@ export function Terminal({ open, onClose, onThemeChange }: TerminalProps) {
         push("out", "Boarding now ✈");
         thenClose(() => goTo("journey"));
         break;
+      case "controls":
+        push("out", "Opening the sky & weather menu…");
+        thenClose(openControls);
+        break;
+      case "launch":
       case "spin":
-        push("out", "Pulling the lever… 🎰");
-        thenClose(spinSlotMachine);
+        push("out", "Launching an app… 📱");
+        thenClose(launchRandomApp);
         break;
       case "theme": {
         if (!arg) {
@@ -238,6 +249,35 @@ export function Terminal({ open, onClose, onThemeChange }: TerminalProps) {
           push("out", `Sounds ${arg}.`);
         } else push("err", "usage: sound <on|off>");
         break;
+      case "sky": {
+        if (!arg) push("out", `It's ${getSky()} in Phnom Penh.`);
+        else if (arg === "live") {
+          setSky(null);
+          push("out", "Following the real time in Phnom Penh.");
+        } else if (arg === "day" || arg === "night") {
+          setSky(arg);
+          push("out", arg === "day" ? "The sun is up." : "The moon is out.");
+        } else push("err", "usage: sky [day|night|live]");
+        break;
+      }
+      case "weather": {
+        const kinds = WEATHER_KINDS.map((k) => k.id) as string[];
+        if (!arg) push("out", `Phnom Penh: ${describeWeather(getWeather())}`);
+        else if (arg === "live") {
+          setWeather(null);
+          push("out", "Back to the live Phnom Penh weather.");
+        } else if (kinds.includes(arg)) {
+          setWeather(arg as WeatherKind);
+          push("out", `Weather set to ${arg}.`);
+        } else push("err", "usage: weather [clear|rain|storm|live]");
+        break;
+      }
+      case "bgm":
+        if (arg === "on" || arg === "off") {
+          setBgm(arg === "on");
+          push("out", arg === "on" ? "♪ Music on. Take it easy." : "Music off.");
+        } else push("err", "usage: bgm <on|off>");
+        break;
       case "date":
         push("out", new Date().toString());
         break;
@@ -267,7 +307,8 @@ export function Terminal({ open, onClose, onThemeChange }: TerminalProps) {
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "`") {
+    const altT = e.altKey && !e.ctrlKey && !e.metaKey && e.code === "KeyT";
+    if (e.key === "`" || altT || ((e.ctrlKey || e.metaKey) && e.code === "Backquote")) {
       // The same key that opened the terminal closes it.
       e.preventDefault();
       onClose();

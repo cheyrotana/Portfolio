@@ -13,8 +13,8 @@ export const THEMES: ThemeOption[] = [
   {
     id: "persona",
     name: "Persona",
-    description: "Bold & rebellious",
-    swatches: ["#0a0a0a", "#ffffff", "#ff1f3d"],
+    description: "Phantom-thief style",
+    swatches: ["#0b0b0b", "#ffffff", "#e60012"],
   },
   {
     id: "editorial",

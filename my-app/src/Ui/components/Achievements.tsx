@@ -81,7 +81,7 @@ export function AchievementToasts() {
 
 // ── Trophy button + panel ───────────────────────────────────────────────────
 
-export function TrophyButton({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+export function TrophyButton({ open, onOpenChange, bare = false }: { open: boolean; onOpenChange: (open: boolean) => void; bare?: boolean }) {
   const unlocked = useUnlocked();
   const ref = useRef<HTMLDivElement>(null);
   const total = ACHIEVEMENTS.length;
@@ -105,14 +105,15 @@ export function TrophyButton({ open, onOpenChange }: { open: boolean; onOpenChan
     <div className="relative" ref={ref}>
       <button
         type="button"
-        className="btn btn-ghost !px-3 !py-2 text-sm"
+        className={`btn btn-ghost !px-3 !py-2 text-sm ${bare ? "!hidden" : ""}`}
+        tabIndex={bare ? -1 : undefined}
         onClick={() => onOpenChange(!open)}
         aria-expanded={open}
         aria-label={`Achievements: ${done} of ${total} unlocked`}
         data-cursor="Trophies"
       >
         <Trophy size={16} className={done === total ? "text-accent" : ""} />
-        <span className="font-mono text-xs">
+        <span className="font-mono text-xs hidden sm:inline">
           {done}/{total}
         </span>
       </button>
