@@ -108,6 +108,19 @@ export function useSkyPick() {
   return useSyncExternalStore(subscribeWeather, getSkyPick);
 }
 
+// The theme lives on <html data-theme>; this follows it so a component can render per theme.
+function subscribeTheme(onChange: () => void) {
+  const mo = new MutationObserver(onChange);
+  mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  return () => mo.disconnect();
+}
+const getThemeAttr = () => document.documentElement.getAttribute("data-theme") ?? "persona";
+
+/** The current theme id, live. */
+export function useThemeAttr() {
+  return useSyncExternalStore(subscribeTheme, getThemeAttr);
+}
+
 /** Ids of the achievements unlocked so far. */
 export function useUnlocked() {
   return useSyncExternalStore(subscribeAchievements, getUnlocked);

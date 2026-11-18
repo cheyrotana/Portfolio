@@ -6,6 +6,7 @@ import { toggleBgm } from "../bgm";
 import { useBgmOn, useSoundOn, useUnlocked } from "../hooks/interactive";
 import { play, setSound } from "../sound";
 import { THEMES, type ThemeId } from "../theme";
+import { KeyHints } from "./KeyHints";
 
 // Everything that used to sit in the navbar, in one pause-menu style overlay (same look as the sky &
 // weather menu): tools, sound and theme.
@@ -196,7 +197,7 @@ export function SettingsMenu(props: SettingsMenuProps) {
             </div>
 
             <footer className="ctl-foot">
-              <p className="ctl-hint">↑ ↓ choose · ← → switch · Enter select · Esc close</p>
+              <KeyHints />
             </footer>
           </motion.div>
         </motion.div>

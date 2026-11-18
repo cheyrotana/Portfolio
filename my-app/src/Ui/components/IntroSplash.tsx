@@ -1,21 +1,12 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { profile } from "../data/profile";
+// import { audioReady, play } from "../sound";
+import { introDone, introTheme } from "../intro";
 import { Ransom } from "./Ransom";
 
-const KEY = "portfolio-intro-seen";
-
-// Persona theme only: a quick title card on the first visit of a session — a burst, the name in
-// cut-out letters, then a red slash wipes it away. Any click or key skips it.
-function shouldShow() {
-  if (document.documentElement.getAttribute("data-theme") !== "persona") return false;
-  if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return false;
-  try {
-    return !sessionStorage.getItem(KEY);
-  } catch {
-    return false;
-  }
-}
+// Persona theme only: a quick title card every time the site loads (refreshes too) — a burst, the
+// name in cut-out letters, then a red slash wipes it away. Any click or key skips it.
 
 const BURST = Array.from({ length: 36 }, (_, i) => {
   const a = (i / 36) * Math.PI * 2;
@@ -24,17 +15,23 @@ const BURST = Array.from({ length: 36 }, (_, i) => {
 }).join(" ");
 
 export function IntroSplash() {
-  const [show, setShow] = useState(shouldShow);
+  const [show, setShow] = useState(() => introTheme() === "persona");
 
   useEffect(() => {
     if (!show) return;
-    try {
-      sessionStorage.setItem(KEY, "1");
-    } catch {
-      // ignore
-    }
-    const hide = () => setShow(false);
-    const id = window.setTimeout(hide, 2100);
+    // Sound effects are switched off for now. Browsers keep sound off on page load until the visitor
+    // clicks or presses a key, so the card could only play them when that's already allowed; a click
+    // or key to skip unlocks the exit sound. To bring them back, uncomment these lines and the import.
+    // const live = audioReady();
+    // if (live) play("intro", { force: true });
+    const hide = (e?: Event) => {
+      // if (e || live) play("introExit", { force: true });
+      // the key that skips the card shouldn't also scroll the page (Space, arrows, Page Down…)
+      if (e?.type === "keydown") e.preventDefault();
+      setShow(false);
+      introDone();
+    };
+    const id = window.setTimeout(() => hide(), 2100);
     window.addEventListener("pointerdown", hide);
     window.addEventListener("keydown", hide);
     document.documentElement.style.overflow = "hidden";

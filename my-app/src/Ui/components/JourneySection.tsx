@@ -1,8 +1,8 @@
 import {
-  motion, useMotionValue, useMotionValueEvent, useReducedMotion, useScroll, useSpring, useTransform,
+  motion, useInView, useMotionValue, useMotionValueEvent, useReducedMotion, useScroll, useSpring, useTransform,
   type MotionValue,
 } from "framer-motion";
-import { ArrowRight, Briefcase, Code2, Flag, GraduationCap, MoveRight, type LucideIcon } from "lucide-react";
+import { ArrowRight, Briefcase, Code2, FastForward, Flag, Rewind, GraduationCap, MoveRight, type LucideIcon } from "lucide-react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { journey, type JourneyStop } from "../data/profile";
 import { unlock } from "../achievements";
@@ -123,6 +123,8 @@ function JourneySection() {
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
+  const headRef = useRef<HTMLDivElement>(null);
+  const headIn = useInView(headRef, { once: true, amount: 0.5 });
 
   const [vehicleId, setVehicleId] = useState<VehicleId>(loadVehicle);
   const vehicle = VEHICLES.find((v) => v.id === vehicleId) ?? VEHICLES[0];
@@ -166,7 +168,11 @@ function JourneySection() {
   const heading = useSpring(0, { stiffness: 220, damping: 24 }); // 0 = facing forward, 1 = facing back
   const turnY = useTransform(heading, (h) => h * 180);
   const lastP = useRef(0);
+  // "Skip the journey" jumps past the section; that shouldn't count as flying the whole route
+  const skipped = useRef(false);
+  const lastRaw = useRef(0);
   const facingBack = useRef(false);
+  const [goingBack, setGoingBack] = useState(false); // drives the skip button's direction
 
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end end"] });
   const smooth = useSpring(scrollYProgress, { stiffness: 140, damping: 30, mass: 0.35 });
@@ -196,9 +202,11 @@ function JourneySection() {
       if (p < lastP.current - 0.0003 && !facingBack.current) {
         facingBack.current = true;
         heading.set(1);
+        setGoingBack(true);
       } else if (p > lastP.current + 0.0003 && facingBack.current) {
         facingBack.current = false;
         heading.set(0);
+        setGoingBack(false);
       }
       lastP.current = p;
 
@@ -219,7 +227,7 @@ function JourneySection() {
 
       const reached = stops.filter((sl) => sl <= L + 6).length - 1;
       setActive((prev) => (prev === reached ? prev : reached));
-      if (reached === stops.length - 1) unlock("pilot");
+      if (reached === stops.length - 1 && !skipped.current) unlock("pilot");
     },
     [geo.width, scale, heading, vx, vy, vRot, wheelSpin, trail, trackX],
   );
@@ -244,6 +252,11 @@ function JourneySection() {
   }, [geo, place, progress]);
 
   useMotionValueEvent(progress, "change", place);
+  // scrolling back up into the journey makes it count again
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    if (skipped.current && v < lastRaw.current && v < 0.98) skipped.current = false;
+    lastRaw.current = v;
+  });
 
   // Sideways trackpad swipes (or shift + wheel) move along the route too, while the section is pinned.
   useEffect(() => {
@@ -278,12 +291,18 @@ function JourneySection() {
         <P5Skyline className="p5-skyline-low" />
 
         {/* Heading + vehicle picker */}
-        <div className="journey-head relative mx-auto w-full max-w-6xl px-5 sm:px-8 pt-24 sm:pt-28">
+        <div
+          ref={headRef}
+          data-stamp={headIn ? "in" : "wait"}
+          className="journey-head relative mx-auto w-full max-w-6xl px-5 sm:px-8 pt-24 sm:pt-28"
+        >
           <span className="only-persona">
             <span className="p5-index !top-12 sm:!top-16" aria-hidden="true">02</span>
           </span>
           <span className="eyebrow relative">
-            <span className="only-editorial">02 —</span>
+            <span className="only-metro">
+              <span className="metro-badge" aria-hidden="true">2</span>
+            </span>
             <span className="only-pop">#02</span>
             <span className="only-persona">▶ 02</span>
             <span>Journey</span>
@@ -298,8 +317,24 @@ function JourneySection() {
                   <Ransom text="The journey so far" seed={2} />
                 </span>
               </h2>
-              <p className="mt-2 flex items-center gap-2 text-sm text-muted">
+              <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted">
                 Keep scrolling to {vehicle.verb} <MoveRight size={16} className="text-accent" />
+                {/* follows the scroll direction: skip on to Skills, or back up to About */}
+                {goingBack ? (
+                  <a href="#about" data-jump className="journey-skip" data-cursor="Skip">
+                    <Rewind size={14} aria-hidden="true" /> Skip back up
+                  </a>
+                ) : (
+                  <a
+                    href="#skills"
+                    data-jump
+                    className="journey-skip"
+                    onClick={() => (skipped.current = true)}
+                    data-cursor="Skip"
+                  >
+                    Skip the journey <FastForward size={14} aria-hidden="true" />
+                  </a>
+                )}
               </p>
             </div>
             <div className="vehicle-picker flex items-center gap-1 p-1" role="radiogroup" aria-label="Choose a vehicle">

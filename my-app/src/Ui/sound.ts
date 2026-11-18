@@ -135,7 +135,15 @@ function coin(delay: number, volume = 0.05) {
 
 export type SoundName =
   | "click" | "tick" | "jackpot" | "unlock" | "whoosh" | "type" | "pop" | "send" | "error"
-  | "lever" | "coin" | "reelStop";
+  | "lever" | "coin" | "reelStop" | "intro" | "introExit";
+
+/**
+ * True when the browser lets sound play right now. On a fresh page load Chrome keeps audio blocked
+ * until the visitor clicks or presses a key; anything scheduled while blocked would play late.
+ */
+export function audioReady() {
+  return audio()?.state === "running";
+}
 
 export function play(name: SoundName, opts: { force?: boolean } = {}) {
   if (!allowed(opts.force)) return;
@@ -164,6 +172,31 @@ export function play(name: SoundName, opts: { force?: boolean } = {}) {
       break;
     case "unlock":
       [660, 880, 1320].forEach((f, i) => bell(f, i * 0.08, 0.04, 0.35));
+      break;
+
+    // The Persona title card, timed to its animation (IntroSplash.tsx)
+    case "intro":
+      // the burst slams in: a deep thump with a crack on top
+      tone(95, 0.4, { type: "sine", volume: 0.28, slideTo: 38, attack: 0.003 });
+      burst(0.2, { freq: 700, type: "lowpass", volume: 0.35 });
+      burst(0.07, { freq: 3200, q: 0.8, volume: 0.09 });
+      // the red slash cuts across
+      burst(0.3, { freq: 2200, type: "highpass", volume: 0.1, delay: 0.15 });
+      tone(1400, 0.22, { type: "sawtooth", volume: 0.012, slideTo: 260, delay: 0.15 });
+      // the cut-out letters stamp down
+      for (let i = 0; i < 6; i++) burst(0.035, { freq: 1100 + i * 170, q: 3, volume: 0.08, delay: 0.32 + i * 0.07 });
+      // the role slides in
+      tone(320, 0.26, { type: "triangle", volume: 0.03, slideTo: 960, delay: 0.9 });
+      burst(0.2, { freq: 2400, q: 0.8, volume: 0.05, delay: 0.9 });
+      break;
+    case "introExit":
+      // the card is wiped away: a heavy hit, then a bright blade "shing"
+      tone(90, 0.45, { type: "sine", volume: 0.35, slideTo: 36, attack: 0.003 });
+      burst(0.22, { freq: 800, type: "lowpass", volume: 0.4 });
+      burst(0.08, { freq: 3000, q: 0.8, volume: 0.12 });
+      burst(0.5, { freq: 3200, type: "highpass", volume: 0.16, delay: 0.06 });
+      tone(1750, 0.6, { type: "sine", volume: 0.06, slideTo: 2600, attack: 0.004, delay: 0.06 });
+      tone(3500, 0.35, { type: "sine", volume: 0.025, attack: 0.002, delay: 0.06 });
       break;
 
     // Slot machine

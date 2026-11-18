@@ -51,29 +51,35 @@
   --heading-tracking: 0.01em;
 }
 
-[data-theme="editorial"] {
+[data-theme="metro"] {
   color-scheme: light;
-  --bg: #f7f4ee;
-  --bg-alt: #efeae0;
-  --surface: #fffdf9;
-  --surface-2: #f2ede4;
-  --fg: #1b1916;
-  --muted: #6b655c;
-  --line: #e0d9cb;
-  --accent: #c2410c;
+  --m-line: #f06a1f; /* the line colour: big shapes only (too light for small text) */
+  --m-ink: #141414;
+  --m-board: #161616;
+  --m-amber: #ffb020;
+  --m-green: #3ddc84;
+  --bg: #f3f1ec;
+  --bg-alt: #ebe7df;
+  --surface: #ffffff;
+  --surface-2: #f6f4ef;
+  --fg: #141414;
+  --muted: #57524a;
+  --line: #dcd6cb;
+  --accent: #c2440b;
   --accent-fg: #ffffff;
-  --accent-2: #1e3a8a;
-  --accent-3: #4d7c0f;
-  --radius: 6px;
-  --radius-sm: 4px;
-  --t-font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --accent-2: #2457d6;
+  --accent-3: #1f7a45;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --t-font-display: "Overpass", "Inter", ui-sans-serif, system-ui, sans-serif;
   --t-font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
   --t-font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --t-font-ui: "Overpass", "Inter", sans-serif;
   --card-border: 1px solid var(--line);
-  --card-shadow: none;
-  --card-shadow-hover: 0 22px 44px -28px rgb(27 25 22 / 0.45);
+  --card-shadow: 0 1px 0 var(--line), 0 14px 30px -22px rgb(20 20 20 / 0.28);
+  --card-shadow-hover: 0 1px 0 var(--line), 0 26px 44px -26px rgb(20 20 20 / 0.4);
   --btn-shadow: none;
-  --heading-weight: 600;
+  --heading-weight: 800;
   --heading-tracking: -0.025em;
 }
 
@@ -267,42 +273,17 @@ body {
   }
 
   /* Text that should only appear in one theme */
-  .only-editorial,
+  .only-metro,
   .only-pop,
   .only-persona {
     display: none;
   }
 }
 
-[data-theme="editorial"] .only-editorial,
+[data-theme="metro"] .only-metro,
 [data-theme="pop"] .only-pop,
 [data-theme="persona"] .only-persona {
   display: contents;
-}
-
-/* ── Editorial extras: hairlines, serif italics, quiet chips ──────────────── */
-
-[data-theme="editorial"] .eyebrow {
-  font-family: var(--t-font-body);
-  font-weight: 600;
-  letter-spacing: 0.22em;
-}
-
-[data-theme="editorial"] .accent-text {
-  font-style: italic;
-  color: var(--accent);
-}
-
-[data-theme="editorial"] .chip {
-  border-radius: 3px;
-  background: transparent;
-}
-
-[data-theme="editorial"] .bg-decor {
-  background-image: linear-gradient(to bottom, transparent calc(100% - 1px), var(--line) 1px);
-  background-size: 100% 2.25rem;
-  opacity: 0.35;
-  mask-image: linear-gradient(to bottom, #000, transparent 85%);
 }
 
 /* ── Pop extras: thick outlines, hard shadows, a little wobble ────────────── */
@@ -540,17 +521,6 @@ body {
 
 [data-theme="pop"] .cursor-ring:has(.cursor-label) {
   background: var(--accent-3);
-}
-
-[data-theme="editorial"] .cursor-ring {
-  border-width: 1px;
-  border-color: var(--fg);
-  background: transparent;
-  color: var(--bg);
-}
-
-[data-theme="editorial"] .cursor-ring:has(.cursor-label) {
-  background: var(--fg);
 }
 
 .burst-bit {
@@ -898,17 +868,6 @@ body {
   fill: #fff;
 }
 
-/* Editorial: a folded paper plane instead of a jet, quieter trails */
-[data-theme="editorial"] .journey-flown {
-  stroke-width: 2.5;
-  filter: none;
-}
-
-
-[data-theme="editorial"] .journey-vehicle {
-  filter: drop-shadow(0 8px 6px rgb(60 40 10 / 0.18));
-}
-
 /* Pop: chunky outlines */
 [data-theme="pop"] .veh-outline {
   stroke-width: 3;
@@ -985,11 +944,6 @@ body {
   box-shadow: 8px 8px 0 var(--line);
 }
 
-[data-theme="editorial"] .term-accent,
-[data-theme="editorial"] .term-user {
-  color: #f59e6b;
-}
-
 /* ── Chat-style contact ──────────────────────────────────────────────────── */
 
 .chat-avatar {
@@ -1025,10 +979,6 @@ body {
 
 [data-theme="pop"] .chat-you {
   box-shadow: 3px 3px 0 var(--line);
-}
-
-[data-theme="editorial"] .chat-bubble {
-  border-radius: 10px;
 }
 
 /* The face beside my messages, and the bubble wrapper, only matter in Persona */
@@ -1755,6 +1705,680 @@ body {
   background: #0b0b0b;
 }
 
+/* ── Button prompts in the menus (components/KeyHints.tsx) ───────────────── */
+
+.keyhints-keys {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.2rem;
+}
+
+.keyhint,
+.keyhints-touch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.keyhint-caps {
+  display: inline-flex;
+  gap: 0.2rem;
+}
+
+.keycap {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.6rem;
+  height: 1.6rem;
+  padding: 0 0.35rem;
+  font: 600 0.78rem/1 "JetBrains Mono", monospace;
+  color: var(--fg);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-bottom-width: 3px;
+  border-radius: 6px;
+}
+
+.keyhint-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.keyhints-touch {
+  display: none;
+}
+
+/* no keyboard on touch screens */
+@media (hover: none) and (pointer: coarse) {
+  .keyhints-keys {
+    display: none;
+  }
+
+  .keyhints-touch {
+    display: inline-flex;
+  }
+}
+
+[data-theme="persona"] .keycap {
+  font: 400 0.95rem/1 "Anton", Impact, sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #0b0b0b;
+  background: #fff;
+  border: 2px solid #0b0b0b;
+  border-radius: 0;
+  box-shadow: 3px 3px 0 var(--p5-red);
+  clip-path: polygon(6% 0, 100% 0, 94% 100%, 0 100%);
+}
+
+[data-theme="persona"] .keyhint:nth-child(odd) .keyhint-caps {
+  rotate: -4deg;
+}
+
+[data-theme="persona"] .keyhint:nth-child(even) .keyhint-caps {
+  rotate: 3deg;
+}
+
+[data-theme="persona"] .keyhint-label {
+  font: 400 0.95rem/1 "Anton", Impact, sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+[data-theme="persona"] .ctl-hint {
+  font-size: 0.75rem;
+}
+
+/* ── Navbar settings button ─────────────────────────────────────────────── */
+
+.nav-settings {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  color: var(--fg);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.2s, rotate 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-settings:hover,
+.nav-settings:focus-visible {
+  color: var(--accent);
+  rotate: 60deg;
+}
+
+.nav-settings-burst {
+  display: none;
+}
+
+[data-theme="pop"] .nav-settings {
+  border-width: 2px;
+  box-shadow: 3px 3px 0 var(--line);
+}
+
+/* Persona: a white gear on a black jagged burst with a red shadow; the burst spins on hover */
+[data-theme="persona"] .nav-settings {
+  width: 2.9rem;
+  height: 2.9rem;
+  color: #fff;
+  background: none;
+  border: 0;
+  rotate: none;
+}
+
+[data-theme="persona"] .nav-settings-burst {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(3px 3px 0 var(--p5-red));
+  transition: rotate 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-theme="persona"] .nav-settings-burst polygon {
+  fill: #0b0b0b;
+  stroke: #fff;
+  stroke-width: 5;
+  stroke-linejoin: round;
+  transition: fill 0.2s;
+}
+
+[data-theme="persona"] .nav-settings-gear {
+  position: relative;
+  transition: rotate 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-theme="persona"] .nav-settings:hover .nav-settings-burst,
+[data-theme="persona"] .nav-settings:focus-visible .nav-settings-burst {
+  rotate: 45deg;
+}
+
+[data-theme="persona"] .nav-settings:hover .nav-settings-burst polygon,
+[data-theme="persona"] .nav-settings:focus-visible .nav-settings-burst polygon {
+  fill: var(--p5-red);
+}
+
+[data-theme="persona"] .nav-settings:hover .nav-settings-gear,
+[data-theme="persona"] .nav-settings:focus-visible .nav-settings-gear {
+  rotate: -90deg;
+}
+
+[data-theme="persona"] .nav-settings:focus-visible {
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-settings,
+  .nav-settings-burst,
+  .nav-settings-gear {
+    transition: none !important;
+  }
+}
+
+/* ── Site footer strip (bottom of ContactSection.tsx) ───────────────────── */
+
+.site-foot {
+  border-top: 1px solid var(--line);
+  overflow: hidden;
+}
+
+[data-theme="pop"] .site-foot {
+  border-top-width: 2.5px;
+}
+
+.site-foot-slab {
+  display: none;
+}
+
+.site-foot-inner {
+  display: grid;
+  gap: 1.4rem;
+  padding-block: 2rem;
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .site-foot-inner {
+    grid-template-columns: auto 1fr auto;
+    gap: 2.5rem;
+  }
+}
+
+.site-foot-name {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--fg);
+}
+
+.site-foot-year {
+  font: 500 0.72rem/1 "JetBrains Mono", monospace;
+  color: var(--muted);
+}
+
+.site-foot-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.3rem;
+}
+
+@media (min-width: 900px) {
+  .site-foot-links {
+    justify-content: center;
+  }
+}
+
+.site-foot-link {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--muted);
+  transition: color 0.15s;
+}
+
+.site-foot-link:hover,
+.site-foot-link:focus-visible {
+  color: var(--accent);
+}
+
+.site-foot-top {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.6rem 1.1rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--accent-fg, #fff);
+  background: var(--accent);
+  border-radius: 999px;
+  transition: translate 0.2s;
+}
+
+.site-foot-top:hover,
+.site-foot-top:focus-visible {
+  translate: 0 -3px;
+}
+
+[data-theme="pop"] .site-foot-top {
+  border: 2px solid var(--line);
+  box-shadow: 3px 3px 0 var(--line);
+}
+
+/* Persona: black strip, white top edge, a red slab with halftone behind "back to top" */
+[data-theme="persona"] .site-foot {
+  background: #0b0b0b;
+  border-top: 3px solid #fff;
+}
+
+[data-theme="persona"] .site-foot-slab {
+  display: block;
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: min(30%, 22rem);
+  background:
+    radial-gradient(circle, rgb(0 0 0 / 0.3) 1.2px, transparent 1.8px) 0 0 / 8px 8px,
+    var(--p5-red);
+  clip-path: polygon(14% 0, 100% 0, 100% 100%, 0 100%);
+}
+
+[data-theme="persona"] .site-foot-slab::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 100%;
+  background: #fff;
+  clip-path: polygon(13% 0, 14.6% 0, 1.6% 100%, 0 100%);
+}
+
+[data-theme="persona"] .site-foot-name {
+  font: 400 clamp(1.6rem, 3vw, 2.2rem)/1 "Anton", Impact, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: #fff;
+  text-shadow: 3px 3px 0 var(--p5-red);
+  rotate: -2deg;
+  transform-origin: left;
+}
+
+[data-theme="persona"] .site-foot-year {
+  padding: 0.15rem 0.45rem 0.1rem;
+  font: 400 0.8rem/1.1 "Anton", Impact, sans-serif;
+  letter-spacing: 0.1em;
+  color: #0b0b0b;
+  background: #fff;
+  text-shadow: none;
+  rotate: 6deg;
+}
+
+[data-theme="persona"] .site-foot-link {
+  font: 400 1.05rem/1 "Anton", Impact, sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+[data-theme="persona"] .site-foot-link:nth-child(odd) {
+  rotate: -3deg;
+}
+
+[data-theme="persona"] .site-foot-link:nth-child(even) {
+  rotate: 2deg;
+}
+
+[data-theme="persona"] .site-foot-link:hover,
+[data-theme="persona"] .site-foot-link:focus-visible {
+  color: var(--p5-red);
+  text-shadow: 2px 2px 0 #fff;
+}
+
+[data-theme="persona"] .site-foot-top {
+  position: relative;
+  padding: 0.65rem 1.4rem;
+  font: 400 1.15rem/1 "Anton", Impact, sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #0b0b0b;
+  background: #fff;
+  border-radius: 0;
+  clip-path: polygon(7% 0, 100% 0, 93% 100%, 0 100%);
+  box-shadow: none;
+  rotate: -3deg;
+}
+
+[data-theme="persona"] .site-foot-top:hover,
+[data-theme="persona"] .site-foot-top:focus-visible {
+  color: #fff;
+  background: #0b0b0b;
+  translate: 0 -3px;
+}
+
+/* on phones the red slab sits behind the bottom row instead */
+@media (max-width: 899px) {
+  [data-theme="persona"] .site-foot-slab {
+    inset: auto 0 0 0;
+    width: 100%;
+    height: 5.2rem;
+    clip-path: polygon(0 28%, 100% 0, 100% 100%, 0 100%);
+  }
+
+  [data-theme="persona"] .site-foot-slab::before {
+    clip-path: polygon(0 28%, 100% 0, 100% 4%, 0 32%);
+  }
+}
+
+/* ── Section motion (Persona): stamped titles, side-in cards, navbar wipe ─── */
+/* Titles: SectionHeader / Journey head carry data-stamp="wait" until they scroll in.
+   Cards: SectionMotion.tsx sets data-enter on them. */
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-theme="persona"] [data-stamp="wait"] .ransom-tile,
+  [data-theme="persona"] [data-stamp="wait"] .eyebrow,
+  [data-theme="persona"] [data-stamp="wait"] .p5-index {
+    opacity: 0;
+  }
+
+  [data-theme="persona"] [data-stamp="wait"] h2::before,
+  [data-theme="persona"] [data-stamp="wait"] h2::after {
+    scale: 0 1;
+  }
+
+  /* the "▶ 01 About" tag wipes in from the left */
+  [data-theme="persona"] [data-stamp="in"] .eyebrow {
+    animation: p5-tag-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* the black jagged panel behind the title sweeps open */
+  [data-theme="persona"] [data-stamp="in"] h2::before,
+  [data-theme="persona"] [data-stamp="in"] h2::after {
+    transform-origin: left center;
+    animation: p5-panel-in 0.38s cubic-bezier(0.76, 0, 0.24, 1) 0.12s both;
+  }
+
+  [data-theme="persona"] [data-stamp="in"] h2::after {
+    animation-delay: 0.18s;
+  }
+
+  /* the cut-out letters stamp down one by one */
+  [data-theme="persona"] [data-stamp="in"] .ransom-tile {
+    animation: p5-stamp 0.42s cubic-bezier(0.3, 1.4, 0.5, 1) both;
+    animation-delay: calc(0.3s + var(--i, 0) * 0.045s);
+  }
+
+  /* the big outlined number swings in */
+  [data-theme="persona"] [data-stamp="in"] .p5-index {
+    animation: p5-index-in 0.6s cubic-bezier(0.2, 1.3, 0.4, 1) 0.2s both;
+  }
+
+  /* cards slide in from alternating sides */
+  [data-theme="persona"] [data-enter="wait"] {
+    opacity: 0;
+  }
+
+  [data-theme="persona"] [data-enter="in"] {
+    animation: p5-enter-l 0.6s cubic-bezier(0.2, 1.2, 0.4, 1) both;
+  }
+
+  [data-theme="persona"] [data-enter="in"][data-enter-side="r"] {
+    animation-name: p5-enter-r;
+  }
+
+  [data-theme="persona"] [data-enter-n="1"] { animation-delay: 0.07s; }
+  [data-theme="persona"] [data-enter-n="2"] { animation-delay: 0.14s; }
+  [data-theme="persona"] [data-enter-n="3"] { animation-delay: 0.21s; }
+  [data-theme="persona"] [data-enter-n="4"] { animation-delay: 0.28s; }
+  [data-theme="persona"] [data-enter-n="5"] { animation-delay: 0.35s; }
+}
+
+@keyframes p5-tag-in {
+  from {
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+    translate: -1.5rem 0;
+  }
+}
+
+@keyframes p5-panel-in {
+  from {
+    scale: 0 1;
+  }
+}
+
+@keyframes p5-stamp {
+  from {
+    opacity: 0;
+    scale: 2.4;
+    translate: 0 -0.35em;
+  }
+  55% {
+    opacity: 1;
+    scale: 0.88;
+  }
+  78% {
+    scale: 1.06;
+  }
+}
+
+@keyframes p5-index-in {
+  from {
+    opacity: 0;
+    scale: 0.3;
+    translate: 1.5em 0;
+  }
+}
+
+@keyframes p5-enter-l {
+  from {
+    opacity: 0;
+    translate: -56px 0;
+    rotate: -4deg;
+  }
+}
+
+@keyframes p5-enter-r {
+  from {
+    opacity: 0;
+    translate: 56px 0;
+    rotate: 4deg;
+  }
+}
+
+/* Hero (Persona): plays once the title card is gone (HeroSection's data-stamp). The name's letters,
+   the "Hello, I'm" tag and the black panel use the section-title rules above; these add the rest. */
+@media (prefers-reduced-motion: no-preference) {
+  /* "Rotana" stamps down after "Chey" */
+  [data-theme="persona"] .hero[data-stamp="in"] .hero-name-last .ransom-tile {
+    animation-delay: calc(0.52s + var(--i, 0) * 0.05s);
+  }
+
+  /* the photo slams in with a twist */
+  [data-theme="persona"] .hero[data-stamp="wait"] .hero-photo {
+    opacity: 0;
+  }
+
+  [data-theme="persona"] .hero[data-stamp="in"] .hero-photo {
+    animation: p5-photo-in 0.7s cubic-bezier(0.2, 1.35, 0.4, 1) both;
+  }
+
+  /* the status rows slide in one after another */
+  [data-theme="persona"] .hero[data-stamp="wait"] .status-row,
+  [data-theme="persona"] .hero[data-stamp="wait"] .p5-date {
+    opacity: 0;
+  }
+
+  [data-theme="persona"] .hero[data-stamp="in"] .status-row {
+    animation: p5-enter-l 0.5s cubic-bezier(0.2, 1.2, 0.4, 1) both;
+  }
+
+  [data-theme="persona"] .hero[data-stamp="in"] .status-row:nth-child(1) { animation-delay: 0.6s; }
+  [data-theme="persona"] .hero[data-stamp="in"] .status-row:nth-child(2) { animation-delay: 0.7s; }
+  [data-theme="persona"] .hero[data-stamp="in"] .status-row:nth-child(3) { animation-delay: 0.8s; }
+
+  /* the calendar drops in from above */
+  [data-theme="persona"] .hero[data-stamp="in"] .p5-date {
+    animation: p5-date-in 0.55s cubic-bezier(0.2, 1.3, 0.4, 1) 0.75s both;
+  }
+}
+
+@keyframes p5-photo-in {
+  from {
+    opacity: 0;
+    scale: 0.55;
+    rotate: -14deg;
+  }
+}
+
+@keyframes p5-date-in {
+  from {
+    opacity: 0;
+    translate: 0 -2.5rem;
+    rotate: 12deg;
+  }
+}
+
+/* Navbar / footer jump: a red slab then a black slab sweep across, the page jumps, they sweep off */
+.p5-navwipe {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.p5-navwipe-red,
+.p5-navwipe-black {
+  position: absolute;
+  inset: 0 -40%;
+  skew: -16deg;
+}
+
+.p5-navwipe-red {
+  background:
+    radial-gradient(circle, rgb(0 0 0 / 0.28) 1.4px, transparent 2px) 0 0 / 10px 10px,
+    var(--p5-red);
+}
+
+.p5-navwipe-black {
+  display: grid;
+  place-items: center;
+  background: var(--p5-black);
+  border-inline: 6px solid #fff;
+}
+
+.p5-navwipe-label {
+  skew: 16deg;
+  font: 400 clamp(3rem, 12vw, 9rem)/1 "Anton", Impact, sans-serif;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0.06em 0.06em 0 var(--p5-red);
+  rotate: -6deg;
+}
+
+.p5-navwipe.is-in .p5-navwipe-red {
+  animation: p5-wipe-cover 0.34s cubic-bezier(0.76, 0, 0.24, 1) both;
+}
+
+.p5-navwipe.is-in .p5-navwipe-black {
+  animation: p5-wipe-cover 0.34s cubic-bezier(0.76, 0, 0.24, 1) 0.07s both;
+}
+
+.p5-navwipe.is-in .p5-navwipe-label {
+  animation: p5-wipe-label 0.3s cubic-bezier(0.2, 1.3, 0.4, 1) 0.2s both;
+}
+
+.p5-navwipe.is-out .p5-navwipe-black {
+  animation: p5-wipe-leave 0.38s cubic-bezier(0.76, 0, 0.24, 1) both;
+}
+
+.p5-navwipe.is-out .p5-navwipe-red {
+  animation: p5-wipe-leave 0.38s cubic-bezier(0.76, 0, 0.24, 1) 0.07s both;
+}
+
+@keyframes p5-wipe-cover {
+  from {
+    translate: -140% 0;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+
+@keyframes p5-wipe-leave {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: 140% 0;
+  }
+}
+
+@keyframes p5-wipe-label {
+  from {
+    opacity: 0;
+    scale: 1.8;
+  }
+}
+
+/* "Skip the journey" link (JourneySection.tsx) */
+.journey-skip {
+  position: relative;
+  z-index: 10; /* above the journey's flight track, which overlaps the heading */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: 0.4rem;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--fg);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.journey-skip:hover,
+.journey-skip:focus-visible {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+[data-theme="pop"] .journey-skip {
+  border-width: 2px;
+  box-shadow: 2px 2px 0 var(--line);
+}
+
+[data-theme="persona"] .journey-skip {
+  padding: 0.35rem 0.9rem 0.3rem;
+  font: 400 0.95rem/1 "Anton", Impact, sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--p5-black);
+  background: #fff;
+  border: 0;
+  border-radius: 0;
+  clip-path: polygon(6% 0, 100% 0, 94% 100%, 0 100%);
+  filter: drop-shadow(3px 3px 0 var(--p5-red));
+  rotate: -3deg;
+  transition: color 0.15s, background 0.15s, translate 0.15s;
+}
+
+[data-theme="persona"] .journey-skip:hover,
+[data-theme="persona"] .journey-skip:focus-visible {
+  color: #fff;
+  background: var(--p5-red);
+  translate: 2px 0;
+}
+
 /* ── Achievement toast ───────────────────────────────────────────────────── */
 
 .achievement-toast {
@@ -1763,8 +2387,14 @@ body {
 
 /* ── Theme-conditional wrappers (the opposite of .only-persona) ──────────── */
 
-.not-persona {
+.not-persona,
+.not-metro {
   display: contents;
+}
+
+[data-theme="metro"] .not-metro,
+[data-theme="metro"] .not-metro-block {
+  display: none;
 }
 
 [data-theme="persona"] .not-persona,
@@ -1837,16 +2467,6 @@ body {
   display: none;
 }
 
-.hero-photo-caption {
-  margin-top: 0.9rem;
-  text-align: center;
-  font-family: var(--t-font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
 .hero-role {
   font-family: var(--t-font-display);
   font-weight: var(--heading-weight);
@@ -1893,25 +2513,6 @@ body {
 
 .hero-scroll:hover {
   color: var(--accent);
-}
-
-[data-theme="editorial"] .hero-photo::before {
-  content: "";
-  position: absolute;
-  inset: 1rem -1rem -1rem 1rem;
-  border: 1px solid var(--fg);
-  border-radius: 4px;
-  opacity: 0.25;
-}
-
-[data-theme="editorial"] .hero-photo-img {
-  filter: saturate(0.8) sepia(0.1);
-}
-
-[data-theme="editorial"] .status-panel {
-  background: transparent;
-  border-width: 1px 0;
-  border-radius: 0;
 }
 
 [data-theme="pop"] .hero-photo::before {
@@ -2041,22 +2642,6 @@ body {
 [data-theme="persona"] .hero-photo-img {
   clip-path: var(--cut);
   border-radius: 0;
-}
-
-[data-theme="persona"] .hero-photo-caption {
-  position: relative;
-  display: table;
-  margin: 1.7rem auto 0;
-  padding: 0.15rem 0.75rem;
-  background: var(--p5-black);
-  border: 2px solid #fff;
-  color: #fff;
-  font-family: var(--t-font-ui);
-  font-style: italic;
-  font-weight: 800;
-  font-size: 0.85rem;
-  letter-spacing: 0.12em;
-  rotate: -4deg;
 }
 
 [data-theme="persona"] .hero-name-last {
@@ -3587,10 +4172,6 @@ img.app-logo {
   border-radius: var(--radius-sm);
 }
 
-[data-theme="editorial"] .skill-all-tool svg {
-  color: var(--fg) !important;
-}
-
 [data-theme="pop"] .skill-all-tool {
   border-width: 2px;
 }
@@ -3673,10 +4254,6 @@ img.app-logo {
 
 .skill-used.chip:hover {
   color: var(--accent);
-}
-
-[data-theme="editorial"] .skill-tile-icon svg {
-  color: var(--fg) !important; /* editorial stays monochrome */
 }
 
 [data-theme="pop"] .skill-menu-item,

@@ -1,4 +1,5 @@
 import { ArrowUp, ArrowUpRight } from "lucide-react";
+import { NAV_SECTIONS } from "./Navbar";
 import { profile, socials } from "../data/profile";
 import ContactForm from "./ContactForm";
 import { P5Burst, P5Slab } from "./PersonaDecor";
@@ -65,18 +66,40 @@ function ContactSection() {
             <span className="only-persona">
               <span className="calling-card-tag" aria-hidden="true">Calling card</span>
             </span>
+            <span className="only-metro">
+              <span className="metro-ticket-stub" aria-hidden="true">
+                <span>Single journey</span>
+                <b>PNH → Your inbox</b>
+                <span>Valid any day · No. 0001</span>
+              </span>
+            </span>
             <ContactForm />
           </Reveal>
         </div>
       </div>
 
-      <div className="relative border-t border-line [[data-theme=pop]_&]:border-t-[2.5px]">
-        <div className="mx-auto max-w-6xl px-5 sm:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-muted">
-          <p>
-            &copy; {new Date().getFullYear()} {profile.name}. Built with React, Tailwind CSS &amp; Framer Motion.
-          </p>
-          <a href="#home" className="inline-flex items-center gap-1.5 hover:text-accent transition-colors">
-            Back to top <ArrowUp size={14} />
+      {/* Bottom strip: name, section links, back to top */}
+      <div className="site-foot relative">
+        <span className="site-foot-slab" aria-hidden="true" />
+        <div className="site-foot-inner relative mx-auto max-w-6xl px-5 sm:px-8">
+          <div className="site-foot-sign">
+            <p className="site-foot-name">
+              {profile.name}
+              <span className="site-foot-year">&copy; {new Date().getFullYear()}</span>
+            </p>
+          </div>
+
+          <nav className="site-foot-links" aria-label="Footer">
+            {NAV_SECTIONS.map((s) => (
+              <a key={s.id} href={`#${s.id}`} className="site-foot-link">
+                {s.label}
+              </a>
+            ))}
+          </nav>
+
+          <a href="#home" className="site-foot-top" data-cursor="Top">
+            <span>Back to top</span>
+            <ArrowUp size={16} strokeWidth={2.6} aria-hidden="true" />
           </a>
         </div>
       </div>

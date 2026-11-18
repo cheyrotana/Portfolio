@@ -1,13 +1,15 @@
 import { motion } from "framer-motion";
 import { openControls } from "../events";
+import { INTRO_DONE_EVENT, introWillPlay } from "../intro";
 import { ArrowDown, ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import portrait from "../../assets/me/ta-prohm.jpg";
 import { profile, socials } from "../data/profile";
-import { useWeather } from "../hooks/interactive";
+import { useThemeAttr, useWeather } from "../hooks/interactive";
 import { P5Sky, P5Skyline, P5Slab } from "./PersonaDecor";
 import { P5Clouds, WeatherIcon } from "./Weather";
 import { Ransom } from "./Ransom";
+import { MetroHero } from "./MetroDecor";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const TZ = "Asia/Phnom_Penh";
@@ -84,8 +86,26 @@ const status = [
 ];
 
 function HeroSection() {
+  // In Persona the title card covers the page first: wait for it, so the entrance is actually seen
+  const [go, setGo] = useState(() => !introWillPlay());
+  const metro = useThemeAttr() === "metro";
+  useEffect(() => {
+    if (go) return;
+    const start = () => setGo(true);
+    window.addEventListener(INTRO_DONE_EVENT, start);
+    const fallback = window.setTimeout(start, 4000);
+    return () => {
+      window.removeEventListener(INTRO_DONE_EVENT, start);
+      window.clearTimeout(fallback);
+    };
+  }, [go]);
+
   return (
-    <section id="home" className="hero relative min-h-screen flex items-center overflow-hidden pt-28 pb-24">
+    <section
+      id="home"
+      data-stamp={go ? "in" : "wait"}
+      className="hero relative min-h-screen flex items-center overflow-hidden pt-28 pb-24"
+    >
       {/* Backgrounds */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div className="bg-decor absolute inset-0 not-persona-block" />
@@ -98,114 +118,117 @@ function HeroSection() {
         <DateWidget />
       </div>
 
-      <div className="relative mx-auto max-w-6xl w-full px-5 sm:px-8 grid lg:grid-cols-[0.85fr_1.15fr] gap-12 lg:gap-12 items-center">
-        {/* Photo */}
-        <motion.figure
-          className="hero-photo-wrap relative mx-auto w-full max-w-[280px] sm:max-w-[340px] lg:max-w-[420px]"
-          initial={{ opacity: 0, scale: 0.92, rotate: -4 }}
-          animate={{ opacity: 1, scale: 1, rotate: 0 }}
-          transition={{ duration: 0.8, ease }}
-        >
-          <div className="only-persona">
-            <svg className="p5-burst" viewBox="0 0 100 100" aria-hidden="true">
-              <polygon points={BURST} />
-            </svg>
-          </div>
-          <div className="hero-photo">
-            <span className="hero-photo-shadow" aria-hidden="true" />
-            <span className="hero-photo-rim" aria-hidden="true" />
-            <img
-              src={portrait}
-              alt={`${profile.name} among the ruins of Ta Prohm temple`}
-              className="hero-photo-img"
-              width={853}
-              height={1280}
-              fetchPriority="high"
-            />
-          </div>
-          <figcaption className="hero-photo-caption">Ta Prohm, Siem Reap</figcaption>
-        </motion.figure>
-
-        {/* Who I am */}
-        <div className="hero-text relative">
-          <motion.p
-            className="eyebrow"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.15, duration: 0.5, ease }}
+      {metro ? (
+        <MetroHero go={go} portrait={portrait} />
+      ) : (
+        <div className="relative mx-auto max-w-6xl w-full px-5 sm:px-8 grid lg:grid-cols-[0.85fr_1.15fr] gap-12 lg:gap-12 items-center">
+          {/* Photo */}
+          <motion.figure
+            className="hero-photo-wrap relative mx-auto w-full max-w-[280px] sm:max-w-[340px] lg:max-w-[420px]"
+            initial={{ opacity: 0, scale: 0.92, rotate: -4 }}
+            animate={go ? { opacity: 1, scale: 1, rotate: 0 } : undefined}
+            transition={{ duration: 0.8, ease }}
           >
-            Hello, I'm
-          </motion.p>
+            <div className="only-persona">
+              <svg className="p5-burst" viewBox="0 0 100 100" aria-hidden="true">
+                <polygon points={BURST} />
+              </svg>
+            </div>
+            <div className="hero-photo">
+              <span className="hero-photo-shadow" aria-hidden="true" />
+              <span className="hero-photo-rim" aria-hidden="true" />
+              <img
+                src={portrait}
+                alt={`${profile.name} among the ruins of Ta Prohm temple`}
+                className="hero-photo-img"
+                width={853}
+                height={1280}
+                fetchPriority="high"
+              />
+            </div>
+          </motion.figure>
 
-          <motion.h1
-            className="heading hero-name mt-4 text-[3.4rem] leading-[0.95] sm:text-7xl lg:text-[5.6rem] text-fg"
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.7, ease }}
-          >
-            <Ransom text="Chey" seed={1} className="block" />
-            <Ransom text="Rotana" seed={4} className="block hero-name-last" />
-          </motion.h1>
+          {/* Who I am */}
+          <div className="hero-text relative">
+            <motion.p
+              className="eyebrow"
+              initial={{ opacity: 0, x: -20 }}
+              animate={go ? { opacity: 1, x: 0 } : undefined}
+              transition={{ delay: 0.15, duration: 0.5, ease }}
+            >
+              Hello, I'm
+            </motion.p>
 
-          <motion.p
-            className="hero-role mt-6"
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.35, duration: 0.6, ease }}
-          >
-            <span>{profile.role}</span>
-          </motion.p>
+            <motion.h1
+              className="heading hero-name mt-4 text-[3.4rem] leading-[0.95] sm:text-7xl lg:text-[5.6rem] text-fg"
+              initial={{ opacity: 0, y: 24 }}
+              animate={go ? { opacity: 1, y: 0 } : undefined}
+              transition={{ delay: 0.2, duration: 0.7, ease }}
+            >
+              <Ransom text="Chey" seed={1} className="block" />
+              <Ransom text="Rotana" seed={4} className="block hero-name-last" />
+            </motion.h1>
 
-          <motion.p
-            className="mt-5 max-w-xl text-base sm:text-lg text-muted leading-relaxed"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.42, duration: 0.6, ease }}
-          >
-            I build Flutter apps, Angular dashboards and the NestJS APIs behind them — right now for the government HR
-            platform at MLMUPC.
-          </motion.p>
+            <motion.p
+              className="hero-role mt-6"
+              initial={{ opacity: 0, x: 30 }}
+              animate={go ? { opacity: 1, x: 0 } : undefined}
+              transition={{ delay: 0.35, duration: 0.6, ease }}
+            >
+              <span>{profile.role}</span>
+            </motion.p>
 
-          <motion.dl
-            className="status-panel mt-7 max-w-xl"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.6, ease }}
-          >
-            {status.map((row) => (
-              <div key={row.plain} className="status-row">
-                <dt className="status-key">
-                  <span className="only-persona">{row.persona}</span>
-                  <span className="not-persona">{row.plain}</span>
-                </dt>
-                <dd className="status-value">{row.value}</dd>
-              </div>
-            ))}
-          </motion.dl>
+            <motion.p
+              className="mt-5 max-w-xl text-base sm:text-lg text-muted leading-relaxed"
+              initial={{ opacity: 0, y: 16 }}
+              animate={go ? { opacity: 1, y: 0 } : undefined}
+              transition={{ delay: 0.42, duration: 0.6, ease }}
+            >
+              I build Flutter apps, Angular dashboards and the NestJS APIs behind them — right now for the government HR
+              platform at MLMUPC.
+            </motion.p>
 
-          <motion.nav
-            className="hero-menu mt-8 flex flex-wrap items-center gap-3"
-            aria-label="Start here"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.6, ease }}
-          >
-            <a href="#work" className="btn btn-primary hero-menu-item">
-              See my work <ArrowRight size={16} className="hero-menu-arrow" />
-            </a>
-            <a href="#contact" className="btn btn-ghost hero-menu-item">
-              Get in touch
-            </a>
-            <span className="flex gap-2 ml-1">
-              {socials.map(({ name, url, icon: Icon }) => (
-                <a key={name} href={url} target="_blank" rel="noopener noreferrer" className="icon-btn" aria-label={name}>
-                  <Icon size={18} />
-                </a>
+            <motion.dl
+              className="status-panel mt-7 max-w-xl"
+              initial={{ opacity: 0, y: 16 }}
+              animate={go ? { opacity: 1, y: 0 } : undefined}
+              transition={{ delay: 0.5, duration: 0.6, ease }}
+            >
+              {status.map((row) => (
+                <div key={row.plain} className="status-row">
+                  <dt className="status-key">
+                    <span className="only-persona">{row.persona}</span>
+                    <span className="not-persona">{row.plain}</span>
+                  </dt>
+                  <dd className="status-value">{row.value}</dd>
+                </div>
               ))}
-            </span>
-          </motion.nav>
+            </motion.dl>
+
+            <motion.nav
+              className="hero-menu mt-8 flex flex-wrap items-center gap-3"
+              aria-label="Start here"
+              initial={{ opacity: 0, y: 16 }}
+              animate={go ? { opacity: 1, y: 0 } : undefined}
+              transition={{ delay: 0.6, duration: 0.6, ease }}
+            >
+              <a href="#work" className="btn btn-primary hero-menu-item">
+                See my work <ArrowRight size={16} className="hero-menu-arrow" />
+              </a>
+              <a href="#contact" className="btn btn-ghost hero-menu-item">
+                Get in touch
+              </a>
+              <span className="flex gap-2 ml-1">
+                {socials.map(({ name, url, icon: Icon }) => (
+                  <a key={name} href={url} target="_blank" rel="noopener noreferrer" className="icon-btn" aria-label={name}>
+                    <Icon size={18} />
+                  </a>
+                ))}
+              </span>
+            </motion.nav>
+          </div>
         </div>
-      </div>
+      )}
 
       <a href="#about" className="hero-scroll absolute bottom-6 left-1/2 -translate-x-1/2 z-10 [[data-theme=persona]_&]:bottom-14" aria-label="Scroll to About">
         <span className="not-persona">

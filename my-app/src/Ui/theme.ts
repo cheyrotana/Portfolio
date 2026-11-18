@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-export type ThemeId = "persona" | "editorial" | "pop";
+export type ThemeId = "persona" | "metro" | "pop";
 
 export interface ThemeOption {
   id: ThemeId;
@@ -17,10 +17,10 @@ export const THEMES: ThemeOption[] = [
     swatches: ["#0b0b0b", "#ffffff", "#e60012"],
   },
   {
-    id: "editorial",
-    name: "Editorial",
-    description: "Clean & classic",
-    swatches: ["#f7f4ee", "#1b1916", "#c2410c"],
+    id: "metro",
+    name: "Metro",
+    description: "Transit-map clean",
+    swatches: ["#f3f1ec", "#141414", "#f06a1f"],
   },
   {
     id: "pop",

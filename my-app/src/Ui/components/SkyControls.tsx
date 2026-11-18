@@ -4,6 +4,7 @@ import { useEffect, useRef, type KeyboardEvent, type ReactNode } from "react";
 import { useSky, useSkyPick, useWeather, useWeatherPick } from "../hooks/interactive";
 import { play } from "../sound";
 import { setSky, setWeather, WEATHER_KINDS, type Sky, type WeatherKind } from "../weather";
+import { KeyHints } from "./KeyHints";
 import { WeatherIcon } from "./Weather";
 
 // The sky & weather controller: a pause-menu style overlay (big tilted words on a red slab in the
@@ -177,9 +178,9 @@ export function SkyControls({ open, onClose }: { open: boolean; onClose: () => v
                 <span className="ctl-now-tag">Now</span> {status}
                 {weatherPick === null && skyPick === null ? " · live from Phnom Penh" : " · picked by you"}
               </p>
+              <KeyHints />
               <p className="ctl-hint">
-                ↑ ↓ choose · ← → switch · Esc close · or type <code>weather storm</code> / <code>sky night</code> in the
-                terminal
+                Or type <code>weather storm</code> / <code>sky night</code> in the terminal
               </p>
             </footer>
           </motion.div>

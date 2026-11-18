@@ -1,0 +1,662 @@
+/* ── Metro theme: the big scenes ──────────────────────────────────────────────
+   The carriage window in the hero (MetroWindow.tsx), the skills network map (MetroMap.tsx) and the
+   tunnel ride between sections (SectionMotion.tsx). Base Metro styles are in metro.css.          */
+
+/* ── Hero: the carriage window ──────────────────────────────────────────── */
+
+.metro-window {
+  position: relative;
+  grid-column: 1 / -1;
+  padding: 12px;
+  border-radius: 34px;
+  background: linear-gradient(#e4e0d8, #d2cdc3);
+  box-shadow: inset 0 2px 0 rgb(255 255 255 / 0.6), 0 22px 44px -28px rgb(20 20 20 / 0.55);
+}
+
+.metro-window-glass {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  height: clamp(170px, 27vh, 250px);
+  border-radius: 24px;
+}
+
+.metro-window-glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 3px #b9b4aa, inset 0 8px 24px rgb(0 0 0 / 0.28);
+  pointer-events: none;
+}
+
+.mw-sky {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(#86c1e8, #dcebf2 78%);
+}
+
+.metro-window[data-sky="night"] .mw-sky {
+  background:
+    radial-gradient(circle, rgb(255 255 255 / 0.8) 0 1px, transparent 1.5px) 0 0 / 90px 70px,
+    radial-gradient(circle, rgb(255 255 255 / 0.5) 0 1px, transparent 1.5px) 40px 30px / 130px 90px,
+    linear-gradient(#0a1230, #22305a 82%);
+}
+
+.metro-window[data-wet] .mw-sky {
+  background: linear-gradient(#8d99a5, #ccd3d9 80%);
+}
+
+.metro-window[data-wet][data-sky="night"] .mw-sky {
+  background: linear-gradient(#0e141d, #283241 82%);
+}
+
+.mw-orb {
+  position: absolute;
+  top: 16%;
+  right: 13%;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #ffd27a;
+  box-shadow: 0 0 46px 6px rgb(255 210 122 / 0.6);
+}
+
+.metro-window[data-sky="night"] .mw-orb {
+  background: #f3f1ec;
+  box-shadow: inset -13px -5px 0 #c9ced8, 0 0 30px rgb(243 241 236 / 0.35);
+}
+
+.metro-window[data-wet] .mw-orb {
+  display: none;
+}
+
+.mw-layer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  height: 100%;
+  will-change: transform;
+}
+
+.mw-svg {
+  display: block;
+  flex: none;
+  width: auto;
+  height: 100%;
+  aspect-ratio: 1400 / 240;
+}
+
+.mw-far-fill {
+  fill: #b5c2cd;
+}
+
+.mw-mid-fill {
+  fill: #8c98a4;
+}
+
+.mw-win {
+  fill: #c9d5df;
+  opacity: 0.75;
+}
+
+.mw-near-fill {
+  fill: #3a3e44;
+}
+
+.mw-wire {
+  stroke: #3a3e44;
+  stroke-width: 1.6;
+}
+
+.metro-window[data-sky="night"] .mw-far-fill {
+  fill: #27314c;
+}
+
+.metro-window[data-sky="night"] .mw-mid-fill {
+  fill: #151c2a;
+}
+
+.metro-window[data-sky="night"] .mw-win {
+  fill: #253049;
+  opacity: 1;
+}
+
+.metro-window[data-sky="night"] .mw-win.is-lit {
+  fill: #ffcf6b;
+}
+
+.metro-window[data-sky="night"] .mw-near-fill {
+  fill: #07080b;
+}
+
+.metro-window[data-sky="night"] .mw-wire {
+  stroke: #07080b;
+}
+
+.metro-window[data-wet] .mw-far-fill {
+  fill: #a2acb5;
+}
+
+.metro-window[data-wet][data-sky="night"] .mw-far-fill {
+  fill: #232b37;
+}
+
+/* sun glare across the glass */
+.mw-glare {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: linear-gradient(
+    105deg,
+    transparent 28%,
+    rgb(255 255 255 / 0.16) 34%,
+    transparent 42%,
+    transparent 68%,
+    rgb(255 255 255 / 0.1) 72%,
+    transparent 77%
+  );
+  pointer-events: none;
+}
+
+/* rain: drops racing backwards along the glass */
+.mw-rain {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background:
+    radial-gradient(circle at 40% 40%, rgb(255 255 255 / 0.6) 0 1.6px, transparent 2.6px) 0 0 / 38px 31px,
+    radial-gradient(circle, rgb(255 255 255 / 0.45) 0 1.2px, transparent 2px) 14px 9px / 27px 23px,
+    repeating-linear-gradient(96deg, transparent 0 26px, rgb(255 255 255 / 0.16) 26px 27px, transparent 27px 71px);
+  animation: mw-rain 0.45s linear infinite;
+}
+
+.metro-window[data-storm] .mw-rain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+  animation: mw-flash 7s linear infinite;
+}
+
+@keyframes mw-rain {
+  to {
+    background-position: -76px 31px, -40px 32px, 0 0;
+  }
+}
+
+@keyframes mw-flash {
+  0%,
+  88%,
+  91%,
+  100% {
+    opacity: 0;
+  }
+  89%,
+  92% {
+    opacity: 0.7;
+  }
+}
+
+.metro-window-caption {
+  position: absolute;
+  top: -11px;
+  left: 30px;
+  z-index: 6;
+  max-width: calc(100% - 60px);
+  overflow: hidden;
+  padding: 0.35rem 0.7rem;
+  border-radius: 8px;
+  background: var(--m-ink);
+  color: #f3f1ec;
+  font: 500 0.66rem/1 "JetBrains Mono", monospace;
+  letter-spacing: 0.14em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ── Skills: the network map ────────────────────────────────────────────── */
+
+.metro-map {
+  display: grid;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .metro-map {
+    grid-template-columns: minmax(0, 1fr) 300px;
+  }
+}
+
+.metro-map-board {
+  padding: 1.4rem 1.2rem;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle, #e7e2d9 1px, transparent 1.4px) 0 0 / 22px 22px,
+    #fff;
+  box-shadow: var(--card-shadow);
+}
+
+.metro-map-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.mm-line {
+  transition: opacity 0.25s;
+}
+
+.metro-map[data-focus] .mm-line:not(.is-focus) {
+  opacity: 0.22;
+}
+
+.mm-track {
+  fill: none;
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.metro-map[data-in] .mm-track {
+  animation: mm-draw 1.1s cubic-bezier(0.6, 0, 0.3, 1) var(--d, 0s) forwards;
+}
+
+.mm-station {
+  cursor: pointer;
+  opacity: 0;
+  outline: none;
+}
+
+.metro-map[data-in] .mm-station {
+  animation: mm-pop 0.4s cubic-bezier(0.3, 1.6, 0.5, 1) var(--s, 0s) both;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.mm-hit {
+  fill: transparent;
+}
+
+.mm-dot {
+  transition: stroke-width 0.15s;
+}
+
+.mm-station:hover .mm-dot,
+.mm-station:focus-visible .mm-dot {
+  stroke-width: 6.5px;
+}
+
+.mm-label {
+  font: 700 15px "Overpass", sans-serif;
+  fill: #141414;
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 6px;
+  stroke-linejoin: round;
+}
+
+.mm-station:focus-visible .mm-label,
+.mm-station:hover .mm-label {
+  fill: var(--accent);
+}
+
+.mm-ring {
+  fill: none;
+  stroke-width: 3;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mm-ring 1.4s ease-out infinite;
+}
+
+.mm-central rect {
+  fill: #fff;
+  stroke: #141414;
+  stroke-width: 5;
+}
+
+.mm-central-r {
+  font: 900 17px "Overpass", sans-serif;
+  fill: #141414;
+}
+
+.mm-central-label {
+  font: 800 14px "Overpass", sans-serif;
+  fill: #141414;
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 6px;
+}
+
+@keyframes mm-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes mm-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes mm-ring {
+  from {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  to {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* phones: each line as a strip */
+.metro-map-list {
+  display: none;
+}
+
+@media (max-width: 719px) {
+  .metro-map-svg {
+    display: none;
+  }
+
+  .metro-map-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+}
+
+.mm-strip-name {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font: 800 0.95rem/1 "Overpass", sans-serif;
+}
+
+.mm-strip-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--c);
+}
+
+.mm-strip-stops {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.mm-strip-stop {
+  padding: 0.45rem 0.8rem 0.35rem;
+  border: 3px solid var(--c);
+  border-radius: 999px;
+  background: #fff;
+  color: #141414;
+  font: 700 0.88rem/1 "Overpass", sans-serif;
+  cursor: pointer;
+}
+
+.mm-strip-stop.is-selected {
+  background: var(--c);
+  color: #fff;
+}
+
+/* what calls at the chosen station */
+.metro-map-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  min-height: 300px;
+  padding: 1.4rem;
+  border-radius: 22px;
+  background: var(--m-ink);
+  color: #f3f1ec;
+}
+
+.mm-panel-kicker {
+  margin: 0;
+  font: 500 0.68rem/1 "JetBrains Mono", monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #bdb7ac;
+}
+
+.mm-panel-line {
+  display: inline-block;
+  padding: 0.35rem 0.6rem 0.3rem;
+  border-radius: 6px;
+  font: 800 0.78rem/1 "Overpass", sans-serif;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.mm-panel-title {
+  margin: 0;
+  font: 900 2.1rem/1 "Overpass", sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.mm-panel-text {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: #cfc9be;
+}
+
+.mm-panel-sub {
+  margin: 0.3rem 0 0;
+  font: 500 0.78rem/1.4 "JetBrains Mono", monospace;
+  color: var(--m-amber);
+}
+
+.mm-panel-sub b {
+  color: #fff;
+}
+
+.mm-panel-projects,
+.mm-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.mm-panel-project {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border-radius: 12px;
+  background: #242424;
+  color: #f3f1ec;
+  font: 800 1rem/1.1 "Overpass", sans-serif;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.mm-panel-project:hover,
+.mm-panel-project:focus-visible {
+  background: #2f2f2f;
+  color: var(--m-amber);
+}
+
+.mm-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.4rem 0.45rem;
+  border-radius: 8px;
+  color: #f3f1ec;
+  font: 700 0.92rem/1 "Overpass", sans-serif;
+  cursor: pointer;
+}
+
+.mm-legend-item:hover,
+.mm-legend-item:focus-visible {
+  background: #242424;
+}
+
+.mm-legend-swatch {
+  width: 26px;
+  height: 8px;
+  border-radius: 4px;
+}
+
+/* ── Section jumps: a tunnel, then the station pulls in ─────────────────── */
+
+.metro-ride {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  overflow: hidden;
+  background: #070709;
+  pointer-events: none;
+}
+
+.metro-ride.is-in {
+  animation: ride-dark 0.16s ease-out both;
+}
+
+.metro-ride.is-out {
+  animation: ride-clear 0.5s ease-in both;
+}
+
+.metro-ride-tunnel span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: repeating-linear-gradient(90deg, transparent 0 180px, #ffd88a 180px 270px, transparent 270px 560px);
+  filter: blur(1.5px) drop-shadow(0 0 8px rgb(255 176 32 / 0.7));
+  animation: ride-streak 0.2s linear infinite;
+}
+
+.metro-ride-tunnel span:nth-child(1) {
+  top: 16%;
+}
+
+.metro-ride-tunnel span:nth-child(2) {
+  top: 50%;
+  height: 3px;
+  opacity: 0.55;
+  animation-duration: 0.28s;
+}
+
+.metro-ride-tunnel span:nth-child(3) {
+  top: 84%;
+}
+
+.metro-ride-platform {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(transparent calc(100% - 1px), #d3cdc1 0) 0 0 / 64px 32px,
+    linear-gradient(90deg, transparent calc(100% - 1px), #d3cdc1 0) 0 0 / 64px 32px,
+    #f3f1ec;
+  transform: translateX(105%);
+}
+
+.metro-ride.is-in .metro-ride-platform {
+  animation: ride-arrive 0.5s cubic-bezier(0.12, 0.8, 0.25, 1) 0.24s forwards;
+}
+
+.metro-ride.is-out .metro-ride-platform {
+  transform: none;
+}
+
+.metro-ride-stripe {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 84px;
+  translate: 0 -50%;
+  border-block: 10px solid #141414;
+  background: var(--m-line);
+}
+
+.metro-ride-sign {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  padding: 0.22em 0.55em 0.12em 0.28em;
+  border-radius: 0.25em;
+  background: #141414;
+  color: #fff;
+  font: 900 clamp(2.4rem, 8vw, 6rem)/1 "Overpass", sans-serif;
+  letter-spacing: -0.02em;
+  box-shadow: 0 24px 48px -24px rgb(0 0 0 / 0.6);
+}
+
+.metro-ride-sign .metro-badge {
+  width: 1.05em;
+  height: 1.05em;
+  margin-top: -0.1em;
+  font-size: 0.62em;
+}
+
+@keyframes ride-dark {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes ride-clear {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes ride-streak {
+  to {
+    background-position-x: -560px;
+  }
+}
+
+@keyframes ride-arrive {
+  from {
+    transform: translateX(105%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mm-track {
+    stroke-dashoffset: 0;
+  }
+
+  .mm-station {
+    opacity: 1;
+  }
+
+  .metro-map[data-in] .mm-track,
+  .metro-map[data-in] .mm-station,
+  .mm-ring,
+  .mw-rain {
+    animation: none;
+  }
+}

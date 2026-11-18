@@ -74,32 +74,38 @@ export function SectionHeader({
   title: ReactNode;
   intro?: ReactNode;
 }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, amount: 0.5 });
   return (
     <Reveal className="section-header relative mb-10 sm:mb-14">
-      <span className="only-persona">
-        <span className="p5-index" aria-hidden="true">{index}</span>
-      </span>
-      <span className="eyebrow relative">
-        <span className="only-editorial">{`${index} —`}</span>
-        <span className="only-pop">{`#${index}`}</span>
-        <span className="only-persona">{`▶ ${index}`}</span>
-        <span>{eyebrow}</span>
-      </span>
-      <h2 className="heading relative mt-4 text-4xl sm:text-5xl lg:text-6xl text-fg">
-        {typeof title === "string" ? (
-          <>
-            <span className="not-persona">
-              <ScrambleText text={title} />
-            </span>
-            <span className="only-persona">
-              <Ransom text={title} seed={Number(index) || 0} />
-            </span>
-          </>
-        ) : (
-          title
-        )}
-      </h2>
-      {intro && <p className="mt-4 max-w-2xl text-base sm:text-lg text-muted leading-relaxed">{intro}</p>}
+      <div ref={ref} data-stamp={inView ? "in" : "wait"}>
+        <span className="only-persona">
+          <span className="p5-index" aria-hidden="true">{index}</span>
+        </span>
+        <span className="eyebrow relative">
+          <span className="only-metro">
+            <span className="metro-badge" aria-hidden="true">{Number(index)}</span>
+          </span>
+          <span className="only-pop">{`#${index}`}</span>
+          <span className="only-persona">{`▶ ${index}`}</span>
+          <span>{eyebrow}</span>
+        </span>
+        <h2 className="heading relative mt-4 text-4xl sm:text-5xl lg:text-6xl text-fg">
+          {typeof title === "string" ? (
+            <>
+              <span className="not-persona">
+                <ScrambleText text={title} />
+              </span>
+              <span className="only-persona">
+                <Ransom text={title} seed={Number(index) || 0} />
+              </span>
+            </>
+          ) : (
+            title
+          )}
+        </h2>
+        {intro && <p className="mt-4 max-w-2xl text-base sm:text-lg text-muted leading-relaxed">{intro}</p>}
+      </div>
     </Reveal>
   );
 }

@@ -13,6 +13,8 @@ import { P5Stars } from "./components/PersonaDecor";
 import { Terminal } from "./components/Terminal";
 import { SkyControls } from "./components/SkyControls";
 import { SettingsMenu } from "./components/SettingsMenu";
+import { SectionMotion } from "./components/SectionMotion";
+import { MetroDoors, MetroNextStop } from "./components/MetroDecor";
 import { track, unlock } from "./achievements";
 import { useInteractiveSurfaces, useKonami } from "./hooks/interactive";
 import { OPEN_CONTROLS_EVENT, OPEN_TERMINAL_EVENT } from "./events";
@@ -236,18 +238,25 @@ function App() {
       <main>
         <HeroSection />
         <P5Divider />
+        <MetroNextStop to="about" />
         <AboutSection />
         <P5Divider flip />
+        <MetroNextStop to="journey" />
         <JourneySection />
         <P5Divider />
+        <MetroNextStop to="skills" />
         <SkillsSection />
         <P5Divider flip />
+        <MetroNextStop to="work" />
         <ProjectsSection />
         <P5Divider />
+        <MetroNextStop to="contact" />
       </main>
       <ContactSection />
       <WeatherFx />
+      <SectionMotion />
       <IntroSplash />
+      <MetroDoors />
     </>
   );
 }

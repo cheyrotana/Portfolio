@@ -4,6 +4,14 @@ import { useState } from "react";
 import type { ThemeId } from "../theme";
 import { TrophyButton } from "./Achievements";
 import { Ransom } from "./Ransom";
+import { MetroTrain } from "./MetroDecor";
+
+// Jagged burst behind the settings gear (Persona theme)
+const GEAR_BURST = Array.from({ length: 24 }, (_, i) => {
+  const a = (i / 24) * Math.PI * 2;
+  const r = i % 2 === 0 ? 50 : 36;
+  return `${(50 + r * Math.cos(a)).toFixed(1)},${(50 + r * Math.sin(a)).toFixed(1)}`;
+}).join(" ");
 
 export const NAV_SECTIONS = [
   { id: "about", label: "About" },
@@ -39,7 +47,12 @@ export function Navbar({
     >
       <nav className="nav-bar card mx-auto max-w-6xl flex items-center justify-between gap-3 px-3 sm:px-4 py-2 !rounded-[calc(var(--radius)+6px)] backdrop-blur-md bg-surface/80">
         <a href="#home" className="heading text-lg sm:text-xl px-2 text-fg" aria-label="Back to top">
-          <span className="only-editorial">Chey Rotana</span>
+          <span className="only-metro">
+            <span className="metro-logo">
+              <span className="metro-logo-dot" aria-hidden="true">R</span>
+              Rotana Line
+            </span>
+          </span>
           <span className="only-pop">
             rotana<span className="text-accent">!</span>
           </span>
@@ -48,7 +61,10 @@ export function Navbar({
           </span>
         </a>
 
-        <div className="hidden lg:flex items-center gap-1">
+        <div className="nav-links relative hidden lg:flex items-center gap-1">
+          <span className="only-metro">
+            <MetroTrain />
+          </span>
           {NAV_SECTIONS.map((s) => (
             <a
               key={s.id}
@@ -74,13 +90,16 @@ export function Navbar({
           <TrophyButton open={trophiesOpen} onOpenChange={onTrophiesChange} bare />
           <button
             type="button"
-            className="nav-settings btn btn-ghost !px-3 !py-2 text-sm"
+            className="nav-settings"
             onClick={onOpenSettings}
             aria-label="Open settings"
             title="Settings"
             data-cursor="Settings"
           >
-            <Settings size={17} />
+            <svg className="nav-settings-burst" viewBox="-4 -4 108 108" aria-hidden="true">
+              <polygon points={GEAR_BURST} />
+            </svg>
+            <Settings size={18} strokeWidth={2.4} className="nav-settings-gear" />
           </button>
           <button
             className="icon-btn lg:hidden"
