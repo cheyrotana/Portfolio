@@ -5,8 +5,8 @@ import { projects, type Project } from "../data/projects";
 import { openControls, showProject } from "../events";
 import { useThemeAttr, useWeather } from "../hooks/interactive";
 import { introDone, introTheme } from "../intro";
-import { NAV_SECTIONS } from "./Navbar";
-import { MetroWindow } from "./MetroWindow";
+import { NAV_SECTIONS } from "../data/sections";
+import { MetroCity } from "./MetroCity";
 
 // Metro theme: the portfolio as a transit line. Everything here renders only in that theme.
 // - SplitFlap / MetroHero: a departure board that flips your name and status into place
@@ -114,7 +114,7 @@ export function MetroHero({ go, portrait }: { go: boolean; portrait: string }) {
 
   return (
     <div className="metro-hero relative mx-auto max-w-6xl w-full px-5 sm:px-8">
-      <MetroWindow caption="Line 1 · Phnom Penh · This train terminates at Contact" />
+      <MetroCity />
       <div className="metro-board">
         <div className="metro-board-head">
           <span className="metro-board-title">Departures</span>

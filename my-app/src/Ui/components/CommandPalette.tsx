@@ -12,7 +12,7 @@ import { setSky, setWeather, WEATHER_KINDS } from "../weather";
 import { useBgmOn, useSoundOn } from "../hooks/interactive";
 import { play, setSound } from "../sound";
 import { THEMES, type ThemeId } from "../theme";
-import { NAV_SECTIONS } from "./Navbar";
+import { NAV_SECTIONS } from "../data/sections";
 
 interface Command {
   id: string;

@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { NAV_SECTIONS } from "../data/sections";
 import { Menu, Settings, X } from "lucide-react";
 import { useState } from "react";
 import type { ThemeId } from "../theme";
@@ -13,13 +14,6 @@ const GEAR_BURST = Array.from({ length: 24 }, (_, i) => {
   return `${(50 + r * Math.cos(a)).toFixed(1)},${(50 + r * Math.sin(a)).toFixed(1)}`;
 }).join(" ");
 
-export const NAV_SECTIONS = [
-  { id: "about", label: "About" },
-  { id: "journey", label: "Journey" },
-  { id: "skills", label: "Skills" },
-  { id: "work", label: "Work" },
-  { id: "contact", label: "Contact" },
-] as const;
 
 interface NavbarProps {
   activeSection: string;

@@ -1,5 +1,5 @@
 import { ArrowUp, ArrowUpRight } from "lucide-react";
-import { NAV_SECTIONS } from "./Navbar";
+import { NAV_SECTIONS } from "../data/sections";
 import { profile, socials } from "../data/profile";
 import ContactForm from "./ContactForm";
 import { P5Burst, P5Slab } from "./PersonaDecor";

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { NAV_SECTIONS } from "./Navbar";
+import { NAV_SECTIONS } from "../data/sections";
 
 // Section motion, and nothing for visitors who prefer reduced motion:
 // 1. Persona: cards slide in from alternating sides with a tilt as they scroll into view;
