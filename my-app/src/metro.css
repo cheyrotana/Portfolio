@@ -429,7 +429,7 @@
   align-items: start;
   padding: 1.25rem;
   border-radius: 28px;
-  background: rgb(243 241 236 / 0.94);
+  background: rgb(var(--m-panel, 243 241 236) / 0.94);
   box-shadow: 0 30px 60px -40px rgb(20 20 20 / 0.5);
   pointer-events: auto;
 }
@@ -464,8 +464,8 @@
     linear-gradient(#fff, #fff) left bottom 16px / 100% 4px no-repeat,
     radial-gradient(circle, #b8890b 1.7px, transparent 2.3px) left bottom / 11px 16px repeat-x,
     linear-gradient(#f2c230, #f2c230) left bottom / 100% 16px no-repeat,
-    repeating-linear-gradient(0deg, rgb(20 20 20 / 0.06) 0 1px, transparent 1px 34px),
-    repeating-linear-gradient(90deg, rgb(20 20 20 / 0.05) 0 1px, transparent 1px 68px),
+    repeating-linear-gradient(0deg, rgb(var(--grout, 20 20 20) / 0.06) 0 1px, transparent 1px 34px),
+    repeating-linear-gradient(90deg, rgb(var(--grout, 20 20 20) / 0.05) 0 1px, transparent 1px 68px),
     linear-gradient(
       90deg,
       rgb(var(--wall) / 0),
@@ -1346,7 +1346,65 @@ a.metro-dir:focus-visible {
    over the city behind it (cards and boards have their own backgrounds and don't need it) */
 [data-theme="metro"] :is(.section-header, .journey-head, #about) :is(h2, p, .heading):not(.card *) {
   text-shadow:
-    0 0 2px rgb(243 241 236),
-    0 0 10px rgb(243 241 236),
-    0 0 18px rgb(243 241 236 / 0.8);
+    0 0 2px rgb(var(--m-halo, 243 241 236)),
+    0 0 10px rgb(var(--m-halo, 243 241 236)),
+    0 0 18px rgb(var(--m-halo, 243 241 236) / 0.8);
+}
+
+/* ── Night: the station after dark ──────────────────────────────────────────
+   When the live sky (or the sky picker) turns night, the stations go dark with the city: dark tiled
+   walls with light grout, warm lamps along the ceiling, and the signs stay lit. */
+
+html[data-theme="metro"][data-sky="night"] {
+  color-scheme: dark;
+  --bg: #10131b;
+  --bg-alt: #141823;
+  --surface: #1b1f2b;
+  --surface-2: #232838;
+  --fg: #f1ede4;
+  --muted: #aaa49a;
+  --line: #2e3445;
+  --accent: #ff8a3d;
+  --m-panel: 20 24 34;
+  --m-halo: 16 19 27;
+  --card-shadow: inset 0 5px 0 var(--m-line), 0 0 0 1px var(--line), 0 18px 34px -22px rgb(0 0 0 / 0.8);
+  --card-shadow-hover: inset 0 5px 0 var(--m-line), 0 0 0 1px var(--line), 0 26px 44px -24px rgb(0 0 0 / 0.9);
+}
+
+html[data-theme="metro"][data-sky="night"] :is(#about, #journey, #skills, #work, #contact) {
+  --wall: 16 19 27;
+  --grout: 255 255 255;
+}
+
+/* ceiling lamps: pools of warm light along the top of each station */
+html[data-theme="metro"][data-sky="night"] :is(#about, #journey, #skills, #work, #contact)::before {
+  content: "";
+  position: absolute;
+  inset: 11px 0 auto;
+  height: 22rem;
+  background: radial-gradient(ellipse 15rem 11rem at 50% 0, rgb(255 196 120 / 0.13), transparent 70%) 0 0 / 30rem 100% repeat-x;
+  pointer-events: none;
+}
+
+html[data-theme="metro"][data-sky="night"] .eyebrow {
+  box-shadow: inset 0 0 0 1px #3a4152;
+}
+
+html[data-theme="metro"][data-sky="night"] .btn-ghost {
+  border-color: #f1ede4;
+  color: #f1ede4;
+}
+
+html[data-theme="metro"][data-sky="night"] #about dl svg {
+  background: #0b0d13;
+  box-shadow: inset 0 0 0 1px #3a4152;
+}
+
+html[data-theme="metro"][data-sky="night"] .journey-route {
+  stroke: #3a4152;
+}
+
+html[data-theme="metro"][data-sky="night"] .journey-marker:not(.is-reached) {
+  border-color: #5a6275;
+  background: var(--surface);
 }
