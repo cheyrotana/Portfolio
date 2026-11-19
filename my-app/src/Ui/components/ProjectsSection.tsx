@@ -10,12 +10,15 @@ import { P5Slab } from "./PersonaDecor";
 import { P5Clouds } from "./Weather";
 import { ProjectModal } from "./ProjectModal";
 import { SectionHeader } from "./Reveal";
+import { RetroCrate } from "./RetroCrate";
+import { useThemeAttr } from "../hooks/interactive";
 
 function ProjectsSection() {
   const [filter, setFilter] = useState<Category | "all">("all");
   const [openId, setOpenId] = useState<string | null>(null);
   const [appId, setAppId] = useState<string | null>(null);
   const [highlight, setHighlight] = useState(false);
+  const retro = useThemeAttr() === "retro"; // Retro shows the projects as records in a crate
   const highlightTimer = useRef<number | undefined>(undefined);
 
   // Launching an app on the phone; launching all of them unlocks an achievement.
@@ -118,7 +121,11 @@ function ProjectsSection() {
           index="04"
           eyebrow="Selected work"
           title="Projects"
-          intro="Government platforms in real use, plus the team projects that got me here. Each one is an app on the phone below: launch it to see the real screens, filter by type, and open the case study for the full story."
+          intro={
+            retro
+              ? "Government platforms in real use, plus the team projects that got me here. Browse them below and open one to see the full project."
+              : "Government platforms in real use, plus the team projects that got me here. Each one is an app on the phone below: launch it to see the real screens, filter by type, and open the case study for the full story."
+          }
         />
 
         {/* Filters */}
@@ -160,15 +167,19 @@ function ProjectsSection() {
           </div>
         </LayoutGroup>
 
-        {/* The projects as apps on a phone, with the story beside it */}
-        <ProjectPhone
-          appId={appId}
-          visible={visible}
-          highlighted={highlight}
-          onLaunch={launch}
-          onHome={goHome}
-          onOpen={openFromPhone}
-        />
+        {/* The projects as apps on a phone, with the story beside it (Retro: records in a crate) */}
+        {retro ? (
+          <RetroCrate projects={visible} onOpen={openFromPhone} />
+        ) : (
+          <ProjectPhone
+            appId={appId}
+            visible={visible}
+            highlighted={highlight}
+            onLaunch={launch}
+            onHome={goHome}
+            onOpen={openFromPhone}
+          />
+        )}
       </div>
 
       <AnimatePresence>

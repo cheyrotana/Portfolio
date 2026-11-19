@@ -15,7 +15,7 @@
     />
     <meta name="theme-color" content="#f06a1f" />
     <meta name="color-scheme" content="dark light" />
-    <link rel="canonical" href="https://cheyrotana-portfolio-v1.vercel.app/" />
+    <link rel="canonical" href="https://cheyrotana.vercel.app/" />
 
     <!-- Icons -->
     <!-- one icon that follows the theme (set below and in theme.ts) -->
@@ -26,13 +26,13 @@
     <!-- Link previews (Facebook, Telegram, LinkedIn, Discord…) -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Chey Rotana" />
-    <meta property="og:url" content="https://cheyrotana-portfolio-v1.vercel.app/" />
+    <meta property="og:url" content="https://cheyrotana.vercel.app/" />
     <meta property="og:title" content="Chey Rotana | Mobile & Full-Stack Developer" />
     <meta
       property="og:description"
       content="Flutter apps, Angular dashboards and the NestJS APIs behind them — from Phnom Penh, Cambodia."
     />
-    <meta property="og:image" content="https://cheyrotana-portfolio-v1.vercel.app/og-image.png" />
+    <meta property="og:image" content="https://cheyrotana.vercel.app/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Chey Rotana — Mobile & Full-Stack Developer" />
@@ -43,7 +43,7 @@
       name="twitter:description"
       content="Flutter apps, Angular dashboards and the NestJS APIs behind them — from Phnom Penh, Cambodia."
     />
-    <meta name="twitter:image" content="https://cheyrotana-portfolio-v1.vercel.app/og-image.png" />
+    <meta name="twitter:image" content="https://cheyrotana.vercel.app/og-image.png" />
 
     <!-- Structured data for search engines -->
     <script type="application/ld+json">
@@ -51,8 +51,8 @@
         "@context": "https://schema.org",
         "@type": "Person",
         "name": "Chey Rotana",
-        "url": "https://cheyrotana-portfolio-v1.vercel.app/",
-        "image": "https://cheyrotana-portfolio-v1.vercel.app/og-image.png",
+        "url": "https://cheyrotana.vercel.app/",
+        "image": "https://cheyrotana.vercel.app/og-image.png",
         "jobTitle": "Mobile & Full-Stack Developer",
         "address": { "@type": "PostalAddress", "addressLocality": "Phnom Penh", "addressCountry": "KH" },
         "alumniOf": { "@type": "CollegeOrUniversity", "name": "Cambodia Academy of Digital Technology" },
@@ -65,7 +65,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Alfa+Slab+One&family=Anton&family=Archivo+Black&family=Barlow+Condensed:ital,wght@0,600;0,800;1,800&family=Bebas+Neue&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700;12..96,800&family=DotGothic16&family=Overpass:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:wght@900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Alfa+Slab+One&family=Anton&family=Archivo+Black&family=Barlow+Condensed:ital,wght@0,600;0,800;1,800&family=Bebas+Neue&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700;12..96,800&family=Caveat:wght@600&family=DotGothic16&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400;1,9..144,600&family=Overpass:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:wght@900&family=Shrikhand&display=swap"
     />
 
     <!-- Apply the saved theme before first paint so the page never flashes the wrong one, with its
@@ -77,9 +77,9 @@
           theme = localStorage.getItem("portfolio-theme");
         } catch (e) {}
         if (theme === "editorial") theme = "metro"; // Editorial was replaced by Metro
-        if (["persona", "metro", "pop"].indexOf(theme) === -1) theme = "metro";
+        if (["persona", "metro", "retro", "pop"].indexOf(theme) === -1) theme = "metro";
         document.documentElement.setAttribute("data-theme", theme);
-        var icons = { persona: ["/favicon-32.png", "image/png", "#e60012"], metro: ["/favicon-metro.svg", "image/svg+xml", "#f06a1f"], pop: ["/favicon-pop.svg", "image/svg+xml", "#ff5a36"] };
+        var icons = { persona: ["/favicon-32.png", "image/png", "#e60012"], metro: ["/favicon-metro.svg", "image/svg+xml", "#f06a1f"], retro: ["/favicon-retro.svg", "image/svg+xml", "#a8431b"], pop: ["/favicon-pop.svg", "image/svg+xml", "#ff5a36"] };
         var icon = document.getElementById("theme-icon");
         icon.href = icons[theme][0];
         icon.type = icons[theme][1];

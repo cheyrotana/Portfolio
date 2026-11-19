@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useThemeAttr } from "../hooks/interactive";
 import { MetroSkillMap } from "./MetroMap";
+import { RetroBand } from "./RetroDecor";
 import { ArrowUpRight } from "lucide-react";
 import { useRef, useState, type KeyboardEvent } from "react";
 import { track } from "../achievements";
@@ -199,7 +200,8 @@ function SkillMenu() {
 
 function SkillsSection() {
   const all = skillGroups.flatMap((g) => g.skills);
-  const metro = useThemeAttr() === "metro"; // Metro shows the skills as a network map
+  const themeAttr = useThemeAttr();
+  const metro = themeAttr === "metro"; // Metro shows the skills as a network map, Retro as a band
 
   return (
     <section id="skills" className="relative py-24 sm:py-32 overflow-hidden">
@@ -213,11 +215,11 @@ function SkillsSection() {
           intro="From the phone in an officer's hand to the database behind it — these are the tools I reach for."
         />
 
-        <Reveal>{metro ? <MetroSkillMap /> : <SkillMenu />}</Reveal>
+        <Reveal>{metro ? <MetroSkillMap /> : themeAttr === "retro" ? <RetroBand /> : <SkillMenu />}</Reveal>
       </div>
 
       {/* Scrolling strip of every tool */}
-      <div className="mt-16 border-y border-line py-5 overflow-hidden [[data-theme=pop]_&]:bg-accent-2 [[data-theme=pop]_&]:border-y-[2.5px] [[data-theme=pop]_&]:-rotate-1 [[data-theme=persona]_&]:bg-accent [[data-theme=persona]_&]:border-y-[3px] [[data-theme=persona]_&]:-rotate-2 [[data-theme=persona]_&]:scale-105">
+      <div className="skills-strip mt-16 border-y border-line py-5 overflow-hidden [[data-theme=pop]_&]:bg-accent-2 [[data-theme=pop]_&]:border-y-[2.5px] [[data-theme=pop]_&]:-rotate-1 [[data-theme=persona]_&]:bg-accent [[data-theme=persona]_&]:border-y-[3px] [[data-theme=persona]_&]:-rotate-2 [[data-theme=persona]_&]:scale-105">
         <div className="animate-marquee">
           {[0, 1].map((copy) => (
             <div key={copy} className="flex items-center gap-10 pr-10 flex-shrink-0" aria-hidden={copy === 1}>

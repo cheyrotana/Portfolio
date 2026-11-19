@@ -6,6 +6,7 @@ import { P5Burst, P5Slab } from "./PersonaDecor";
 import { P5Clouds } from "./Weather";
 import { Ransom } from "./Ransom";
 import { Reveal, SectionHeader } from "./Reveal";
+import { RetroEq } from "./RetroDecor";
 
 function ContactSection() {
   return (
@@ -65,6 +66,20 @@ function ContactSection() {
             <P5Burst className="p5-burst-corner p5-burst-br" />
             <span className="only-persona">
               <span className="calling-card-tag" aria-hidden="true">Calling card</span>
+            </span>
+            <span className="only-retro">
+              <span className="retro-jukebox-top" aria-hidden="true">
+                <span className="retro-jukebox-arch">
+                  <RetroEq className="retro-jukebox-eq" />
+                </span>
+                <span className="retro-request-head">
+                  <span className="retro-request-code">05</span>
+                  <span className="retro-request-title">
+                    <small>Contact</small>
+                    Send me a message
+                  </span>
+                </span>
+              </span>
             </span>
             <span className="only-metro">
               <span className="metro-tm-head" aria-hidden="true">

@@ -2,7 +2,7 @@
 
 My personal portfolio website, showcasing my projects, tech stack and contact info.
 
-🌐 **Live site:** https://cheyrotana-portfolio-v1.vercel.app
+🌐 **Live site:** https://cheyrotana.vercel.app
 
 ## Features
 - Animated hero, about and tech-stack sections (scrolling marquee of tools I use)

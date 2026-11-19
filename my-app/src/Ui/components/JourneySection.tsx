@@ -51,8 +51,9 @@ function loadVehicle(): VehicleId {
   } catch {
     // storage blocked: fall back to the default
   }
-  // nothing chosen yet: the Metro theme rides a train, the others fly the paper plane
-  return document.documentElement.dataset.theme === "metro" ? "train" : "plane";
+  // nothing chosen yet: the Metro theme rides a train, Retro drives, the others fly the paper plane
+  const theme = document.documentElement.dataset.theme;
+  return theme === "metro" ? "train" : theme === "retro" ? "car" : "plane";
 }
 
 interface Geometry {
@@ -306,6 +307,9 @@ function JourneySection() {
             <span className="only-metro">
               <span className="metro-badge" aria-hidden="true">2</span>
             </span>
+            <span className="only-retro">
+              <span className="retro-eyebrow-code" aria-hidden="true">02</span>
+            </span>
             <span className="only-pop">#02</span>
             <span className="only-persona">▶ 02</span>
             <span>Journey</span>
@@ -432,7 +436,9 @@ function JourneySection() {
                         })}
                       >
                         <div className="flex items-center justify-between gap-2">
-                          <span className="font-mono text-xs text-accent">{stop.date}</span>
+                          <span className="font-mono text-xs text-accent">
+                            {stop.date}
+                          </span>
                           <Icon size={16} className={reached ? "text-accent" : "text-muted"} />
                         </div>
                         <h3 className="heading mt-1.5 text-xl sm:text-2xl text-fg">{stop.title}</h3>

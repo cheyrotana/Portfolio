@@ -13,7 +13,8 @@ export const profile = {
   location: "Phnom Penh, Cambodia",
   education: "B.Sc. Computer Science · CADT",
   year: "Year 4",
-  currently: "Developer intern at MLMUPC",
+  currently: "Fourth-year student at CADT",
+  internship: "Interned 3 months with the Digital Revolution team at MLMUPC",
 };
 
 export interface SocialLink {
@@ -137,9 +138,9 @@ export const journey: JourneyStop[] = [
   },
   {
     date: "Apr 2026",
-    title: "Developer Intern",
-    org: "MLMUPC",
-    text: "Joined the HRM platform team, building the Flutter app and Angular web app used by MLMUPC and NIS.",
+    title: "Internship (3 months)",
+    org: "MLMUPC · Digital Revolution team",
+    text: "Three months on the HRM platform, building the Flutter app and Angular web app used by MLMUPC and NIS.",
     kind: "work",
     projectId: "hrm",
   },

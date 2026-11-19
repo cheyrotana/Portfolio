@@ -5,6 +5,8 @@ import { openTerminalWindow } from "../events";
 import { P5Burst, P5Skyline, P5Slab } from "./PersonaDecor";
 import { P5Clouds } from "./Weather";
 import { Reveal, SectionHeader } from "./Reveal";
+import { RetroCredits } from "./RetroDecor";
+import { RetroPolaroid } from "./RetroPolaroid";
 
 function greetingFor(hour: number) {
   if (hour < 12) return "Good morning";
@@ -39,7 +41,11 @@ function AboutSection() {
           {/* Quick facts */}
           <Reveal className="relative">
             <P5Burst className="p5-burst-corner p5-burst-tl" />
-            <dl className="card relative p-6 grid gap-5 max-w-md mx-auto lg:mx-0">
+            <span className="only-retro">
+              <RetroPolaroid />
+              <RetroCredits />
+            </span>
+            <dl className="card relative p-6 grid gap-5 max-w-md mx-auto lg:mx-0 not-retro-block">
               {facts.map(({ icon: Icon, label, value }) => (
                 <div key={label} className="flex gap-3">
                   <Icon size={18} className="text-accent mt-0.5 flex-shrink-0" />
@@ -61,7 +67,7 @@ function AboutSection() {
               </p>
               <p className="mt-5 text-muted leading-relaxed">
                 I'm a fourth-year Computer Science student at the Cambodia Academy of Digital Technology. During my
-                internship at MLMUPC I've worked across the whole stack: Flutter apps that officers use to check in and
+                three-month internship with the Digital Revolution team at MLMUPC I worked across the whole stack: Flutter apps that officers use to check in and
                 request leave, Angular dashboards for administrators, NestJS services, and even a Raspberry Pi
                 connector that links face scanners to the HR system.
               </p>

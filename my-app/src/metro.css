@@ -815,14 +815,14 @@
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 853 / 1280; /* the whole photo, head to shoes */
   object-fit: cover;
 }
 
 @media (max-width: 1023px) {
-  .metro-platform-photo img {
-    aspect-ratio: 16 / 11;
-    object-position: 50% 30%;
+  .metro-platform-photo {
+    max-width: 340px;
+    margin-inline: auto;
   }
 }
 

@@ -83,6 +83,42 @@
   --heading-tracking: -0.025em;
 }
 
+[data-theme="retro"] {
+  color-scheme: light;
+  --r-cream: #f4e6c8;
+  --r-paper: #ead6ad;
+  --r-brown: #3a2314;
+  --r-night: #2b1d15;
+  --r-rust: #a8431b;
+  --r-orange: #e07a2e;
+  --r-mustard: #e8a91c;
+  --r-olive: #6f7a2c;
+  --r-wood: #8a4b22;
+  --bg: #f4e6c8;
+  --bg-alt: #ead6ad;
+  --surface: #fbf1dc;
+  --surface-2: #f1e0bd;
+  --fg: #3a2314;
+  --muted: #6b4a35;
+  --line: #3a2314;
+  --accent: #a8431b;
+  --accent-fg: #fff4dc;
+  --accent-2: #6f7a2c;
+  --accent-3: #e8a91c;
+  --radius: 16px;
+  --radius-sm: 999px;
+  --t-font-display: "Shrikhand", "Cooper Black", Georgia, serif;
+  --t-font-body: "Fraunces", Georgia, serif;
+  --t-font-mono: "Bebas Neue", "Arial Narrow", sans-serif;
+  --t-font-ui: "Bebas Neue", "Arial Narrow", sans-serif;
+  --card-border: 3px solid var(--line);
+  --card-shadow: 8px 8px 0 var(--r-rust);
+  --card-shadow-hover: 12px 12px 0 var(--r-mustard);
+  --btn-shadow: 4px 4px 0 var(--line);
+  --heading-weight: 400;
+  --heading-tracking: 0;
+}
+
 [data-theme="pop"] {
   color-scheme: light;
   --bg: #fff4dc;
@@ -274,6 +310,7 @@ body {
 
   /* Text that should only appear in one theme */
   .only-metro,
+  .only-retro,
   .only-pop,
   .only-persona {
     display: none;
@@ -281,6 +318,7 @@ body {
 }
 
 [data-theme="metro"] .only-metro,
+[data-theme="retro"] .only-retro,
 [data-theme="pop"] .only-pop,
 [data-theme="persona"] .only-persona {
   display: contents;
@@ -952,8 +990,20 @@ body {
   color: var(--accent-fg);
 }
 
+/* the bubble's wrapper is a flex item: let it shrink, and break long words (emails, links) so the text
+   never runs out of the bubble */
+.chat-shape {
+  min-width: 0;
+  max-width: 82%;
+}
+
+.chat-shape > .chat-bubble {
+  max-width: 100%;
+}
+
 .chat-bubble {
   max-width: 82%;
+  overflow-wrap: anywhere;
   padding: 0.6rem 0.9rem;
   font-size: 0.92rem;
   line-height: 1.45;
@@ -2388,8 +2438,14 @@ body {
 /* ── Theme-conditional wrappers (the opposite of .only-persona) ──────────── */
 
 .not-persona,
-.not-metro {
+.not-metro,
+.not-retro {
   display: contents;
+}
+
+[data-theme="retro"] .not-retro,
+[data-theme="retro"] .not-retro-block {
+  display: none;
 }
 
 [data-theme="metro"] .not-metro,
@@ -2449,7 +2505,7 @@ body {
 
 .hero-photo {
   position: relative;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 853 / 1280; /* the photo's own shape: head to shoes, nothing cropped */
 }
 
 .hero-photo-img {
@@ -2458,7 +2514,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 50% 19%; /* frame ends just above the shoes */
+  object-position: 50% 50%;
   border-radius: var(--radius);
 }
 

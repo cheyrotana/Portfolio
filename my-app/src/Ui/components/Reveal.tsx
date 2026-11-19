@@ -89,6 +89,11 @@ export function SectionHeader({
           </span>
           <span className="only-pop">{`#${index}`}</span>
           <span className="only-persona">{`▶ ${index}`}</span>
+          <span className="only-retro">
+            <span className="retro-eyebrow-code" aria-hidden="true">
+              {index}
+            </span>
+          </span>
           <span>{eyebrow}</span>
         </span>
         <MetroDirections stop={Number(index)} />

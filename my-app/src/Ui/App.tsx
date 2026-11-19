@@ -16,6 +16,7 @@ import { SettingsMenu } from "./components/SettingsMenu";
 import { SectionMotion } from "./components/SectionMotion";
 import { MetroDoors, MetroNextStop } from "./components/MetroDecor";
 import { MetroCity } from "./components/MetroCity";
+import { RetroStripes, RetroTurntable } from "./components/RetroDecor";
 import { track, unlock } from "./achievements";
 import { useInteractiveSurfaces, useKonami } from "./hooks/interactive";
 import { OPEN_CONTROLS_EVENT, OPEN_TERMINAL_EVENT } from "./events";
@@ -48,12 +49,15 @@ function ThemeWipe({ accent, edge, onDone }: { accent: string; edge: string; onD
   );
 }
 
-// Persona theme: a striped band that slices diagonally between two sections.
+// Persona theme: a striped band that slices diagonally between two sections (Retro: sunset stripes).
 function P5Divider({ flip = false }: { flip?: boolean }) {
   return (
-    <div className="only-persona">
-      <div className={`p5-divider ${flip ? "p5-divider-flip" : ""}`} aria-hidden="true" />
-    </div>
+    <>
+      <div className="only-persona">
+        <div className={`p5-divider ${flip ? "p5-divider-flip" : ""}`} aria-hidden="true" />
+      </div>
+      <RetroStripes flip={flip} />
+    </>
   );
 }
 
@@ -172,7 +176,8 @@ function App() {
   // Hide the navbar while scrolling down, show it again when scrolling up.
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious() ?? 0;
-    setHidden(latest > previous && latest > 200);
+    // (not while the Retro hero is playing its move: its rings land on the nav links)
+    setHidden(latest > previous && latest > 200 && !document.documentElement.dataset.gate);
   });
 
   // Highlight the nav link of the section currently in the middle of the screen.
@@ -238,6 +243,7 @@ function App() {
       </AnimatePresence>
       <P5Stars />
       {theme === "metro" && <MetroCity />}
+      {theme === "retro" && <RetroTurntable />}
       <main>
         <HeroSection />
         <P5Divider />

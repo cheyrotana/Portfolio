@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-export type ThemeId = "persona" | "metro" | "pop";
+export type ThemeId = "persona" | "metro" | "retro" | "pop";
 
 export interface ThemeOption {
   id: ThemeId;
@@ -23,6 +23,12 @@ export const THEMES: ThemeOption[] = [
     swatches: ["#f3f1ec", "#141414", "#f06a1f"],
   },
   {
+    id: "retro",
+    name: "Retro",
+    description: "70s jazz on vinyl",
+    swatches: ["#f4e6c8", "#3a2314", "#a8431b"],
+  },
+  {
     id: "pop",
     name: "Pop",
     description: "Bold & playful",
@@ -37,13 +43,14 @@ const isThemeId = (v: unknown): v is ThemeId => THEMES.some((t) => t.id === v);
 function currentTheme(): ThemeId {
   // index.html sets this before first paint (the saved choice, else Metro).
   const attr = document.documentElement.getAttribute("data-theme");
-  return isThemeId(attr) ? attr : "metro";
+  return isThemeId(attr) ? attr : "retro";
 }
 
 // The browser-tab icon and colour for each theme (index.html sets them before first paint too)
 const ICONS: Record<ThemeId, { href: string; type: string }> = {
   persona: { href: "/favicon-32.png", type: "image/png" },
   metro: { href: "/favicon-metro.svg", type: "image/svg+xml" },
+  retro: { href: "/favicon-retro.svg", type: "image/svg+xml" },
   pop: { href: "/favicon-pop.svg", type: "image/svg+xml" },
 };
 

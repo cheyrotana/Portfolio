@@ -6,6 +6,8 @@ import type { ThemeId } from "../theme";
 import { TrophyButton } from "./Achievements";
 import { Ransom } from "./Ransom";
 import { MetroNavClock, MetroTrain } from "./MetroDecor";
+import { RetroNeedle } from "./RetroDecor";
+import { useBgmOn } from "../hooks/interactive";
 
 // Jagged burst behind the settings gear (Persona theme)
 const GEAR_BURST = Array.from({ length: 24 }, (_, i) => {
@@ -28,19 +30,26 @@ interface NavbarProps {
 }
 
 export function Navbar({
-  activeSection, hidden, onOpenSettings, trophiesOpen, onTrophiesChange,
+  activeSection, hidden, theme, onOpenSettings, trophiesOpen, onTrophiesChange,
 }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const musicOn = useBgmOn();
+  const hide = hidden && !menuOpen;
+  // Retro: hiding only tucks the bar away; its dial window stays at the top (CSS: .nav-bar[data-tucked])
+  const tuck = theme === "retro";
   const stationName = NAV_SECTIONS.find((s) => s.id === activeSection)?.label ?? "Rotana Central";
 
   return (
     <motion.header
       className="fixed inset-x-0 top-0 z-40 px-4 sm:px-6 pt-3 sm:pt-4"
       initial={{ y: -80, opacity: 0 }}
-      animate={hidden && !menuOpen ? { y: -90, opacity: 0 } : { y: 0, opacity: 1 }}
+      animate={hide && !tuck ? { y: -90, opacity: 0 } : { y: 0, opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
-      <nav className="nav-bar card mx-auto max-w-6xl flex items-center justify-between gap-3 px-3 sm:px-4 py-2 !rounded-[calc(var(--radius)+6px)] backdrop-blur-md bg-surface/80">
+      <nav
+        data-live={musicOn ? "" : undefined}
+        data-tucked={hide && tuck ? "" : undefined}
+        className="nav-bar card mx-auto max-w-6xl flex items-center justify-between gap-3 px-3 sm:px-4 py-2 !rounded-[calc(var(--radius)+6px)] backdrop-blur-md bg-surface/80">
         <a href="#home" className="heading text-lg sm:text-xl px-2 text-fg" aria-label="Back to top">
           <span className="only-metro">
             <span className="metro-logo">
@@ -54,6 +63,9 @@ export function Navbar({
               </span>
             </span>
           </span>
+          <span className="only-retro">
+            <span className="retro-logo">Chey Rotana</span>
+          </span>
           <span className="only-pop">
             rotana<span className="text-accent">!</span>
           </span>
@@ -65,6 +77,9 @@ export function Navbar({
         <div className="nav-links relative hidden lg:flex items-center gap-1">
           <span className="only-metro">
             <MetroTrain />
+          </span>
+          <span className="only-retro">
+            <RetroNeedle />
           </span>
           {NAV_SECTIONS.map((s) => (
             <a
@@ -81,7 +96,9 @@ export function Navbar({
                   transition={{ type: "spring", stiffness: 400, damping: 32 }}
                 />
               )}
-              <span className="relative">{s.label}</span>
+              <span className="relative">
+                {s.label}
+              </span>
             </a>
           ))}
         </div>

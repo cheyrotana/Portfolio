@@ -10,6 +10,7 @@ import { P5Sky, P5Skyline, P5Slab } from "./PersonaDecor";
 import { P5Clouds, WeatherIcon } from "./Weather";
 import { Ransom } from "./Ransom";
 import { MetroHero } from "./MetroDecor";
+import { RetroGateway } from "./RetroGateway";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const TZ = "Asia/Phnom_Penh";
@@ -88,7 +89,9 @@ const status = [
 function HeroSection() {
   // In Persona the title card covers the page first: wait for it, so the entrance is actually seen
   const [go, setGo] = useState(() => !introWillPlay());
-  const metro = useThemeAttr() === "metro";
+  const themeAttr = useThemeAttr();
+  const metro = themeAttr === "metro";
+  const retro = themeAttr === "retro";
   useEffect(() => {
     if (go) return;
     const start = () => setGo(true);
@@ -99,6 +102,9 @@ function HeroSection() {
       window.clearTimeout(fallback);
     };
   }, [go]);
+
+  // Retro: the hero is a record that turns into a sunset as you scroll (a tall, pinned section of its own)
+  if (retro) return <RetroGateway />;
 
   return (
     <section

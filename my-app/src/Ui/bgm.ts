@@ -82,6 +82,7 @@ const MELODY: [number, number, number, number][] = [
 
 let ctx: AudioContext | null = null;
 let master: GainNode | null = null;
+let analyser: AnalyserNode | null = null;
 let drums: GainNode | null = null;
 let keys: GainNode | null = null;
 let noiseBuf: AudioBuffer | null = null;
@@ -103,7 +104,10 @@ function setup() {
   tone.frequency.value = 9000;
   master = ac.createGain();
   master.gain.value = 0;
-  master.connect(tone).connect(comp).connect(ac.destination);
+  analyser = ac.createAnalyser();
+  analyser.fftSize = 64;
+  analyser.smoothingTimeConstant = 0.55;
+  master.connect(tone).connect(comp).connect(analyser).connect(ac.destination);
 
   drums = ac.createGain();
   drums.gain.value = 0.9;
@@ -323,6 +327,14 @@ function stop() {
     window.clearInterval(timer);
     void ctx?.suspend();
   }, 700);
+}
+
+/** The music's loudness in a few frequency bands (0–255 each), for meters that move with it.
+ *  Returns false while nothing is playing. */
+export function bgmLevels(out: Uint8Array<ArrayBuffer>) {
+  if (!analyser || !on || ctx?.state !== "running") return false;
+  analyser.getByteFrequencyData(out);
+  return true;
 }
 
 // Music left on last visit starts with the first click or key press.
