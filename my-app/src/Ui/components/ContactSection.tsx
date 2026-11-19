@@ -67,10 +67,16 @@ function ContactSection() {
               <span className="calling-card-tag" aria-hidden="true">Calling card</span>
             </span>
             <span className="only-metro">
-              <span className="metro-ticket-stub" aria-hidden="true">
-                <span>Single journey</span>
-                <b>PNH → Your inbox</b>
-                <span>Valid any day · No. 0001</span>
+              <span className="metro-tm-head" aria-hidden="true">
+                <span className="metro-badge">R</span>
+                <span className="metro-tm-title">
+                  <small>Rotana Line</small>
+                  Tickets &amp; messages
+                </span>
+                <span className="metro-tm-service">
+                  <span className="metro-live-dot" />
+                  In service
+                </span>
               </span>
             </span>
             <ContactForm />

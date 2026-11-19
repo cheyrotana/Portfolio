@@ -5,6 +5,7 @@ import { RotateCcw, Send } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { unlock } from "../achievements";
 import { play } from "../sound";
+import { MetroTicketPrompt, MetroTicketSlot, type PrintedTicket } from "./MetroTicket";
 
 // EmailJS settings (unchanged from the original contact form).
 const SERVICE_ID = "service_n31f1lt";
@@ -61,6 +62,7 @@ function ContactForm() {
   const [step, setStep] = useState<Step>("name");
   const [input, setInput] = useState("");
   const [data, setData] = useState({ name: "", email: "", message: "" });
+  const [ticket, setTicket] = useState<PrintedTicket | null>(null); // Metro: the ticket the machine prints
 
   const add = (from: Bubble["from"], text: string) =>
     setBubbles((b) => [...b, { id: ++counter.current, from, text }]);
@@ -106,6 +108,7 @@ function ContactForm() {
     setTyping(false);
     setBubbles([]);
     setData({ name: "", email: "", message: "" });
+    setTicket(null);
     setStep("name");
     setInput("");
     say(["Let's start again.", "What's your name?"]);
@@ -123,6 +126,19 @@ function ContactForm() {
       );
       setTyping(false);
       setStep("sent");
+      setTicket({
+        no: 1 + Math.floor(Math.random() * 9998),
+        name: payload.name,
+        message: payload.message,
+        when: new Intl.DateTimeFormat("en-GB", {
+          timeZone: "Asia/Phnom_Penh",
+          day: "2-digit",
+          month: "short",
+          hour: "2-digit",
+          minute: "2-digit",
+          hourCycle: "h23",
+        }).format(new Date()),
+      });
       play("send");
       unlock("penpal");
       say([`Sent! Thanks, ${payload.name}. I'll reply to ${payload.email} soon.`]);
@@ -174,156 +190,160 @@ function ContactForm() {
   const canType = step === "name" || step === "email" || step === "message";
 
   return (
-    <div ref={rootRef} className="chat card flex flex-col h-[480px] overflow-hidden">
-      {/* Header */}
-      <div className="chat-head flex items-center gap-3 px-5 py-3.5 border-b border-line">
-        <span className="chat-head-text flex-1 min-w-0">
-          <span className="chat-head-tag" aria-hidden="true">
-            Direct line
+    <>
+      <MetroTicketPrompt step={step} />
+      <div ref={rootRef} className="chat card flex flex-col h-[480px] overflow-hidden">
+        {/* Header */}
+        <div className="chat-head flex items-center gap-3 px-5 py-3.5 border-b border-line">
+          <span className="chat-head-text flex-1 min-w-0">
+            <span className="chat-head-tag" aria-hidden="true">
+              Direct line
+            </span>
+            <span className="chat-title block font-semibold text-fg">Chat with Rotana</span>
+            <span className="chat-status flex items-center gap-1.5 text-xs text-muted">
+              <span className="chat-online w-1.5 h-1.5 rounded-full bg-[#22c55e]" /> Messages go straight to my inbox
+            </span>
           </span>
-          <span className="chat-title block font-semibold text-fg">Chat with Rotana</span>
-          <span className="chat-status flex items-center gap-1.5 text-xs text-muted">
-            <span className="chat-online w-1.5 h-1.5 rounded-full bg-[#22c55e]" /> Messages go straight to my inbox
-          </span>
-        </span>
-        {bubbles.length > 2 && (
-          <button
-            type="button"
-            className="chat-restart icon-btn !w-9 !h-9"
-            onClick={restart}
-            aria-label="Start over"
-            data-cursor="Restart"
-          >
-            <RotateCcw size={15} />
-          </button>
-        )}
-      </div>
-
-      {/* Conversation */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 space-y-2.5" aria-live="polite">
-        <AnimatePresence initial={false}>
-          {bubbles.map((b, i) => (
-            <motion.div
-              key={b.id}
-              className={`chat-row flex items-start gap-2 ${b.from === "you" ? "justify-end is-you" : "justify-start is-me"}`}
-              initial={reduceMotion ? { opacity: 0 } : { opacity: 0, x: b.from === "you" ? 28 : -28 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+          {bubbles.length > 2 && (
+            <button
+              type="button"
+              className="chat-restart icon-btn !w-9 !h-9"
+              onClick={restart}
+              aria-label="Start over"
+              data-cursor="Restart"
             >
-              {/* my face beside the first of my messages in a row (shown in Persona) */}
-              {b.from === "me" && (
-                <span className={`chat-pic chat-face ${bubbles[i - 1]?.from === "me" ? "is-hidden" : ""}`}>
+              <RotateCcw size={15} />
+            </button>
+          )}
+        </div>
+  
+        {/* Conversation */}
+        <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 space-y-2.5" aria-live="polite">
+          <AnimatePresence initial={false}>
+            {bubbles.map((b, i) => (
+              <motion.div
+                key={b.id}
+                className={`chat-row flex items-start gap-2 ${b.from === "you" ? "justify-end is-you" : "justify-start is-me"}`}
+                initial={reduceMotion ? { opacity: 0 } : { opacity: 0, x: b.from === "you" ? 28 : -28 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              >
+                {/* my face beside the first of my messages in a row (shown in Persona) */}
+                {b.from === "me" && (
+                  <span className={`chat-pic chat-face ${bubbles[i - 1]?.from === "me" ? "is-hidden" : ""}`}>
+                    <img src={avatar} alt="" />
+                  </span>
+                )}
+                <span className="chat-shape">
+                  <p className={`chat-bubble ${b.from === "you" ? "chat-you" : "chat-me"} whitespace-pre-wrap`}>{b.text}</p>
+                </span>
+              </motion.div>
+            ))}
+  
+            {step === "confirm" && !typing && (
+              <motion.div key="summary" className="flex justify-start" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+                <div className="chat-summary chat-bubble chat-me w-full max-w-[90%] space-y-1">
+                  <p className="text-xs text-muted">From</p>
+                  <p className="font-semibold">
+                    {data.name} · {data.email}
+                  </p>
+                  <p className="text-xs text-muted pt-1">Message</p>
+                  <p className="whitespace-pre-wrap">{data.message}</p>
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    <button type="button" className="btn btn-primary !py-2" onClick={() => void send()}>
+                      Send it <Send size={14} />
+                    </button>
+                    <button type="button" className="btn btn-ghost !py-2" onClick={restart}>
+                      Start over
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+  
+            {typing && (
+              <motion.div
+                key="typing"
+                className="chat-row is-me flex items-start gap-2 justify-start"
+                initial={reduceMotion ? false : { opacity: 0, x: -16 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.18 }}
+              >
+                <span className={`chat-pic chat-face ${bubbles[bubbles.length - 1]?.from === "me" ? "is-hidden" : ""}`}>
                   <img src={avatar} alt="" />
                 </span>
-              )}
-              <span className="chat-shape">
-                <p className={`chat-bubble ${b.from === "you" ? "chat-you" : "chat-me"} whitespace-pre-wrap`}>{b.text}</p>
-              </span>
-            </motion.div>
-          ))}
-
-          {step === "confirm" && !typing && (
-            <motion.div key="summary" className="flex justify-start" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-              <div className="chat-summary chat-bubble chat-me w-full max-w-[90%] space-y-1">
-                <p className="text-xs text-muted">From</p>
-                <p className="font-semibold">
-                  {data.name} · {data.email}
-                </p>
-                <p className="text-xs text-muted pt-1">Message</p>
-                <p className="whitespace-pre-wrap">{data.message}</p>
-                <div className="flex flex-wrap gap-2 pt-2">
-                  <button type="button" className="btn btn-primary !py-2" onClick={() => void send()}>
-                    Send it <Send size={14} />
-                  </button>
-                  <button type="button" className="btn btn-ghost !py-2" onClick={restart}>
-                    Start over
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {typing && (
-            <motion.div
-              key="typing"
-              className="chat-row is-me flex items-start gap-2 justify-start"
-              initial={reduceMotion ? false : { opacity: 0, x: -16 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.18 }}
-            >
-              <span className={`chat-pic chat-face ${bubbles[bubbles.length - 1]?.from === "me" ? "is-hidden" : ""}`}>
-                <img src={avatar} alt="" />
-              </span>
-              <span className="chat-shape">
-                <span className="chat-bubble chat-me flex items-center gap-1 !py-3" aria-label="Typing">
-                  {[0, 1, 2].map((i) => (
-                    <motion.span
-                      key={i}
-                      className="chat-dot w-1.5 h-1.5 rounded-full bg-muted"
-                      animate={reduceMotion ? undefined : { y: [0, -4, 0] }}
-                      transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.12 }}
-                    />
-                  ))}
+                <span className="chat-shape">
+                  <span className="chat-bubble chat-me flex items-center gap-1 !py-3" aria-label="Typing">
+                    {[0, 1, 2].map((i) => (
+                      <motion.span
+                        key={i}
+                        className="chat-dot w-1.5 h-1.5 rounded-full bg-muted"
+                        animate={reduceMotion ? undefined : { y: [0, -4, 0] }}
+                        transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.12 }}
+                      />
+                    ))}
+                  </span>
                 </span>
-              </span>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* Input */}
-      <div className="chat-foot border-t border-line p-3">
-        {step === "failed" ? (
-          <div className="flex gap-2">
-            <button type="button" className="btn btn-primary flex-1" onClick={() => void send()}>
-              Try again
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+  
+        {/* Input */}
+        <div className="chat-foot border-t border-line p-3">
+          {step === "failed" ? (
+            <div className="flex gap-2">
+              <button type="button" className="btn btn-primary flex-1" onClick={() => void send()}>
+                Try again
+              </button>
+              <button type="button" className="btn btn-ghost" onClick={restart}>
+                Start over
+              </button>
+            </div>
+          ) : step === "sent" ? (
+            <button type="button" className="btn btn-ghost w-full" onClick={restart}>
+              Send another message
             </button>
-            <button type="button" className="btn btn-ghost" onClick={restart}>
-              Start over
-            </button>
-          </div>
-        ) : step === "sent" ? (
-          <button type="button" className="btn btn-ghost w-full" onClick={restart}>
-            Send another message
-          </button>
-        ) : (
-          <form
-            className="flex items-end gap-2"
-            onSubmit={(e) => {
-              e.preventDefault();
-              submit();
-            }}
-          >
-            <textarea
-              ref={inputRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  submit();
-                }
+          ) : (
+            <form
+              className="flex items-end gap-2"
+              onSubmit={(e) => {
+                e.preventDefault();
+                submit();
               }}
-              rows={step === "message" ? 3 : 1}
-              placeholder={canType ? placeholder : "…"}
-              disabled={!canType || typing}
-              className="chat-field field resize-none flex-1 !py-2.5"
-              aria-label={placeholder || "Message"}
-              autoComplete={step === "email" ? "email" : step === "name" ? "name" : "off"}
-            />
-            <button
-              type="submit"
-              className="chat-send btn btn-primary !px-3.5 !py-2.5"
-              disabled={!canType || typing || !input.trim()}
-              aria-label="Send"
             >
-              <Send size={16} />
-            </button>
-          </form>
-        )}
-        {step === "message" && <p className="mt-1.5 text-[11px] text-muted">Enter to send · Shift + Enter for a new line</p>}
+              <textarea
+                ref={inputRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    submit();
+                  }
+                }}
+                rows={step === "message" ? 3 : 1}
+                placeholder={canType ? placeholder : "…"}
+                disabled={!canType || typing}
+                className="chat-field field resize-none flex-1 !py-2.5"
+                aria-label={placeholder || "Message"}
+                autoComplete={step === "email" ? "email" : step === "name" ? "name" : "off"}
+              />
+              <button
+                type="submit"
+                className="chat-send btn btn-primary !px-3.5 !py-2.5"
+                disabled={!canType || typing || !input.trim()}
+                aria-label="Send"
+              >
+                <Send size={16} />
+              </button>
+            </form>
+          )}
+          {step === "message" && <p className="mt-1.5 text-[11px] text-muted">Enter to send · Shift + Enter for a new line</p>}
+        </div>
       </div>
-    </div>
+      <MetroTicketSlot ticket={ticket} />
+    </>
   );
 }
 

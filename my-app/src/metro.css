@@ -981,43 +981,230 @@
   font-weight: 800;
 }
 
-/* ── Contact: the form is a ticket ──────────────────────────────────────── */
+/* ── Contact: a ticket machine (MetroTicket.tsx) ─────────────────────────
+   A dark metal cabinet: header plate, an amber LED prompt, the chat as its screen, and a slot at
+   the bottom that prints a paper ticket when the message is sent. */
 
-.metro-ticket-stub {
-  position: relative;
+[data-theme="metro"] .calling-card {
+  padding: 1rem 1rem 0;
+  border-radius: 26px 26px 20px 20px;
+  background: linear-gradient(#2b2e35, #1b1d22 60%);
+  box-shadow:
+    inset 0 0 0 1px #3b3f48,
+    inset 0 2px 0 #50555f,
+    0 34px 60px -30px rgb(0 0 0 / 0.65);
+}
+
+.metro-tm-head {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.4rem 1rem;
-  margin-bottom: 0.9rem;
-  padding: 0.85rem 1.4rem 1rem;
-  border-radius: 14px;
-  background: var(--m-line);
-  color: var(--m-ink);
-  font: 600 0.7rem/1.2 "JetBrains Mono", monospace;
-  letter-spacing: 0.12em;
+  gap: 0.65rem;
+  padding: 0.15rem 0.25rem 0.8rem;
+  color: #f3f1ec;
+}
+
+.metro-tm-title {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.2rem;
+  font: 800 1.05rem/1 "Overpass", sans-serif;
+}
+
+.metro-tm-title small {
+  color: #a8a297;
+  font: 500 0.62rem/1 "JetBrains Mono", monospace;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  /* punched notches on both ends */
-  mask:
-    radial-gradient(circle 10px at 0 50%, #0000 97%, #000) left / 51% 100% no-repeat,
-    radial-gradient(circle 10px at 100% 50%, #0000 97%, #000) right / 51% 100% no-repeat;
 }
 
-.metro-ticket-stub b {
-  font: 800 1.15rem/1 "Overpass", sans-serif;
-  letter-spacing: -0.01em;
-  text-transform: none;
+.metro-tm-service {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #bdb7ac;
+  font: 500 0.66rem/1 "JetBrains Mono", monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
-/* the perforation */
-.metro-ticket-stub::after {
-  content: "";
-  position: absolute;
-  left: 1.2rem;
-  right: 1.2rem;
-  bottom: 0.35rem;
-  border-bottom: 2px dashed rgb(20 20 20 / 0.45);
+/* the LED prompt above the screen */
+.metro-tm-display {
+  display: block;
+  margin-bottom: 0.8rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: 8px;
+  background: #0a0b0d;
+  box-shadow: inset 0 0 0 1px #2a2c31, inset 0 2px 6px #000;
+  color: var(--m-amber);
+  font: 700 0.8rem/1 "JetBrains Mono", monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-shadow: 0 0 8px rgb(255 176 32 / 0.55);
+}
+
+.metro-tm-display::after {
+  content: "_";
+  margin-left: 0.2em;
+  animation: metro-tm-blink 1s steps(1) infinite;
+}
+
+.metro-tm-display[data-step="sent"] {
+  color: var(--m-green);
+  text-shadow: 0 0 8px rgb(61 220 132 / 0.5);
+}
+
+.metro-tm-display[data-step="failed"] {
+  color: #ff6b5a;
+  text-shadow: none;
+}
+
+@keyframes metro-tm-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* the chat is the machine's screen, set in a bezel */
+[data-theme="metro"] .calling-card .chat {
+  border: 0;
+  border-radius: 14px;
+  box-shadow: 0 0 0 6px #0f1013, 0 0 0 7px #3b3f48;
+}
+
+/* the slot, and the ticket it prints */
+.metro-tm-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1.2rem -1rem 0;
+  padding: 1rem 1.25rem 1rem;
+  border-radius: 0 0 20px 20px;
+  background: #15171b;
+  box-shadow: inset 0 1px 0 #2e3138;
+}
+
+.metro-tm-mouth {
+  position: relative;
+  z-index: 2;
+  width: min(78%, 22rem);
+  height: 14px;
+  border-radius: 7px;
+  background: #040405;
+  box-shadow: inset 0 4px 5px #000, 0 1px 0 #3b3f48;
+}
+
+.metro-tm-out {
+  display: block;
+  width: min(70%, 20rem);
+  margin-top: -7px;
+  overflow: hidden;
+}
+
+.metro-tm-ticket {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 1.1rem 1rem 0.8rem;
+  border-radius: 0 0 8px 8px;
+  background: #fbf6e8;
+  box-shadow: inset 0 6px 0 var(--m-line), 0 10px 18px -10px rgb(0 0 0 / 0.6);
+  color: #141414;
+  font: 500 0.72rem/1.35 "JetBrains Mono", monospace;
+  animation: metro-tm-print 2.2s steps(16) both;
+}
+
+@keyframes metro-tm-print {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+.metro-tm-ticket-head {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px dashed rgb(20 20 20 / 0.35);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.metro-tm-ticket-head .metro-badge {
+  width: 1.3rem;
+  height: 1.3rem;
+  font-size: 0.7rem;
+}
+
+.metro-tm-ticket-route {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font: 800 0.95rem/1.15 "Overpass", sans-serif;
+}
+
+.metro-tm-ticket-route small {
+  display: block;
+  color: #6b655c;
+  font: 500 0.6rem/1.4 "JetBrains Mono", monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.metro-tm-ticket-route > span:last-child {
+  text-align: right;
+}
+
+.metro-tm-ticket-arrow {
+  color: var(--m-line);
+  font-size: 1.2rem;
+}
+
+.metro-tm-ticket-msg {
+  color: #3d3a35;
+  overflow-wrap: anywhere;
+}
+
+.metro-tm-ticket-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-top: 0.45rem;
+  border-top: 2px dashed rgb(20 20 20 / 0.35);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.metro-tm-barcode {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+  height: 26px;
+}
+
+.metro-tm-barcode i {
+  display: block;
+  background: #141414;
+}
+
+.metro-tm-label {
+  margin-top: 0.7rem;
+  color: #8f897f;
+  font: 500 0.62rem/1 "JetBrains Mono", monospace;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metro-tm-ticket,
+  .metro-tm-display::after {
+    animation: none;
+  }
 }
 
 /* ── Footer: the end of the line ────────────────────────────────────────── */
