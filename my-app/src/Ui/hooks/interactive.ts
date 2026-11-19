@@ -114,7 +114,7 @@ function subscribeTheme(onChange: () => void) {
   mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
   return () => mo.disconnect();
 }
-const getThemeAttr = () => document.documentElement.getAttribute("data-theme") ?? "persona";
+const getThemeAttr = () => document.documentElement.getAttribute("data-theme") ?? "metro";
 
 /** The current theme id, live. */
 export function useThemeAttr() {

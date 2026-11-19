@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="persona">
+<html lang="en" data-theme="metro">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,13 +13,13 @@
       name="keywords"
       content="Chey Rotana, Rotana Chey, portfolio, Flutter developer, Angular, NestJS, mobile developer, full-stack developer, Phnom Penh, Cambodia, CADT"
     />
-    <meta name="theme-color" content="#e60012" />
+    <meta name="theme-color" content="#f06a1f" />
     <meta name="color-scheme" content="dark light" />
     <link rel="canonical" href="https://cheyrotana-portfolio-v1.vercel.app/" />
 
     <!-- Icons -->
-    <link rel="icon" href="/favicon.ico" sizes="any" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <!-- one icon that follows the theme (set below and in theme.ts) -->
+    <link id="theme-icon" rel="icon" href="/favicon-metro.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
 
@@ -68,8 +68,8 @@
       href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Alfa+Slab+One&family=Anton&family=Archivo+Black&family=Barlow+Condensed:ital,wght@0,600;0,800;1,800&family=Bebas+Neue&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700;12..96,800&family=DotGothic16&family=Overpass:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:wght@900&display=swap"
     />
 
-    <!-- Apply the saved theme before first paint so the page never flashes the wrong one.
-         First-time visitors get the Persona theme. -->
+    <!-- Apply the saved theme before first paint so the page never flashes the wrong one, with its
+         favicon and browser colour. First-time visitors get the Metro theme. -->
     <script>
       (function () {
         var theme;
@@ -77,8 +77,13 @@
           theme = localStorage.getItem("portfolio-theme");
         } catch (e) {}
         if (theme === "editorial") theme = "metro"; // Editorial was replaced by Metro
-        if (["persona", "metro", "pop"].indexOf(theme) === -1) theme = "persona";
+        if (["persona", "metro", "pop"].indexOf(theme) === -1) theme = "metro";
         document.documentElement.setAttribute("data-theme", theme);
+        var icons = { persona: ["/favicon-32.png", "image/png", "#e60012"], metro: ["/favicon-metro.svg", "image/svg+xml", "#f06a1f"], pop: ["/favicon-pop.svg", "image/svg+xml", "#ff5a36"] };
+        var icon = document.getElementById("theme-icon");
+        icon.href = icons[theme][0];
+        icon.type = icons[theme][1];
+        document.querySelector('meta[name="theme-color"]').content = icons[theme][2];
       })();
     </script>
   </head>

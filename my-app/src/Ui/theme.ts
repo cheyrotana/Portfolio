@@ -35,9 +35,26 @@ const STORAGE_KEY = "portfolio-theme";
 const isThemeId = (v: unknown): v is ThemeId => THEMES.some((t) => t.id === v);
 
 function currentTheme(): ThemeId {
-  // index.html sets this before first paint (saved choice, else the system preference).
+  // index.html sets this before first paint (the saved choice, else Metro).
   const attr = document.documentElement.getAttribute("data-theme");
-  return isThemeId(attr) ? attr : "persona";
+  return isThemeId(attr) ? attr : "metro";
+}
+
+// The browser-tab icon and colour for each theme (index.html sets them before first paint too)
+const ICONS: Record<ThemeId, { href: string; type: string }> = {
+  persona: { href: "/favicon-32.png", type: "image/png" },
+  metro: { href: "/favicon-metro.svg", type: "image/svg+xml" },
+  pop: { href: "/favicon-pop.svg", type: "image/svg+xml" },
+};
+
+function applyBrowserChrome(theme: ThemeId) {
+  const icon = document.getElementById("theme-icon") as HTMLLinkElement | null;
+  if (icon) {
+    icon.href = ICONS[theme].href;
+    icon.type = ICONS[theme].type;
+  }
+  const color = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+  if (color) color.content = THEMES.find((t) => t.id === theme)?.swatches[2] ?? color.content;
 }
 
 export function useTheme() {
@@ -45,6 +62,7 @@ export function useTheme() {
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
+    applyBrowserChrome(theme);
   }, [theme]);
 
   const setTheme = useCallback((next: ThemeId) => {
