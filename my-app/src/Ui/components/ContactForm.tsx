@@ -324,7 +324,11 @@ function ContactForm() {
                 }}
                 rows={step === "message" ? 3 : 1}
                 placeholder={canType ? placeholder : "…"}
-                disabled={!canType || typing}
+                // read-only, never disabled: a disabled field drops focus, and keys typed then would
+                // reach the page's shortcuts ("t" cycles the theme). Typing ahead during a reply is
+                // fine; sending waits for it (submit checks `typing`).
+                readOnly={!canType}
+                aria-disabled={!canType || undefined}
                 className="chat-field field resize-none flex-1 !py-2.5"
                 aria-label={placeholder || "Message"}
                 autoComplete={step === "email" ? "email" : step === "name" ? "name" : "off"}
