@@ -661,17 +661,14 @@
   }
 }
 
-/* ── Hero: the 3D city (MetroCity.tsx) ──────────────────────────────────── */
+/* ── The 3D city behind the whole page (MetroCity.tsx) ──────────────────── */
 
 .metro-city {
-  position: relative;
-  grid-column: 1 / -1;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
   overflow: hidden;
-  height: clamp(380px, 66vh, 640px);
-  border: 1px solid var(--line);
-  border-radius: 28px;
-  background: #cfe6f3;
-  box-shadow: 0 30px 60px -36px rgb(20 20 20 / 0.55);
+  background: linear-gradient(#cfe6f3, #e7e1d6);
 }
 
 .metro-city-stage {
@@ -751,17 +748,17 @@
   color: #fff;
 }
 
+/* the line status, fixed at the bottom of the screen in Metro (below the navbar, above the page) */
 .metro-city-hud {
-  position: absolute;
-  left: 14px;
-  right: 14px;
-  bottom: 14px;
-  z-index: 3;
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 35;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
   gap: 0.5rem;
+  max-width: calc(100% - 32px);
   pointer-events: none;
 }
 
@@ -780,7 +777,6 @@
   color: var(--m-ink);
   font: 700 0.85rem/1 "Overpass", sans-serif;
   box-shadow: 0 8px 20px -12px rgb(0 0 0 / 0.5);
-  backdrop-filter: blur(6px);
 }
 
 .metro-city-tag b {

@@ -6,7 +6,7 @@ import { openControls, showProject } from "../events";
 import { useThemeAttr, useWeather } from "../hooks/interactive";
 import { introDone, introTheme } from "../intro";
 import { NAV_SECTIONS } from "../data/sections";
-import { MetroCity } from "./MetroCity";
+import { rideProgress } from "../metroRide";
 
 // Metro theme: the portfolio as a transit line. Everything here renders only in that theme.
 // - SplitFlap / MetroHero: a departure board that flips your name and status into place
@@ -114,93 +114,104 @@ export function MetroHero({ go, portrait }: { go: boolean; portrait: string }) {
 
   return (
     <div className="metro-hero relative mx-auto max-w-6xl w-full px-5 sm:px-8">
-      <MetroCity />
-      <div className="metro-board">
-        <div className="metro-board-head">
-          <span className="metro-board-title">Departures</span>
-          <button type="button" className="metro-board-clock" onClick={openControls} title="Sky & weather controls (Alt+W)">
-            <span className="metro-live-dot" aria-hidden="true" />
-            Phnom Penh {time}
-            {weather && (
-              <span className="metro-board-weather">
-                {weather.temp !== null && ` · ${weather.temp}°`} {weather.label}
-              </span>
-            )}
-          </button>
+      {/* the first screen: the city (fixed behind the page) with the name plate over it */}
+      <div className="metro-stage">
+        <div className="metro-nameplate">
+          <span className="metro-nameplate-line">
+            <span className="metro-badge" aria-hidden="true">
+              R
+            </span>
+            Rotana Central · Line 1
+          </span>
+          <h1 className="metro-board-name">
+            <SplitFlap text={profile.name} start={go} size="lg" />
+          </h1>
+          <p className="metro-board-role">
+            <SplitFlap text={profile.role} start={go} delay={500} size="sm" />
+          </p>
+          <div className="metro-platform-actions">
+            <a href="#work" className="btn btn-primary">
+              Board the work line <ArrowRight size={16} aria-hidden="true" />
+            </a>
+            <a href="#contact" className="btn btn-ghost metro-nameplate-ghost">
+              Get in touch
+            </a>
+          </div>
         </div>
-
-        <h1 className="metro-board-name">
-          <SplitFlap text={profile.name} start={go} size="lg" />
-        </h1>
-        <p className="metro-board-role">
-          <SplitFlap text={profile.role} start={go} delay={500} size="sm" />
-        </p>
-
-        <table className="metro-board-table">
-          <thead>
-            <tr>
-              <th scope="col">Time</th>
-              <th scope="col">Destination</th>
-              <th scope="col">Plat.</th>
-              <th scope="col">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {BOARD.map((row) => (
-              <tr key={row.time}>
-                <td className="metro-board-time">{row.time}</td>
-                <td>{row.dest}</td>
-                <td>{row.platform}</td>
-                <td className={`metro-status is-${row.tone}`}>
-                  <SplitFlap text={row.status} start={go} delay={900} size="sm" />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        <p className="metro-board-sub">Next departures · tap one to board</p>
-        <ul className="metro-departures">
-          {departures.map((p) => (
-            <li key={p.id}>
-              <button type="button" className="metro-departure" onClick={() => showProject(p.id)} data-cursor="Board">
-                <span className="metro-board-time">{p.year}</span>
-                <span className="metro-departure-name">
-                  {p.title}
-                  <span className="metro-departure-client">{p.client}</span>
-                </span>
-                <LineBadges project={p} />
-                <span className="metro-departure-go">
-                  Board <ArrowRight size={14} aria-hidden="true" />
-                </span>
-              </button>
-            </li>
-          ))}
-        </ul>
       </div>
 
-      <aside className="metro-platform">
-        <div className="metro-platform-photo">
-          <img src={portrait} alt={`${profile.name}, standing among temple ruins`} width={853} height={1280} fetchPriority="high" />
-          <span className="metro-platform-pill">
-            <span className="metro-badge" aria-hidden="true">4</span>
-            Platform 4&nbsp;·&nbsp;Mobile &amp; web
-          </span>
+      <div className="metro-hero-detail">
+        <div className="metro-board">
+          <div className="metro-board-head">
+            <span className="metro-board-title">Departures</span>
+            <button type="button" className="metro-board-clock" onClick={openControls} title="Sky & weather controls (Alt+W)">
+              <span className="metro-live-dot" aria-hidden="true" />
+              Phnom Penh {time}
+              {weather && (
+                <span className="metro-board-weather">
+                  {weather.temp !== null && ` · ${weather.temp}°`} {weather.label}
+                </span>
+              )}
+            </button>
+          </div>
+  
+          <table className="metro-board-table">
+            <thead>
+              <tr>
+                <th scope="col">Time</th>
+                <th scope="col">Destination</th>
+                <th scope="col">Plat.</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {BOARD.map((row) => (
+                <tr key={row.time}>
+                  <td className="metro-board-time">{row.time}</td>
+                  <td>{row.dest}</td>
+                  <td>{row.platform}</td>
+                  <td className={`metro-status is-${row.tone}`}>
+                    <SplitFlap text={row.status} start={go} delay={900} size="sm" />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+  
+          <p className="metro-board-sub">Next departures · tap one to board</p>
+          <ul className="metro-departures">
+            {departures.map((p) => (
+              <li key={p.id}>
+                <button type="button" className="metro-departure" onClick={() => showProject(p.id)} data-cursor="Board">
+                  <span className="metro-board-time">{p.year}</span>
+                  <span className="metro-departure-name">
+                    {p.title}
+                    <span className="metro-departure-client">{p.client}</span>
+                  </span>
+                  <LineBadges project={p} />
+                  <span className="metro-departure-go">
+                    Board <ArrowRight size={14} aria-hidden="true" />
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
-        <p className="metro-platform-role">{profile.role}.</p>
-        <p className="metro-platform-intro">
-          I build Flutter apps, Angular dashboards and the NestJS APIs behind them — right now for the government HR
-          platform at MLMUPC.
-        </p>
-        <div className="metro-platform-actions">
-          <a href="#work" className="btn btn-primary">
-            Board the work line <ArrowRight size={16} aria-hidden="true" />
-          </a>
-          <a href="#contact" className="btn btn-ghost">
-            Get in touch
-          </a>
-        </div>
-      </aside>
+  
+        <aside className="metro-platform">
+          <div className="metro-platform-photo">
+            <img src={portrait} alt={`${profile.name}, standing among temple ruins`} width={853} height={1280} fetchPriority="high" />
+            <span className="metro-platform-pill">
+              <span className="metro-badge" aria-hidden="true">4</span>
+              Platform 4&nbsp;·&nbsp;Mobile &amp; web
+            </span>
+          </div>
+          <p className="metro-platform-intro">
+            I build Flutter apps, Angular dashboards and the NestJS APIs behind them — right now for the government HR
+            platform at MLMUPC.
+          </p>
+        </aside>
+      </div>
     </div>
   );
 }
@@ -262,20 +273,9 @@ export function MetroTrain() {
         return r.left + r.width / 2 - lineBox.left;
       });
       const stations = [14, ...xs]; // "home" is the terminus at the start of the line
-      const ids = ["home", ...NAV_SECTIONS.map((s) => s.id)];
-      const probeOffset = window.innerHeight * 0.35;
-      const maxProbe = document.documentElement.scrollHeight - window.innerHeight + probeOffset;
-      const probe = window.scrollY + probeOffset;
-      const tops = ids.map((id) => {
-        const el = document.getElementById(id);
-        const top = el ? el.getBoundingClientRect().top + window.scrollY : 0;
-        return Math.min(top, maxProbe);
-      });
-      let i = 0;
-      while (i < tops.length - 1 && probe >= tops[i + 1]) i++;
-      const next = Math.min(i + 1, tops.length - 1);
-      const span = tops[next] - tops[i];
-      const f = next === i || span <= 0 ? 0 : Math.min(1, Math.max(0, (probe - tops[i]) / span));
+      // the same place on the line as the 3D city's train
+      const { i, f } = rideProgress();
+      const next = Math.min(i + 1, stations.length - 1);
       const x = stations[i] + (stations[next] - stations[i]) * f;
 
       train.style.transform = `translateX(${x.toFixed(1)}px)`;

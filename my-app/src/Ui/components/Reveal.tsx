@@ -1,6 +1,7 @@
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { Ransom } from "./Ransom";
+import { MetroDirections } from "./MetroDirections";
 
 // Fades and lifts its children into place the first time they scroll into view.
 export function Reveal({ children, delay = 0, className }: { children: ReactNode; delay?: number; className?: string }) {
@@ -90,6 +91,7 @@ export function SectionHeader({
           <span className="only-persona">{`▶ ${index}`}</span>
           <span>{eyebrow}</span>
         </span>
+        <MetroDirections stop={Number(index)} />
         <h2 className="heading relative mt-4 text-4xl sm:text-5xl lg:text-6xl text-fg">
           {typeof title === "string" ? (
             <>

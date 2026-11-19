@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  Car, CloudSun, Moon, Sun, FolderOpen, Hash, Link2, Music, Palette, Plane, Search, Smartphone, SquareTerminal, Trophy, Volume2, VolumeX, type LucideIcon,
+  Car, CloudSun, Moon, Sun, FolderOpen, Hash, Link2, Music, Palette, Plane, Search, Smartphone, SquareTerminal, TrainFront, Trophy, Volume2, VolumeX, type LucideIcon,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { unlock } from "../achievements";
@@ -71,6 +71,7 @@ export function CommandPalette({ open, onClose, theme, onThemeChange, onOpenTerm
       })),
       { id: "vehicle-plane", group: "Journey", label: "Fly the paper plane", keywords: "vehicle", icon: Plane, run: () => { setJourneyVehicle("plane"); goTo("journey"); } },
       { id: "vehicle-car", group: "Journey", label: "Drive the car", keywords: "vehicle", icon: Car, run: () => { setJourneyVehicle("car"); goTo("journey"); } },
+      { id: "vehicle-train", group: "Journey", label: "Ride the train", keywords: "vehicle metro", icon: TrainFront, run: () => { setJourneyVehicle("train"); goTo("journey"); } },
       { id: "controls", group: "Fun", label: "Sky & weather controls", keywords: "weather sky day night rain storm menu controller", icon: CloudSun, run: openControls },
       { id: "spin", group: "Fun", label: "Launch a random project app", keywords: "random project phone app lucky spin", icon: Smartphone, run: launchRandomApp },
       { id: "terminal", group: "Fun", label: "Open the terminal", hint: "`", keywords: "console shell command line", icon: SquareTerminal, run: onOpenTerminal },

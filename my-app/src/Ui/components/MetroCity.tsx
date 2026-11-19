@@ -1,18 +1,16 @@
 import { Eye, Train } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useSky, useWeather } from "../hooks/interactive";
-import { NAV_SECTIONS } from "../data/sections";
+import { departure, RIDE_STOPS, rideProgress } from "../metroRide";
 
-// Metro theme: a small 3D Phnom Penh. Low-poly blocks, the river, a few landmarks, and the line on a
-// viaduct looping through it with a station for every section. The train runs the loop and slows into
-// each station; the camera rides along behind it (or pulls back for the whole map). Drag to look
-// around; click a station's sign to ride there. Day, night and rain follow the site's live sky.
+// Metro theme: a small 3D Phnom Penh behind the whole page. Low-poly blocks, the river, a few landmarks,
+// and the line on a viaduct looping through it with a station for every section. Scrolling drives the
+// train: it waits at a section's station while you read, and pulls into the next one as you reach the
+// next section. The first screen shows the whole map (drag to look around, click a station to ride
+// there); further down, the camera rides behind the train. Day, night and rain follow the live sky.
 // three.js is loaded only when this mounts, so the other themes never download it.
 
-const STATIONS = [
-  { id: "home", label: "Rotana Central", t: 0 },
-  ...NAV_SECTIONS.map((s, i) => ({ id: s.id, label: s.label, t: (i + 1) / (NAV_SECTIONS.length + 1) })),
-];
+const STATIONS = RIDE_STOPS.map((s, i) => ({ ...s, t: i / (RIDE_STOPS.length + 1) }));
 
 // The loop, at viaduct height
 const ROUTE: [number, number][] = [
@@ -42,19 +40,21 @@ function rng(seed: number) {
 export function MetroCity() {
   const hostRef = useRef<HTMLDivElement>(null);
   const labelRefs = useRef<(HTMLAnchorElement | null)[]>([]);
-  const [follow, setFollow] = useState(false);
+  const [wholeMap, setWholeMap] = useState(false);
   const [ready, setReady] = useState(false);
-  const [next, setNext] = useState(STATIONS[1].label);
-  const followRef = useRef(follow);
+  const [failed, setFailed] = useState(false);
+  const [onHero, setOnHero] = useState(true);
+  const [stop, setStop] = useState({ at: true, label: STATIONS[0].label });
+  const wholeMapRef = useRef(wholeMap);
   const sky = useSky();
   const weather = useWeather();
   const night = sky === "night";
   const wet = weather?.kind === "rain" || weather?.kind === "storm";
   const envRef = useRef({ night, wet });
   useEffect(() => {
-    followRef.current = follow;
+    wholeMapRef.current = wholeMap;
     envRef.current = { night, wet };
-  }, [follow, night, wet]);
+  }, [wholeMap, night, wet]);
 
   useEffect(() => {
     const host = hostRef.current;
@@ -65,12 +65,25 @@ export function MetroCity() {
     import("three").then((THREE) => {
       if (disposed) return;
       const still = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+      // phones and slow machines: no shadows, fewer pixels
+      const lite = Math.min(window.innerWidth, window.innerHeight) < 640 || (navigator.hardwareConcurrency ?? 8) <= 4;
 
       // ── Renderer, scene, camera ──
-      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
-      renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      let renderer: InstanceType<typeof THREE.WebGLRenderer>;
+      try {
+        renderer = new THREE.WebGLRenderer({ antialias: !lite, alpha: false, powerPreference: "high-performance" });
+      } catch {
+        setFailed(true); // no WebGL: the plain sky-coloured backdrop stays
+        return;
+      }
+      // sharp on the first screen; behind the sections the city sits under a wash, so it renders at a
+      // fraction of the pixels (and looks softly out of focus, which suits it)
+      const sharp = Math.min(window.devicePixelRatio, lite ? 1 : 1.25);
+      const soft = lite ? 0.45 : 0.6;
+      renderer.setPixelRatio(sharp);
+      renderer.shadowMap.enabled = !lite;
+      renderer.shadowMap.type = THREE.PCFShadowMap;
+      renderer.shadowMap.autoUpdate = false; // the city never moves and the train casts none: drawn once
       renderer.domElement.className = "metro-city-canvas";
       host.prepend(renderer.domElement);
 
@@ -83,7 +96,7 @@ export function MetroCity() {
       const sun = new THREE.DirectionalLight(0xfff1d6, 2.2);
       sun.position.set(-60, 110, 50);
       sun.castShadow = true;
-      sun.shadow.mapSize.set(2048, 2048);
+      sun.shadow.mapSize.set(1024, 1024);
       Object.assign(sun.shadow.camera, { left: -95, right: 95, top: 95, bottom: -95, near: 10, far: 300 });
       sun.shadow.bias = -0.0005;
       scene.add(sun);
@@ -320,7 +333,6 @@ export function MetroCity() {
         const car = new THREE.Group();
         const body = new THREE.Mesh(track(new THREE.BoxGeometry(5.4, 2, 2.5)), bodyMat);
         body.position.y = 1.5;
-        body.castShadow = true;
         const band = new THREE.Mesh(track(new THREE.BoxGeometry(5.42, 0.35, 2.54)), bandMat);
         band.position.y = 0.95;
         const win = new THREE.Mesh(track(new THREE.BoxGeometry(5, 0.6, 2.56)), glassMat);
@@ -368,7 +380,12 @@ export function MetroCity() {
         rain.visible = wet;
       };
 
-      // ── Camera control: drag to look around, follow the train or see the whole map ──
+      // a marker floating over the lead car, so the train is easy to find on the whole map
+      const marker = new THREE.Mesh(track(new THREE.ConeGeometry(1.6, 3.2, 4)), lambert(0xf06a1f, { emissive: 0x7a2a00 }));
+      marker.rotation.x = Math.PI;
+      scene.add(marker);
+
+      // ── Camera: drag to look around the whole map (first screen only) ──
       let azimuth = -0.75;
       let dragging = false;
       let lastX = 0;
@@ -403,56 +420,85 @@ export function MetroCity() {
       ro.observe(host);
       size();
 
+      // ── Scroll → where the train should be, and how far the camera has come down from the map ──
+      let targetT = 0;
+      let mapView = 1; // 1 = whole map (first screen), 0 = riding behind the train
+      let shownStop = "";
+      let shownHero = true;
+      const readScroll = () => {
+        const { i, f } = rideProgress();
+        const last = STATIONS.length - 1;
+        const go = i < last ? departure(f) : 0;
+        targetT = i < last ? STATIONS[i].t + (STATIONS[i + 1].t - STATIONS[i].t) * go : STATIONS[last].t;
+        mapView = 1 - Math.min(1, Math.max(0, window.scrollY / (window.innerHeight * 0.85)));
+        const at = go < 0.02 || i === last;
+        const label = at ? STATIONS[i].label : STATIONS[i + 1].label;
+        if (`${at}${label}` !== shownStop) {
+          shownStop = `${at}${label}`;
+          setStop({ at, label });
+        }
+        const hero = mapView > 0.4;
+        if (hero !== shownHero) {
+          shownHero = hero;
+          setOnHero(hero);
+          renderer.setPixelRatio(hero ? sharp : soft);
+          size();
+        }
+      };
+      let scrollDirty = true;
+      const onScroll = () => {
+        scrollDirty = true;
+      };
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll);
+      readScroll();
+
       // ── The loop ──
-      let tTrain = 0.02;
-      let dwell = 0;
-      let lastStation = -1;
-      let visible = true;
+      let trainT = targetT;
       let raf = 0;
       let last = performance.now();
+      let frames = 0;
+      let firstFrame = true;
+      const center = new THREE.Vector3(-4, 0, -2);
       const camPos = new THREE.Vector3(80, 70, 80);
-      const camLook = new THREE.Vector3();
+      const camLook = center.clone();
+      const want = new THREE.Vector3();
+      const wantLook = new THREE.Vector3();
+      const mapPos = new THREE.Vector3();
+      const head = new THREE.Vector3();
+      const side = new THREE.Vector3();
       const tmp = new THREE.Vector3();
-      const nextIndex = () => STATIONS.findIndex((s) => s.t > tTrain + 0.001);
-      let shownNext = "";
 
       const frame = (now: number) => {
+        raf = requestAnimationFrame(frame);
         const dt = Math.min(0.05, (now - last) / 1000);
         last = now;
+        if (document.hidden) return;
+        if (scrollDirty || ++frames % 30 === 0) {
+          scrollDirty = false;
+          readScroll(); // also every half second, in case the page's layout moved
+        }
         applyEnv();
+        const wholeMap = wholeMapRef.current;
+        const m = wholeMap ? 1 : mapView;
+        const snap = still || firstFrame;
+        firstFrame = false;
 
-        // the train slows into each station, waits, then pulls away
-        if (!still) {
-          if (dwell > 0) dwell -= dt;
-          else {
-            let nearest = 1;
-            STATIONS.forEach((s, i) => {
-              let d = (s.t - tTrain + 1) % 1;
-              if (d > 0.5) d -= 1;
-              if (Math.abs(d) < Math.abs(nearest)) nearest = d;
-              if (Math.abs(d) < 0.0015 && lastStation !== i) {
-                lastStation = i;
-                dwell = 1.4;
-              }
-            });
-            const ease = Math.min(1, Math.max(0.12, Math.abs(nearest) / 0.035));
-            tTrain = (tTrain + dt * 0.022 * ease) % 1;
-          }
-        }
-        const ni = nextIndex();
-        const nextLabel = STATIONS[ni === -1 ? 0 : ni].label;
-        if (nextLabel !== shownNext) {
-          shownNext = nextLabel;
-          setNext(nextLabel);
-        }
+        // the train drives to where the scroll says it should be
+        const trainMoved = Math.abs(targetT - trainT) > 1e-5;
+        trainT = snap ? targetT : trainT + (targetT - trainT) * (1 - Math.pow(0.03, dt));
         cars.forEach((car, i) => {
-          const t = (tTrain - i * 0.0128 + 1) % 1;
+          const t = (trainT - i * 0.0128 + 1) % 1;
           const p = curve.getPointAt(t);
           const a = curve.getPointAt((t + 0.002) % 1);
           car.position.set(p.x, p.y + 0.35, p.z);
           car.lookAt(a.x, p.y + 0.35, a.z);
           car.rotateY(Math.PI / 2);
         });
+        const lead = cars[0].position;
+        marker.visible = m > 0.05;
+        marker.position.set(lead.x, lead.y + 7 + Math.sin(now / 400) * (still ? 0 : 0.6), lead.z);
+        marker.scale.setScalar(0.4 + m * 1.2);
 
         // rain
         if (rain.visible && !still) {
@@ -466,53 +512,58 @@ export function MetroCity() {
           pos.needsUpdate = true;
         }
 
-        // camera: behind the train, or the whole map; pulls back as the hero scrolls away
+        // camera: the whole map on the first screen, then down behind the train, on the outside of the
+        // loop, looking along the line and across the city
         idle += dt;
-        if (!dragging && idle > 4 && !still) azimuth += dt * 0.05;
-        const box = host.getBoundingClientRect();
-        const away = Math.min(1, Math.max(0, -box.top / Math.max(1, box.height)));
-        const following = followRef.current;
-        const target = following ? cars[0].position : tmp.set(-4, 0, -2);
-        const radius = (following ? 58 : 128) * (1 + away * 0.6);
-        const height = (following ? 40 : 92) * (1 + away * 0.5);
-        const want = tmp.set(target.x + Math.cos(azimuth) * radius, target.y + height, target.z + Math.sin(azimuth) * radius);
-        camPos.lerp(want, 1 - Math.pow(0.002, dt));
-        camLook.lerp(following ? cars[0].position : new THREE.Vector3(-4, 0, -2), 1 - Math.pow(0.001, dt));
+        if (!dragging && idle > 4 && !still && m > 0.05) azimuth += dt * 0.04;
+        const zoom = camera.aspect < 1 ? 1.7 : camera.aspect < 1.4 ? 1.25 : 1;
+        mapPos.set(center.x + Math.cos(azimuth) * 128 * zoom, 92 * zoom, center.z + Math.sin(azimuth) * 128 * zoom);
+        curve.getTangentAt(trainT, head).setY(0).normalize();
+        side.set(-head.z, 0, head.x);
+        if (side.dot(tmp.copy(lead).sub(center)) < 0) side.negate();
+        const back = 34 * zoom;
+        want
+          .copy(lead)
+          .addScaledVector(head, -back)
+          .addScaledVector(side, 22 * zoom)
+          .add(tmp.set(0, 24 * zoom, 0))
+          .lerp(mapPos, m);
+        wantLook.copy(lead).addScaledVector(head, 12).addScaledVector(side, -5).lerp(center, m);
+        const settle = snap ? 1 : 1 - Math.pow(0.004, dt);
+        const camMoved = camPos.distanceToSquared(want) > 1e-4;
+        camPos.lerp(want, settle);
+        camLook.lerp(wantLook, snap ? 1 : 1 - Math.pow(0.002, dt));
         camera.position.copy(camPos);
         camera.lookAt(camLook);
 
+        // nothing on screen changed: skip the draw (a still page costs almost nothing)
+        const animating = trainMoved || camMoved || rain.visible || m > 0.05 || renderer.shadowMap.needsUpdate;
+        if (!animating && !snap && frames % 60 !== 0) return;
         renderer.render(scene, camera);
 
-        // station signs follow their stations on screen
+        // station signs follow their stations on screen; shown on the whole map only
         const w = host.clientWidth;
         const h = host.clientHeight;
         stationPoints.forEach((p, i) => {
           const el = labelRefs.current[i];
           if (!el) return;
           const v = tmp.set(p.x, p.y + 7, p.z).project(camera);
-          const hidden = v.z > 1 || v.x < -1.1 || v.x > 1.1 || v.y < -1.1 || v.y > 1.1;
-          el.style.opacity = hidden ? "0" : "1";
+          const off = m < 0.5 || v.z > 1 || v.x < -1.1 || v.x > 1.1 || v.y < -1.1 || v.y > 1.1;
+          el.style.opacity = off ? "0" : String(Math.min(1, (m - 0.5) * 3));
+          el.style.visibility = off ? "hidden" : "visible";
           el.style.transform = `translate(${((v.x + 1) / 2) * w}px, ${((1 - v.y) / 2) * h}px) translate(-50%, -100%)`;
         });
-
-        raf = visible && !still ? requestAnimationFrame(frame) : 0;
       };
 
-      const io = new IntersectionObserver(([e]) => {
-        visible = e.isIntersecting;
-        if (visible && !raf) {
-          last = performance.now();
-          raf = requestAnimationFrame(frame);
-        }
-      });
-      io.observe(host);
+      renderer.shadowMap.needsUpdate = true;
       raf = requestAnimationFrame(frame);
       setReady(true);
 
       cleanup = () => {
         cancelAnimationFrame(raf);
-        io.disconnect();
         ro.disconnect();
+        window.removeEventListener("scroll", onScroll);
+        window.removeEventListener("resize", onScroll);
         renderer.domElement.removeEventListener("pointerdown", onDown);
         renderer.domElement.removeEventListener("pointermove", onMove);
         renderer.domElement.removeEventListener("pointerup", onUp);
@@ -530,37 +581,41 @@ export function MetroCity() {
   }, []);
 
   return (
-    <div className="metro-city" data-ready={ready ? "true" : undefined}>
-      <div ref={hostRef} className="metro-city-stage" role="img" aria-label="A 3D model of Phnom Penh with the Rotana Line running through it">
-        {STATIONS.map((s, i) => (
-          <a
-            key={s.id}
-            ref={(el) => {
-              labelRefs.current[i] = el;
-            }}
-            href={`#${s.id}`}
-            data-jump
-            className="metro-city-sign"
-          >
-            <span className="metro-badge" aria-hidden="true">
-              {i === 0 ? "R" : i}
-            </span>
-            {s.label}
-          </a>
-        ))}
+    <>
+      <div className="metro-city" data-ready={ready ? "true" : undefined} data-failed={failed ? "true" : undefined}>
+        <div ref={hostRef} className="metro-city-stage" role="img" aria-label="A 3D model of Phnom Penh with the Rotana Line running through it">
+          {STATIONS.map((s, i) => (
+            <a
+              key={s.id}
+              ref={(el) => {
+                labelRefs.current[i] = el;
+              }}
+              href={`#${s.id}`}
+              data-jump
+              className="metro-city-sign"
+              tabIndex={onHero ? undefined : -1}
+            >
+              <span className="metro-badge" aria-hidden="true">
+                {i === 0 ? "R" : i}
+              </span>
+              {s.label}
+            </a>
+          ))}
+        </div>
       </div>
       <div className="metro-city-hud">
         <span className="metro-city-tag">
           <span className="metro-live-dot" aria-hidden="true" />
-          Line 1 · next stop <b>{next}</b>
+          Line 1 · {stop.at ? "now at" : "next stop"} <b>{stop.label}</b>
         </span>
-        <span className="metro-city-hint">Drag to look around · click a station to ride there</span>
-        <button type="button" className="metro-city-toggle" onClick={() => setFollow((f) => !f)} aria-pressed={!follow}>
-          {follow ? <Eye size={15} aria-hidden="true" /> : <Train size={15} aria-hidden="true" />}
-          {follow ? "Whole map" : "Ride along"}
-        </button>
+        {onHero && !failed && <span className="metro-city-hint">Drag the city to look around · scroll to ride</span>}
+        {!failed && (!onHero || wholeMap) && (
+          <button type="button" className="metro-city-toggle" onClick={() => setWholeMap((v) => !v)} aria-pressed={wholeMap}>
+            {wholeMap ? <Train size={15} aria-hidden="true" /> : <Eye size={15} aria-hidden="true" />}
+            {wholeMap ? "Ride along" : "Whole map"}
+          </button>
+        )}
       </div>
-      {!ready && <span className="metro-city-loading">Building the city…</span>}
-    </div>
+    </>
   );
 }

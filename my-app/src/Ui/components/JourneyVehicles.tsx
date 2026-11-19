@@ -44,3 +44,26 @@ export function CarSprite({ spin }: { spin?: MotionValue<number> }) {
     </svg>
   );
 }
+
+/** A metro car with a rounded nose, drawn like the car: wheels touch the rails at (0, 0). */
+export function TrainSprite({ spin }: { spin?: MotionValue<number> }) {
+  return (
+    <svg viewBox="-60 -60 120 120" className="w-[108px] h-[108px] sm:w-[132px] sm:h-[132px] overflow-visible" aria-hidden="true">
+      <path
+        className="veh-light veh-outline"
+        d="M -54 -12 L -54 -40 C -54 -43 -52 -45 -49 -45 L 34 -45 C 46 -45 54 -34 56 -22 L 57 -14 C 57 -12 56 -11 54 -11 L -52 -11 C -53 -11 -54 -11 -54 -12 Z"
+      />
+      <rect className="veh-main" x="-54" y="-21" width="110" height="6" />
+      <path className="veh-dark" d="M 36 -40 L 44 -40 C 48 -38 51 -33 52 -27 L 36 -27 Z" />
+      <rect className="veh-dark" x="-46" y="-39" width="14" height="11" rx="2" />
+      <rect className="veh-dark" x="-26" y="-39" width="14" height="11" rx="2" />
+      <rect className="veh-dark" x="-6" y="-39" width="14" height="11" rx="2" />
+      <rect className="veh-dark" x="14" y="-39" width="14" height="11" rx="2" />
+      <rect className="veh-main" x="52" y="-20" width="4" height="4" rx="1" />
+      <Wheel cx={-36} cy={-7} r={6} spin={spin} />
+      <Wheel cx={-20} cy={-7} r={6} spin={spin} />
+      <Wheel cx={24} cy={-7} r={6} spin={spin} />
+      <Wheel cx={40} cy={-7} r={6} spin={spin} />
+    </svg>
+  );
+}

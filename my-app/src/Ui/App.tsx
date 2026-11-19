@@ -15,6 +15,7 @@ import { SkyControls } from "./components/SkyControls";
 import { SettingsMenu } from "./components/SettingsMenu";
 import { SectionMotion } from "./components/SectionMotion";
 import { MetroDoors, MetroNextStop } from "./components/MetroDecor";
+import { MetroCity } from "./components/MetroCity";
 import { track, unlock } from "./achievements";
 import { useInteractiveSurfaces, useKonami } from "./hooks/interactive";
 import { OPEN_CONTROLS_EVENT, OPEN_TERMINAL_EVENT } from "./events";
@@ -236,6 +237,7 @@ function App() {
         {wipe && <ThemeWipe key={wipe.key} accent={wipe.accent} edge={wipe.edge} onDone={() => setWipe(null)} />}
       </AnimatePresence>
       <P5Stars />
+      {theme === "metro" && <MetroCity />}
       <main>
         <HeroSection />
         <P5Divider />

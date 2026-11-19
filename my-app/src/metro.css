@@ -217,16 +217,128 @@
 /* ── Hero: departure board + platform card ──────────────────────────────── */
 
 .metro-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+/* The first screen is the city itself (MetroCity, fixed behind the page): the hero lets clicks and
+   drags through to it everywhere except its own cards. */
+[data-theme="metro"] #home {
+  align-items: flex-start;
+  padding-top: 0;
+  pointer-events: none;
+}
+
+[data-theme="metro"] #home .bg-decor {
+  display: none;
+}
+
+.metro-stage {
+  display: flex;
+  align-items: flex-end;
+  min-height: 100svh;
+  padding: 7rem 0 5.5rem;
+}
+
+.metro-nameplate {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  max-width: min(100%, 40rem);
+  padding: 1.3rem 1.5rem 1.5rem;
+  border-radius: 22px;
+  background: rgb(22 22 22 / 0.9);
+  color: #f3f1ec;
+  box-shadow: 0 30px 60px -30px rgb(20 20 20 / 0.6), inset 0 0 0 1px #2a2a2a;
+  pointer-events: auto;
+}
+
+.metro-nameplate-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font: 500 0.72rem/1 "JetBrains Mono", monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #bdb7ac;
+}
+
+.metro-nameplate .metro-nameplate-ghost {
+  border-color: #f3f1ec;
+  color: #f3f1ec;
+}
+
+.metro-hero-detail {
   display: grid;
   gap: 2rem;
   align-items: start;
+  padding: 1.25rem;
+  border-radius: 28px;
+  background: rgb(243 241 236 / 0.94);
+  box-shadow: 0 30px 60px -40px rgb(20 20 20 / 0.5);
+  pointer-events: auto;
 }
 
 @media (min-width: 1024px) {
-  .metro-hero {
+  .metro-hero-detail {
     grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
     gap: 2.5rem;
+    padding: 1.5rem;
   }
+}
+
+/* Every other section is a station: a tiled wall behind the content, windows onto the city at the
+   sides (the tile grout reads as their frames), the line's colour band along the top, and the
+   platform edge — white safety line, yellow tactile strip — along the bottom. No blur: a blur over
+   a canvas that redraws every frame is what made scrolling heavy. */
+[data-theme="metro"] main,
+[data-theme="metro"] #contact {
+  position: relative;
+  z-index: 1;
+}
+
+[data-theme="metro"] #about,
+[data-theme="metro"] #journey,
+[data-theme="metro"] #skills,
+[data-theme="metro"] #work,
+[data-theme="metro"] #contact {
+  --wall: 243 241 236;
+  background:
+    linear-gradient(var(--m-line), var(--m-line)) left top / 100% 8px no-repeat,
+    linear-gradient(var(--m-ink), var(--m-ink)) left 8px / 100% 3px no-repeat,
+    linear-gradient(#fff, #fff) left bottom 16px / 100% 4px no-repeat,
+    radial-gradient(circle, #b8890b 1.7px, transparent 2.3px) left bottom / 11px 16px repeat-x,
+    linear-gradient(#f2c230, #f2c230) left bottom / 100% 16px no-repeat,
+    repeating-linear-gradient(0deg, rgb(20 20 20 / 0.06) 0 1px, transparent 1px 34px),
+    repeating-linear-gradient(90deg, rgb(20 20 20 / 0.05) 0 1px, transparent 1px 68px),
+    linear-gradient(
+      90deg,
+      rgb(var(--wall) / 0.3),
+      rgb(var(--wall) / 0.94) max(0px, calc(50% - 40rem)),
+      rgb(var(--wall) / 0.94) min(100%, calc(50% + 40rem)),
+      rgb(var(--wall) / 0.3)
+    );
+}
+
+[data-theme="metro"] #about::after,
+[data-theme="metro"] #journey::after,
+[data-theme="metro"] #skills::after,
+[data-theme="metro"] #work::after {
+  content: "Mind the gap";
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  translate: -50% 0;
+  padding: 0.2rem 0.7rem;
+  border-radius: 6px;
+  background: var(--m-ink);
+  color: #f2c230;
+  font: 700 0.68rem/1.2 "JetBrains Mono", monospace;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 .metro-board {
@@ -944,4 +1056,134 @@
   .metro-door {
     transition: none;
   }
+}
+
+/* ── Stations: the content as wayfinding ────────────────────────────────── */
+
+/* Cards are station information panels: the line's colour band across the top */
+[data-theme="metro"] {
+  --card-shadow: inset 0 5px 0 var(--m-line), 0 1px 0 var(--line), 0 14px 30px -22px rgb(20 20 20 / 0.28);
+  --card-shadow-hover: inset 0 5px 0 var(--m-line), 0 1px 0 var(--line), 0 26px 44px -26px rgb(20 20 20 / 0.4);
+}
+
+/* Icons sit on black pictogram tiles, like the symbols on station signs */
+[data-theme="metro"] #about dl svg {
+  box-sizing: content-box;
+  width: 18px;
+  height: 18px;
+  margin-top: 0;
+  padding: 7px;
+  border-radius: 8px;
+  background: var(--m-ink);
+  color: #fff;
+}
+
+[data-theme="metro"] main .icon-btn {
+  border: 0;
+  background: var(--m-line);
+  color: var(--m-ink);
+}
+
+/* Platform direction boards beside each section's station sign (MetroDirections.tsx) */
+.metro-dirs {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.5rem 0 0 0.5rem;
+  vertical-align: middle;
+}
+
+.metro-dir {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.28rem 0.75rem;
+  border: 2px solid var(--m-ink);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--m-ink);
+  font: 800 0.82rem/1.2 "Overpass", sans-serif;
+  text-decoration: none;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.metro-dir.is-next {
+  background: var(--m-line);
+}
+
+.metro-dir.is-end {
+  border-style: dashed;
+  color: var(--muted);
+}
+
+a.metro-dir:hover,
+a.metro-dir:focus-visible {
+  background: var(--m-ink);
+  color: #fff;
+}
+
+/* Work: the project list is a departure board */
+[data-theme="metro"] .ph-index {
+  gap: 0;
+  padding: 0 0.45rem 0.45rem;
+  border-radius: 18px;
+  background: var(--m-board);
+  box-shadow: inset 0 0 0 1px #2a2a2a;
+}
+
+[data-theme="metro"] .ph-index::before {
+  content: "Departures · Work line";
+  display: block;
+  padding: 0.85rem 0.6rem 0.6rem;
+  border-bottom: 1px solid #2a2a2a;
+  color: #bdb7ac;
+  font: 500 0.7rem/1 "JetBrains Mono", monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+[data-theme="metro"] .ph-index-row {
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  translate: none;
+}
+
+[data-theme="metro"] .ph-index > li + li {
+  border-top: 1px solid #262626;
+}
+
+[data-theme="metro"] .ph-index-row:hover,
+[data-theme="metro"] .ph-index-row:focus-visible {
+  background: #222;
+  translate: none;
+}
+
+[data-theme="metro"] .ph-index-row.is-active {
+  background: #262626;
+  box-shadow: inset 4px 0 0 var(--m-line);
+  translate: none;
+}
+
+[data-theme="metro"] .ph-index-row .text-fg {
+  color: #f3f1ec;
+  font-family: "Overpass", sans-serif;
+}
+
+[data-theme="metro"] .ph-index-row .text-muted {
+  color: #a8a297;
+}
+
+[data-theme="metro"] .ph-index-row .text-accent {
+  color: var(--m-amber);
+}
+
+/* Journey: the train's livery */
+[data-theme="metro"] .journey-vehicle .veh-main {
+  fill: var(--m-line);
+}
+
+/* the real city is behind the journey now: no cartoon clouds */
+[data-theme="metro"] .journey-cloud {
+  display: none;
 }

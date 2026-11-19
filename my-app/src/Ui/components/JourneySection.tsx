@@ -12,7 +12,8 @@ import { ScrambleText } from "./Reveal";
 import { P5Skyline, P5Slab } from "./PersonaDecor";
 import { P5Clouds } from "./Weather";
 import { Ransom } from "./Ransom";
-import { CarSprite, PaperPlaneSprite } from "./JourneyVehicles";
+import { CarSprite, PaperPlaneSprite, TrainSprite } from "./JourneyVehicles";
+import { MetroDirections } from "./MetroDirections";
 
 const TRACK_H = 560; // height of the route area before it's scaled to fit the screen
 const CARD_GAP = 30; // space between a stop's marker and its card
@@ -24,7 +25,7 @@ const KIND_ICON: Record<JourneyStop["kind"], LucideIcon> = {
   next: Flag,
 };
 
-type VehicleId = "plane" | "car";
+type VehicleId = "plane" | "car" | "train";
 
 interface Vehicle {
   id: VehicleId;
@@ -38,6 +39,7 @@ interface Vehicle {
 const VEHICLES: Vehicle[] = [
   { id: "plane", label: "Paper plane", mode: "air", verb: "fly", start: "Takeoff ↗", sprite: () => <PaperPlaneSprite /> },
   { id: "car", label: "Car", mode: "road", verb: "drive", start: "Start ▸", sprite: (s) => <CarSprite spin={s} /> },
+  { id: "train", label: "Train", mode: "road", verb: "ride", start: "Departs ▸", sprite: (s) => <TrainSprite spin={s} /> },
 ];
 
 const VEHICLE_KEY = "journey-vehicle";
@@ -45,11 +47,12 @@ const VEHICLE_KEY = "journey-vehicle";
 function loadVehicle(): VehicleId {
   try {
     const saved = localStorage.getItem(VEHICLE_KEY);
-    if (saved === "plane" || saved === "car") return saved;
+    if (saved === "plane" || saved === "car" || saved === "train") return saved;
   } catch {
-    // storage blocked: fall back to the paper plane
+    // storage blocked: fall back to the default
   }
-  return "plane";
+  // nothing chosen yet: the Metro theme rides a train, the others fly the paper plane
+  return document.documentElement.dataset.theme === "metro" ? "train" : "plane";
 }
 
 interface Geometry {
@@ -142,7 +145,7 @@ function JourneySection() {
   useEffect(() => {
     const onSet = (e: Event) => {
       const id = (e as CustomEvent<string>).detail;
-      if (id === "plane" || id === "car") chooseVehicle(id);
+      if (id === "plane" || id === "car" || id === "train") chooseVehicle(id);
     };
     window.addEventListener(SET_VEHICLE_EVENT, onSet);
     return () => window.removeEventListener(SET_VEHICLE_EVENT, onSet);
@@ -307,6 +310,7 @@ function JourneySection() {
             <span className="only-persona">▶ 02</span>
             <span>Journey</span>
           </span>
+          <MetroDirections stop={2} />
           <div className="relative mt-3 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
             <div>
               <h2 className="heading text-4xl sm:text-5xl lg:text-6xl text-fg">

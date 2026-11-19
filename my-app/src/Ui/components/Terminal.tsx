@@ -32,7 +32,7 @@ const COMMANDS: { name: string; usage?: string; about: string }[] = [
   { name: "launch", about: "launch a random project on the phone" },
   { name: "controls", about: "open the sky & weather menu (Alt+W)" },
   { name: "theme", usage: "theme [name]", about: "list or switch themes" },
-  { name: "vehicle", usage: "vehicle <plane|car>", about: "choose the Journey vehicle" },
+  { name: "vehicle", usage: "vehicle <plane|car|train>", about: "choose the Journey vehicle" },
   { name: "socials", about: "where to find me" },
   { name: "hire", about: "get in touch" },
   { name: "achievements", about: "your progress" },
@@ -199,11 +199,11 @@ export function Terminal({ open, onClose, onThemeChange }: TerminalProps) {
         break;
       }
       case "vehicle":
-        if (arg === "plane" || arg === "paper plane" || arg === "car") {
-          const v = arg === "car" ? "car" : "plane";
+        if (arg === "plane" || arg === "paper plane" || arg === "car" || arg === "train") {
+          const v = arg === "car" || arg === "train" ? arg : "plane";
           setJourneyVehicle(v);
-          push("out", v === "car" ? "Car ready on the Journey 🚗" : "Paper plane folded and ready ✈");
-        } else push("err", "usage: vehicle <plane|car>");
+          push("out", v === "car" ? "Car ready on the Journey 🚗" : v === "train" ? "Train boarding on the Journey 🚆" : "Paper plane folded and ready ✈");
+        } else push("err", "usage: vehicle <plane|car|train>");
         break;
       case "socials":
       case "links":

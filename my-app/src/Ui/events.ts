@@ -15,7 +15,7 @@ export const openProject = (projectId: string) => emit(OPEN_PROJECT_EVENT, proje
 export const launchRandomApp = () => emit(LAUNCH_APP_EVENT);
 export const openTerminalWindow = () => emit(OPEN_TERMINAL_EVENT);
 export const openControls = () => emit(OPEN_CONTROLS_EVENT);
-export const setJourneyVehicle = (vehicle: "plane" | "car") => emit(SET_VEHICLE_EVENT, vehicle);
+export const setJourneyVehicle = (vehicle: "plane" | "car" | "train") => emit(SET_VEHICLE_EVENT, vehicle);
 
 /** Smoothly scroll to a section by id. */
 export function goTo(sectionId: string) {
