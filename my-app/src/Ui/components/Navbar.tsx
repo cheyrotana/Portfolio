@@ -5,7 +5,7 @@ import { useState } from "react";
 import type { ThemeId } from "../theme";
 import { TrophyButton } from "./Achievements";
 import { Ransom } from "./Ransom";
-import { MetroTrain } from "./MetroDecor";
+import { MetroNavClock, MetroTrain } from "./MetroDecor";
 
 // Jagged burst behind the settings gear (Persona theme)
 const GEAR_BURST = Array.from({ length: 24 }, (_, i) => {
@@ -31,6 +31,7 @@ export function Navbar({
   activeSection, hidden, onOpenSettings, trophiesOpen, onTrophiesChange,
 }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const stationName = NAV_SECTIONS.find((s) => s.id === activeSection)?.label ?? "Rotana Central";
 
   return (
     <motion.header
@@ -44,7 +45,13 @@ export function Navbar({
           <span className="only-metro">
             <span className="metro-logo">
               <span className="metro-logo-dot" aria-hidden="true">R</span>
-              Rotana Line
+              <span className="metro-logo-text">
+                <span className="metro-logo-line">Rotana Line</span>
+                <span className="metro-logo-now">
+                  <span className="sr-only">Now at </span>
+                  {stationName}
+                </span>
+              </span>
             </span>
           </span>
           <span className="only-pop">
@@ -80,6 +87,9 @@ export function Navbar({
         </div>
 
         <div className="flex items-center gap-2">
+          <span className="only-metro">
+            <MetroNavClock />
+          </span>
           {/* The achievements panel still opens here (from the settings menu); its own button is hidden */}
           <TrophyButton open={trophiesOpen} onOpenChange={onTrophiesChange} bare />
           <button
@@ -109,7 +119,7 @@ export function Navbar({
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            className="card lg:hidden mx-auto max-w-6xl mt-2 p-2 flex flex-col"
+            className="nav-menu card lg:hidden mx-auto max-w-6xl mt-2 p-2 flex flex-col"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
@@ -119,7 +129,7 @@ export function Navbar({
                 key={s.id}
                 href={`#${s.id}`}
                 onClick={() => setMenuOpen(false)}
-                className={`px-4 py-3 rounded-[var(--radius-sm)] font-medium ${
+                className={`nav-menu-link px-4 py-3 rounded-[var(--radius-sm)] font-medium ${
                   activeSection === s.id ? "text-accent bg-accent/10" : "text-fg hover:bg-surface-2"
                 }`}
               >

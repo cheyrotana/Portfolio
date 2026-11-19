@@ -87,31 +87,61 @@
     linear-gradient(28deg, transparent 0 80%, rgb(31 122 69 / 0.1) 80% 80.9%, transparent 80.9%);
 }
 
-/* ── Navbar: the line map ───────────────────────────────────────────────── */
+/* ── Navbar: the line display above the train doors ─────────────────────
+   A dark panel like the departure board: the line's roundel and where you are now, the route with
+   the train riding it (MetroTrain), and the Phnom Penh clock. An orange line-colour strip runs
+   along its bottom edge. Opaque, no blur: a blur over the 3D city would redraw every frame. */
+
+[data-theme="metro"] .nav-bar {
+  border: 0;
+  border-radius: 16px !important;
+  background: var(--m-board) !important;
+  backdrop-filter: none !important;
+  color: #f3f1ec;
+  box-shadow:
+    inset 0 0 0 1px #2a2a2a,
+    inset 0 -4px 0 var(--m-line),
+    0 18px 36px -22px rgb(0 0 0 / 0.7);
+  padding-bottom: 0.65rem;
+}
 
 .metro-logo {
   display: inline-flex;
   align-items: center;
-  gap: 0.55rem;
-  font: 800 1.05rem/1 "Overpass", sans-serif;
-  letter-spacing: -0.01em;
+  gap: 0.6rem;
   white-space: nowrap;
 }
 
 .metro-logo-dot {
   display: inline-grid;
+  flex: none;
   place-items: center;
-  width: 1.9rem;
-  height: 1.9rem;
+  width: 2rem;
+  height: 2rem;
   border-radius: 50%;
   background: var(--m-line);
   color: var(--m-ink);
-  font-size: 0.95rem;
+  font: 800 1rem/1 "Overpass", sans-serif;
+  box-shadow: 0 0 0 3px #2a2a2a;
 }
 
-[data-theme="metro"] .nav-bar {
-  border-radius: 18px !important;
-  background: rgb(255 255 255 / 0.92);
+.metro-logo-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.metro-logo-line {
+  color: #bdb7ac;
+  font: 500 0.62rem/1 "JetBrains Mono", monospace;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.metro-logo-now {
+  color: #fff;
+  font: 800 1rem/1 "Overpass", sans-serif;
+  letter-spacing: -0.01em;
 }
 
 [data-theme="metro"] .nav-links {
@@ -120,7 +150,7 @@
   padding: 0 0.4rem 0 1.7rem;
 }
 
-/* the track: orange up to the train, grey after it */
+/* the track: orange up to the train, dark grey after it */
 [data-theme="metro"] .nav-links::before {
   content: "";
   position: absolute;
@@ -129,7 +159,7 @@
   top: 12px;
   height: 5px;
   border-radius: 3px;
-  background: linear-gradient(90deg, var(--m-line) var(--m-progress, 0px), #d9d4ca var(--m-progress, 0px));
+  background: linear-gradient(90deg, var(--m-line) var(--m-progress, 0px), #3a3a3a var(--m-progress, 0px));
 }
 
 /* the terminus bar at the start of the line (home) */
@@ -141,20 +171,23 @@
   width: 6px;
   height: 17px;
   border-radius: 3px;
-  background: var(--m-ink);
+  background: #f3f1ec;
 }
 
 [data-theme="metro"] .nav-link {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.3rem;
   padding: 0.28rem 0.85rem 0.05rem;
   border-radius: 0;
-  font: 700 0.78rem/1.1 "Overpass", sans-serif;
-  color: var(--muted);
+  color: #8f897f;
+  font: 500 0.68rem/1.1 "JetBrains Mono", monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
+/* stations: rings on the track; passed ones filled with the line colour */
 [data-theme="metro"] .nav-link::before {
   content: "";
   position: relative;
@@ -163,26 +196,49 @@
   height: 15px;
   box-sizing: border-box;
   border-radius: 50%;
-  background: #fff;
-  border: 3.5px solid #b9b3a8;
-  transition: border-color 0.2s, background-color 0.2s;
+  background: var(--m-board);
+  border: 3.5px solid #5a5650;
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+}
+
+[data-theme="metro"] .nav-link[data-passed] {
+  color: #d8d2c7;
 }
 
 [data-theme="metro"] .nav-link[data-passed]::before {
-  border-color: var(--m-ink);
+  border-color: #f3f1ec;
+  background: var(--m-line);
 }
 
-[data-theme="metro"] .nav-link:hover {
-  color: var(--m-ink);
+[data-theme="metro"] .nav-link:hover,
+[data-theme="metro"] .nav-link:focus-visible {
+  color: #fff;
 }
 
 [data-theme="metro"] .nav-link:hover::before {
+  border-color: #fff;
   background: var(--m-line);
-  border-color: var(--m-ink);
 }
 
+/* the station you're at: amber name and a ring pulsing round it */
 [data-theme="metro"] .nav-link.text-accent {
-  color: var(--m-ink);
+  color: var(--m-amber);
+  font-weight: 700;
+}
+
+[data-theme="metro"] .nav-link.text-accent::before {
+  border-color: var(--m-amber);
+  background: var(--m-board);
+  animation: metro-nav-ring 1.8s ease-out infinite;
+}
+
+@keyframes metro-nav-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgb(255 176 32 / 0.6);
+  }
+  100% {
+    box-shadow: 0 0 0 9px rgb(255 176 32 / 0);
+  }
 }
 
 [data-theme="metro"] .nav-pill {
@@ -200,7 +256,7 @@
   height: 17px;
   margin-left: -17px;
   box-sizing: border-box;
-  border: 3px solid var(--m-ink);
+  border: 3px solid #f3f1ec;
   border-radius: 6px 12px 12px 6px;
   background: var(--m-line);
   will-change: transform;
@@ -211,7 +267,105 @@
   position: absolute;
   inset: 2px 7px 4px 4px;
   border-radius: 2px;
-  background: repeating-linear-gradient(90deg, #fff 0 5px, transparent 5px 8px);
+  background: repeating-linear-gradient(90deg, #141414 0 5px, transparent 5px 8px);
+}
+
+/* the clock at the end of the display */
+.metro-nav-clock {
+  display: none;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+  padding-right: 0.3rem;
+}
+
+@media (min-width: 1280px) {
+  .metro-nav-clock {
+    display: flex;
+  }
+}
+
+.metro-nav-clock-city {
+  color: #bdb7ac;
+  font: 500 0.6rem/1 "JetBrains Mono", monospace;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.metro-nav-clock-time {
+  color: var(--m-amber);
+  font: 700 1rem/1 "JetBrains Mono", monospace;
+  letter-spacing: 0.08em;
+}
+
+[data-theme="metro"] .nav-bar .nav-settings,
+[data-theme="metro"] .nav-bar .icon-btn {
+  border: 1px solid #3a3a3a;
+  background: #222;
+  color: #f3f1ec;
+}
+
+[data-theme="metro"] .nav-bar .nav-settings:hover,
+[data-theme="metro"] .nav-bar .nav-settings:focus-visible,
+[data-theme="metro"] .nav-bar .icon-btn:hover {
+  border-color: var(--m-line);
+  background: var(--m-line);
+  color: var(--m-ink);
+}
+
+/* phones: the menu is the line's station list */
+[data-theme="metro"] .nav-menu {
+  position: relative;
+  padding: 0.6rem 0.6rem 0.6rem 2.2rem;
+  border: 0;
+  background: var(--m-board);
+  box-shadow: inset 0 0 0 1px #2a2a2a, 0 18px 36px -22px rgb(0 0 0 / 0.7);
+}
+
+[data-theme="metro"] .nav-menu::before {
+  content: "";
+  position: absolute;
+  left: 1.25rem;
+  top: 1.6rem;
+  bottom: 1.6rem;
+  width: 5px;
+  border-radius: 3px;
+  background: var(--m-line);
+}
+
+[data-theme="metro"] .nav-menu-link {
+  position: relative;
+  color: #f3f1ec;
+  font-family: "Overpass", sans-serif;
+  font-weight: 700;
+}
+
+[data-theme="metro"] .nav-menu-link::before {
+  content: "";
+  position: absolute;
+  left: -1.35rem;
+  top: 50%;
+  width: 15px;
+  height: 15px;
+  box-sizing: border-box;
+  translate: 0 -50%;
+  border-radius: 50%;
+  border: 3.5px solid #f3f1ec;
+  background: var(--m-board);
+}
+
+[data-theme="metro"] .nav-menu-link:hover {
+  background: #222;
+}
+
+[data-theme="metro"] .nav-menu-link.text-accent {
+  background: #222;
+  color: var(--m-amber);
+}
+
+[data-theme="metro"] .nav-menu-link.text-accent::before {
+  border-color: var(--m-amber);
+  background: var(--m-line);
 }
 
 /* ── Hero: departure board + platform card ──────────────────────────────── */
@@ -314,10 +468,10 @@
     repeating-linear-gradient(90deg, rgb(20 20 20 / 0.05) 0 1px, transparent 1px 68px),
     linear-gradient(
       90deg,
-      rgb(var(--wall) / 0.3),
-      rgb(var(--wall) / 0.94) max(0px, calc(50% - 40rem)),
-      rgb(var(--wall) / 0.94) min(100%, calc(50% + 40rem)),
-      rgb(var(--wall) / 0.3)
+      rgb(var(--wall) / 0),
+      rgb(var(--wall) / 0.72) max(0px, calc(50% - 38rem)),
+      rgb(var(--wall) / 0.72) min(100%, calc(50% + 38rem)),
+      rgb(var(--wall) / 0)
     );
 }
 
@@ -1186,4 +1340,13 @@ a.metro-dir:focus-visible {
 /* the real city is behind the journey now: no cartoon clouds */
 [data-theme="metro"] .journey-cloud {
   display: none;
+}
+
+/* Text straight on the see-through wall keeps a soft halo of the wall's colour, so it reads cleanly
+   over the city behind it (cards and boards have their own backgrounds and don't need it) */
+[data-theme="metro"] :is(.section-header, .journey-head, #about) :is(h2, p, .heading):not(.card *) {
+  text-shadow:
+    0 0 2px rgb(243 241 236),
+    0 0 10px rgb(243 241 236),
+    0 0 18px rgb(243 241 236 / 0.8);
 }

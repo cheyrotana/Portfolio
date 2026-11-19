@@ -79,6 +79,17 @@ function usePhnomPenhTime() {
   return new Intl.DateTimeFormat("en-GB", { timeZone: TZ, hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(now);
 }
 
+/** The Phnom Penh clock at the end of the Metro navbar's line display. */
+export function MetroNavClock() {
+  const time = usePhnomPenhTime();
+  return (
+    <span className="metro-nav-clock" title="Time in Phnom Penh">
+      <span className="metro-nav-clock-city">Phnom Penh</span>
+      <span className="metro-nav-clock-time">{time}</span>
+    </span>
+  );
+}
+
 const LINE_OF: Record<string, { code: string; name: string }> = {
   mobile: { code: "M", name: "Mobile line" },
   web: { code: "W", name: "Web line" },

@@ -79,7 +79,7 @@ export function MetroCity() {
       // sharp on the first screen; behind the sections the city sits under a wash, so it renders at a
       // fraction of the pixels (and looks softly out of focus, which suits it)
       const sharp = Math.min(window.devicePixelRatio, lite ? 1 : 1.25);
-      const soft = lite ? 0.45 : 0.6;
+      const soft = lite ? 0.6 : 0.85;
       renderer.setPixelRatio(sharp);
       renderer.shadowMap.enabled = !lite;
       renderer.shadowMap.type = THREE.PCFShadowMap;
