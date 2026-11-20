@@ -41,7 +41,7 @@ const STORAGE_KEY = "portfolio-theme";
 const isThemeId = (v: unknown): v is ThemeId => THEMES.some((t) => t.id === v);
 
 function currentTheme(): ThemeId {
-  // index.html sets this before first paint (the saved choice, else Metro).
+  // index.html sets this before first paint (the saved choice, else Retro).
   const attr = document.documentElement.getAttribute("data-theme");
   return isThemeId(attr) ? attr : "retro";
 }

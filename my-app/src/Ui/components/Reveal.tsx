@@ -2,13 +2,16 @@ import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { Ransom } from "./Ransom";
 import { MetroDirections } from "./MetroDirections";
+import { useThemeAttr } from "../hooks/interactive";
 
-// Fades and lifts its children into place the first time they scroll into view.
+// Fades and lifts its children into place the first time they scroll into view. Not in Retro: there the
+// whole section rises in with the scroll (retro.css), and a second, timed fade on top of it looks jumpy.
 export function Reveal({ children, delay = 0, className }: { children: ReactNode; delay?: number; className?: string }) {
+  const retro = useThemeAttr() === "retro";
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y: 28 }}
+      initial={retro ? false : { opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}

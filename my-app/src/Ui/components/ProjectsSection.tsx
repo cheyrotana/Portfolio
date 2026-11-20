@@ -10,7 +10,7 @@ import { P5Slab } from "./PersonaDecor";
 import { P5Clouds } from "./Weather";
 import { ProjectModal } from "./ProjectModal";
 import { SectionHeader } from "./Reveal";
-import { RetroCrate } from "./RetroCrate";
+import { RetroListening } from "./RetroListening";
 import { useThemeAttr } from "../hooks/interactive";
 
 function ProjectsSection() {
@@ -18,7 +18,7 @@ function ProjectsSection() {
   const [openId, setOpenId] = useState<string | null>(null);
   const [appId, setAppId] = useState<string | null>(null);
   const [highlight, setHighlight] = useState(false);
-  const retro = useThemeAttr() === "retro"; // Retro shows the projects as records in a crate
+  const retro = useThemeAttr() === "retro"; // Retro shows the projects as tracks at a listening station
   const highlightTimer = useRef<number | undefined>(undefined);
 
   // Launching an app on the phone; launching all of them unlocks an achievement.
@@ -123,12 +123,13 @@ function ProjectsSection() {
           title="Projects"
           intro={
             retro
-              ? "Government platforms in real use, plus the team projects that got me here. Browse them below and open one to see the full project."
+              ? "Government platforms in real use, plus the team projects that got me here. Pick a track to hear its story, then open the full project."
               : "Government platforms in real use, plus the team projects that got me here. Each one is an app on the phone below: launch it to see the real screens, filter by type, and open the case study for the full story."
           }
         />
 
-        {/* Filters */}
+        {/* Filters (Retro: Side A / Side B on the station instead) */}
+        {!retro && (
         <LayoutGroup>
           <div className="flex flex-wrap gap-2 mb-6 sm:mb-8" role="tablist" aria-label="Filter projects">
             {CATEGORIES.filter((c) => counts[c.id]).map((c) => {
@@ -166,10 +167,11 @@ function ProjectsSection() {
             })}
           </div>
         </LayoutGroup>
+        )}
 
-        {/* The projects as apps on a phone, with the story beside it (Retro: records in a crate) */}
+        {/* The projects as apps on a phone, with the story beside it (Retro: a listening station) */}
         {retro ? (
-          <RetroCrate projects={visible} onOpen={openFromPhone} />
+          <RetroListening projects={projects} onOpen={openFromPhone} />
         ) : (
           <ProjectPhone
             appId={appId}

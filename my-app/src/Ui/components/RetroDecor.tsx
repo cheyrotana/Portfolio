@@ -2,14 +2,12 @@
 // - RetroTurntable: a record player in the corner. Each groove is a section; the tonearm follows the scroll,
 //   clicking a groove jumps there, and dropping the needle plays the background music (bgm.ts).
 // - RetroStripes: the sunset stripes between sections.
-// - RetroCredits / RetroBand: About as the back of the sleeve, Skills as the band.
 // - RetroEq / RetroSticker: an equaliser that moves with the music, and starburst stickers.
 // Styles: src/retro.css.
-import { ChevronDown, ChevronUp, Drum, Guitar, Mic, Piano, Wrench, type LucideIcon } from "lucide-react";
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { bgmLevels, setBgm } from "../bgm";
 import { NAV_SECTIONS } from "../data/sections";
-import { profile, skillGroups } from "../data/profile";
 import { useBgmOn, useThemeAttr } from "../hooks/interactive";
 import { rideProgress } from "../metroRide";
 import { play } from "../sound";
@@ -101,34 +99,65 @@ export function RetroTurntable() {
   }, []);
 
   // While the needle is down, the music's levels drive CSS variables (--eq1…--eq6, --vu-l, --vu-r) that the
-  // meters, the equalisers and the sunbursts read.
+  // meters, the equalisers and the hero's rings read. They are written only on the elements that read them, only
+  // while those are on screen, about 30 times a second, and only when a value changes: a custom property
+  // changed on a big element (or <html>) makes the browser restyle everything inside it.
   useEffect(() => {
     const root = document.documentElement;
     root.dataset.music = playing ? "on" : "off";
     const names = ["--eq1", "--eq2", "--eq3", "--eq4", "--eq5", "--eq6", "--vu-l", "--vu-r"];
-    const clear = () => names.forEach((n) => root.style.removeProperty(n));
+    const READERS = ".retro-eq, .retro-vu, .retro-gate-rings"; // small elements only: never a whole section
+    const seen = new Set<HTMLElement>(); // elements we've written to (to clean up)
+    const visible = new Set<HTMLElement>();
+    const io = new IntersectionObserver((entries) =>
+      entries.forEach((e) => {
+        const el = e.target as HTMLElement;
+        if (e.isIntersecting) visible.add(el);
+        else visible.delete(el);
+      }),
+    );
+    const watched = new Set<Element>();
+    const watch = () =>
+      document.querySelectorAll<HTMLElement>(READERS).forEach((el) => {
+        if (watched.has(el)) return;
+        watched.add(el);
+        io.observe(el);
+      });
+    const clear = () => seen.forEach((t) => names.forEach((n) => t.style.removeProperty(n)));
     if (!playing) {
-      clear();
+      io.disconnect();
       return () => delete root.dataset.music;
     }
     const bins = new Uint8Array(32);
     const bands = [[0, 0], [1, 1], [2, 3], [4, 6], [7, 11], [12, 20]];
+    const last = new WeakMap<HTMLElement, string[]>();
     let raf = 0;
+    let frame = 0;
     const loop = () => {
       raf = requestAnimationFrame(loop);
-      if (!bgmLevels(bins)) return;
+      if (frame++ % 60 === 0) watch(); // sections mount late
+      if (frame % 2) return; // ~30 updates a second is plenty for a meter
+      if (!visible.size || !bgmLevels(bins)) return;
       const v = bands.map(([a, b]) => {
         let sum = 0;
         for (let i = a; i <= b; i++) sum += bins[i];
         return Math.min(1, (sum / (b - a + 1) / 255) * 1.35);
       });
-      v.forEach((x, i) => root.style.setProperty(names[i], x.toFixed(3)));
-      root.style.setProperty("--vu-l", ((v[0] + v[1]) / 2).toFixed(3));
-      root.style.setProperty("--vu-r", ((v[3] + v[4] + v[5]) / 3).toFixed(3));
+      v.push((v[0] + v[1]) / 2, (v[3] + v[4] + v[5]) / 3);
+      const vals = v.map((x) => x.toFixed(2));
+      for (const t of visible) {
+        const prev = last.get(t) ?? [];
+        vals.forEach((s, i) => {
+          if (s !== prev[i]) t.style.setProperty(names[i], s); // unchanged: no restyle
+        });
+        last.set(t, vals);
+        seen.add(t);
+      }
     };
     loop();
     return () => {
       cancelAnimationFrame(raf);
+      io.disconnect();
       clear();
       delete root.dataset.music;
     };
@@ -157,12 +186,18 @@ export function RetroTurntable() {
       className={`retro-deck ${collapsed ? "is-collapsed" : ""} ${collapsed && tucked ? "is-tucked" : ""} ${playing ? "is-playing" : ""}`}
       aria-label="Music player and sections"
     >
-      <svg
-        className="retro-deck-svg"
-        viewBox="0 0 240 200"
-        role="group" aria-label="Sections: each ring jumps to one">
+      {/* three layers: the wood, the record on its own (so its spin runs on the GPU, not the main thread:
+          an animated <g> inside an SVG is repainted every frame) and the tonearm and meters on top */}
+      <div className="retro-deck-stack">
+      <svg className="retro-deck-svg" viewBox="0 0 240 200" aria-hidden="true">
         <rect x="2" y="2" width="236" height="196" rx="18" className="retro-deck-wood" />
-        <g className="retro-deck-record">
+      </svg>
+      <svg
+        className="retro-deck-record"
+        viewBox={`${CX - R_EDGE - 2} ${CY - R_EDGE - 2} ${2 * (R_EDGE + 2)} ${2 * (R_EDGE + 2)}`}
+        role="group"
+        aria-label="Sections: each ring jumps to one"
+      >
           <circle cx={CX} cy={CY} r={R_EDGE + 2} className="retro-deck-vinyl" />
           {NAV_SECTIONS.map((s, i) => {
             const outer = R_FIRST - BAND * i;
@@ -188,7 +223,8 @@ export function RetroTurntable() {
             Portfolio
           </text>
           <circle cx={CX} cy={CY} r={2.6} className="retro-deck-hole" />
-        </g>
+      </svg>
+      <svg className="retro-deck-top" viewBox="0 0 240 200" aria-hidden="true">
         <circle cx={PX} cy={PY} r={11} className="retro-deck-pivot" />
         <g ref={armRef} transform={`rotate(${REST} ${PX} ${PY})`} className="retro-deck-arm">
           <rect x={PX - 3} y={PY} width={6} height={ARM - 14} rx={3} className="retro-deck-arm-bar" />
@@ -201,6 +237,7 @@ export function RetroTurntable() {
           <rect x={224.5} y={75.5} width={6} height={81} rx={1} className="retro-vu-bar retro-vu-r" />
         </g>
       </svg>
+      </div>
 
       <div className="retro-deck-bar">
         <p className="retro-deck-now" aria-live="polite">
@@ -226,10 +263,62 @@ export function RetroTurntable() {
   );
 }
 
+// The seam between two sections: a wavy ribbon of sunset stripes laid over the line where one section ends
+// and the next begins, so the change of background happens under the ribbon. The ribbon is thicker than the
+// waves are tall, so that line is always covered. Scrolling drifts the waves sideways (retro.css).
+const WAVE_W = 2880; // four waves; the ribbon is drawn twice as wide as the screen and slides by one wave
+const WAVE_H = 104;
+const WAVE_PERIOD = 720;
+const WAVE_AMP = 18;
+const STRIPE = 15;
+const STRIPES = 4;
+
+function waveY(x: number, offset: number, phase: number) {
+  return WAVE_H / 2 + offset + WAVE_AMP * Math.sin((2 * Math.PI * x) / WAVE_PERIOD + phase);
+}
+
+function wavePath(top: number, bottom: number, phase: number) {
+  const xs: number[] = [];
+  for (let x = 0; x <= WAVE_W; x += 24) xs.push(x);
+  const f = (n: number) => n.toFixed(1);
+  const upper = xs.map((x, i) => `${i ? "L" : "M"}${x} ${f(waveY(x, top, phase))}`).join("");
+  const lower = [...xs].reverse().map((x) => `L${x} ${f(waveY(x, bottom, phase))}`).join("");
+  return `${upper}${lower}Z`;
+}
+
+function edgePath(offset: number, phase: number) {
+  let d = "";
+  for (let x = 0; x <= WAVE_W; x += 24) d += `${x ? "L" : "M"}${x} ${waveY(x, offset, phase).toFixed(1)}`;
+  return d;
+}
+
+const RIBBON = [false, true].map((flip) => {
+  const phase = flip ? Math.PI : 0;
+  const half = (STRIPE * STRIPES) / 2;
+  const colors = ["var(--r-mustard)", "var(--r-orange)", "var(--r-rust)", "var(--r-brown)"];
+  return {
+    stripes: (flip ? [...colors].reverse() : colors).map((fill, i) => ({
+      fill,
+      d: wavePath(-half + i * STRIPE, -half + (i + 1) * STRIPE, phase),
+    })),
+    edges: [edgePath(-half, phase), edgePath(half, phase)],
+  };
+});
+
 export function RetroStripes({ flip = false }: { flip?: boolean }) {
+  const ribbon = RIBBON[flip ? 1 : 0];
   return (
     <div className="only-retro">
-      <div className={`retro-stripes ${flip ? "retro-stripes-flip" : ""}`} aria-hidden="true" />
+      <div className="retro-stripes" aria-hidden="true">
+        <svg className="retro-wave" viewBox={`0 0 ${WAVE_W} ${WAVE_H}`} preserveAspectRatio="none">
+          {ribbon.stripes.map((s) => (
+            <path key={s.fill} d={s.d} fill={s.fill} />
+          ))}
+          {ribbon.edges.map((d) => (
+            <path key={d} d={d} className="retro-wave-edge" />
+          ))}
+        </svg>
+      </div>
     </div>
   );
 }
@@ -258,89 +347,6 @@ export function RetroSticker({ children, className = "" }: { children: ReactNode
 
 // ── About: the back of the sleeve ─────────────────────────────────────────────────────────────
 
-const credits = [
-  { k: "Based in", v: profile.location },
-  { k: "Studying", v: `${profile.education} · ${profile.year}` },
-  { k: "Currently", v: profile.currently },
-  { k: "Focus", v: "Mobile apps, dashboards and the APIs behind them" },
-];
-
-export function RetroCredits() {
-  return (
-    <div className="retro-back">
-      <h3 className="retro-back-title">Quick facts</h3>
-      <dl className="retro-credits">
-        {credits.map((c) => (
-          <div key={c.k}>
-            <dt className="retro-cond">{c.k}</dt>
-            <dd>{c.v}</dd>
-          </div>
-        ))}
-      </dl>
-    </div>
-  );
-}
-
-// ── Skills: the band ─────────────────────────────────────────────────────────────────────────
-
-const ROLES: Record<string, { role: string; icon: LucideIcon }> = {
-  Mobile: { role: "Apps", icon: Mic },
-  Frontend: { role: "Web", icon: Piano },
-  "Backend & Data": { role: "APIs & data", icon: Drum },
-  "Hardware & Games": { role: "Devices & games", icon: Guitar },
-  Tools: { role: "Everyday tools", icon: Wrench },
-};
-
-export function RetroBand() {
-  const playing = useBgmOn();
-  return (
-    <div className="retro-band">
-      <div className="retro-band-stage">
-        <RetroEq className="retro-band-eq" />
-        <p className="retro-band-status">
-          <span className="retro-cond">{playing ? "Music on" : "Music off"}</span>
-          {playing ? "The bars move with the music." : "Play some music while you look around."}
-        </p>
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={() => {
-            play(playing ? "tick" : "pop");
-            setBgm(!playing);
-          }}
-          aria-pressed={playing}
-        >
-          {playing ? "Pause music" : "Play music"}
-        </button>
-      </div>
-      <ul className="retro-band-grid">
-        {skillGroups.map((g, i) => {
-          const r = ROLES[g.title] ?? { role: "Skills", icon: Mic };
-          const Icon = r.icon;
-          return (
-            <li key={g.title} className="retro-player" style={{ "--d": `${i * 0.12}s` } as CSSProperties}>
-              <span className="retro-player-icon" aria-hidden="true">
-                <Icon size={26} strokeWidth={2.2} />
-              </span>
-              <p className="retro-cond retro-player-role">{r.role}</p>
-              <h3 className="retro-player-name">{g.title}</h3>
-              <p className="retro-player-blurb">{g.blurb}</p>
-              <p className="retro-player-skills">
-                {g.skills.map(({ name, icon: SkillIcon }) => (
-                  <span key={name}>
-                    <SkillIcon size={14} aria-hidden="true" />
-                    {name}
-                  </span>
-                ))}
-              </p>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
-}
-
 /**
  * Retro navbar: the needle on the radio dial. It glides between the stations (section links) as the
  * page scrolls, jumps to a station you hover, ticks softly when it reaches a new one, and the tuning
@@ -358,7 +364,13 @@ export function RetroNeedle() {
     let raf = 0;
     let hoverX: number | null = null;
     let station = -1;
+    // The tuning knob reads --dial; set it on the knob only, not on <html> (that restyles the whole page).
+    const knob = () => document.querySelector<HTMLElement>(".nav-settings");
 
+    // Station positions are measured once (and again on resize / font load), not on every scroll frame:
+    // measuring right after a style write forces a full layout each frame.
+    let xsCache: number[] | null = null;
+    let maxScroll = -1;
     const centres = () => {
       const box = dial.getBoundingClientRect();
       return [...dial.querySelectorAll<HTMLElement>(".nav-link")].map((l) => {
@@ -368,10 +380,11 @@ export function RetroNeedle() {
     };
     const update = () => {
       raf = 0;
-      const max = document.documentElement.scrollHeight - innerHeight;
-      document.documentElement.style.setProperty("--dial", (max > 0 ? scrollY / max : 0).toFixed(3));
+      if (maxScroll < 0) maxScroll = document.documentElement.scrollHeight - innerHeight;
+      knob()?.style.setProperty("--dial", (maxScroll > 0 ? Math.min(1, scrollY / maxScroll) : 0).toFixed(3));
       if (dial.offsetParent === null) return;
-      const xs = centres();
+      if (!xsCache?.length) xsCache = centres();
+      const xs = xsCache;
       if (!xs.length) return;
       const stations = [10, ...xs]; // before About: the start of the dial
       const { i, f } = rideProgress();
@@ -401,18 +414,28 @@ export function RetroNeedle() {
       dial.classList.remove("is-tuning");
       queue();
     };
+    const remeasure = () => {
+      xsCache = null;
+      maxScroll = -1;
+      queue();
+    };
     update();
     dial.addEventListener("pointerover", onOver);
     dial.addEventListener("pointerleave", onLeave);
     window.addEventListener("scroll", queue, { passive: true });
-    window.addEventListener("resize", queue);
+    window.addEventListener("resize", remeasure);
+    document.fonts?.ready.then(remeasure);
+    // the page grows as sections and images load, so the scroll length is re-read now and then
+    const grow = new ResizeObserver(remeasure);
+    grow.observe(document.body);
     return () => {
       cancelAnimationFrame(raf);
+      grow.disconnect();
       dial.removeEventListener("pointerover", onOver);
       dial.removeEventListener("pointerleave", onLeave);
       window.removeEventListener("scroll", queue);
-      window.removeEventListener("resize", queue);
-      document.documentElement.style.removeProperty("--dial");
+      window.removeEventListener("resize", remeasure);
+      knob()?.style.removeProperty("--dial");
     };
   }, [theme]);
 

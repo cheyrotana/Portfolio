@@ -1,11 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { NAV_SECTIONS } from "../data/sections";
 
 // Section motion, and nothing for visitors who prefer reduced motion:
 // 1. Persona: cards slide in from alternating sides with a tilt as they scroll into view;
 // 2. jumping to a section from the navbar, footer or a Metro "next stop" display covers the screen
 //    while the page jumps underneath: Persona sends a red-and-black wipe across, Metro rides
-//    through a tunnel until the station pulls in. Links marked data-jump (like "Skip the
+//    through a tunnel until the station pulls in, Retro sends sunset rings out from the click until a
+//    record covers the screen and its label names the section. Links marked data-jump (like "Skip the
 //    journey") jump straight there in every theme, without scrolling through everything between.
 
 const CARDS = "#about .card, #contact .card, .skill-menu-item, .ph-index-row";
@@ -58,11 +59,22 @@ function useCardEntrances() {
 const TIMING = {
   wipe: { in: 420, out: 460 }, // Persona: red and black slabs
   ride: { in: 760, out: 520 }, // Metro: a tunnel, then the station pulls in
+  spin: { in: 620, out: 600 }, // Retro: sunset rings, a record, then the rings shrink away
 };
+
+type Kind = keyof typeof TIMING;
 
 export function SectionMotion() {
   useCardEntrances();
-  const [wipe, setWipe] = useState<{ phase: "in" | "out"; label: string; kind: "wipe" | "ride"; stop: string } | null>(null);
+  const [wipe, setWipe] = useState<{
+    phase: "in" | "out";
+    label: string;
+    kind: Kind;
+    stop: string;
+    x: number; // where the rings start (the click), in px
+    y: number;
+    r: number; // ring radius that covers the screen from there and from the centre
+  } | null>(null);
   const busy = useRef(false);
 
   useEffect(() => {
@@ -88,7 +100,8 @@ export function SectionMotion() {
       };
 
       const theme = document.documentElement.dataset.theme;
-      const kind = theme === "persona" ? "wipe" : theme === "metro" ? "ride" : null;
+      const kind: Kind | null =
+        theme === "persona" ? "wipe" : theme === "metro" ? "ride" : theme === "retro" ? "spin" : null;
       if (!kind || reduced()) {
         if (!jumpLink) return; // ordinary smooth scroll
         e.preventDefault();
@@ -103,12 +116,18 @@ export function SectionMotion() {
       const label =
         id === "home" ? (kind === "ride" ? "Departures" : "Top") : (NAV_SECTIONS[index]?.label ?? link.textContent ?? "");
       const stop = index >= 0 ? String(index + 1) : "R";
-      setWipe({ phase: "in", label, kind, stop });
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const x = e.clientX || w / 2;
+      const y = e.clientY || h / 2;
+      const r = Math.ceil(Math.max(Math.hypot(Math.max(x, w - x), Math.max(y, h - y)), Math.hypot(w, h) / 2)) + 8;
+      const at = { x, y, r };
+      setWipe({ phase: "in", label, kind, stop, ...at });
 
       timers.push(
         window.setTimeout(() => {
           jump(); // while the screen is covered
-          setWipe({ phase: "out", label, kind, stop });
+          setWipe({ phase: "out", label, kind, stop, ...at });
         }, TIMING[kind].in),
         window.setTimeout(() => {
           setWipe(null);
@@ -125,6 +144,25 @@ export function SectionMotion() {
   }, []);
 
   if (!wipe) return null;
+  if (wipe.kind === "spin") {
+    return (
+      <div
+        className={`retro-change is-${wipe.phase}`}
+        style={{ "--x": `${wipe.x}px`, "--y": `${wipe.y}px`, "--r": `${wipe.r}px` } as CSSProperties}
+        aria-hidden="true"
+      >
+        <span className="retro-change-ring" />
+        <span className="retro-change-ring" />
+        <span className="retro-change-ring" />
+        <span className="retro-change-ring retro-change-vinyl" />
+        <span className="retro-change-label">
+          <span className="retro-change-side">{wipe.stop === "R" ? "Side A" : `Track ${wipe.stop.padStart(2, "0")}`}</span>
+          <span className="retro-change-name">{wipe.label}</span>
+          <span className="retro-change-hole" />
+        </span>
+      </div>
+    );
+  }
   if (wipe.kind === "ride") {
     return (
       <div className={`metro-ride is-${wipe.phase}`} aria-hidden="true">

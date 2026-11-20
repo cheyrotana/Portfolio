@@ -1,7 +1,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useThemeAttr } from "../hooks/interactive";
 import { MetroSkillMap } from "./MetroMap";
-import { RetroBand } from "./RetroDecor";
+import { RetroTapes } from "./RetroTapes";
 import { ArrowUpRight } from "lucide-react";
 import { useRef, useState, type KeyboardEvent } from "react";
 import { track } from "../achievements";
@@ -201,7 +201,7 @@ function SkillMenu() {
 function SkillsSection() {
   const all = skillGroups.flatMap((g) => g.skills);
   const themeAttr = useThemeAttr();
-  const metro = themeAttr === "metro"; // Metro shows the skills as a network map, Retro as a band
+  const metro = themeAttr === "metro"; // Metro shows the skills as a network map, Retro as cassette tapes
 
   return (
     <section id="skills" className="relative py-24 sm:py-32 overflow-hidden">
@@ -215,7 +215,7 @@ function SkillsSection() {
           intro="From the phone in an officer's hand to the database behind it — these are the tools I reach for."
         />
 
-        <Reveal>{metro ? <MetroSkillMap /> : themeAttr === "retro" ? <RetroBand /> : <SkillMenu />}</Reveal>
+        <Reveal>{metro ? <MetroSkillMap /> : themeAttr === "retro" ? <RetroTapes /> : <SkillMenu />}</Reveal>
       </div>
 
       {/* Scrolling strip of every tool */}

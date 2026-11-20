@@ -2,19 +2,20 @@
 // The move plays on its own (about 2.5 s) once you scroll, swipe or press a key, so it's equally smooth
 // however you scroll; the page holds still while it plays. Scrolling up at the top of the page plays it
 // backwards. What happens:
-//   1. the record's grooves split into five rings named after the sections;
-//   2. each ring glides up and lands on its link in the navbar (on phones: into the menu button);
-//   3. the label glides down onto the record player in the corner (RetroTurntable);
-//   4. behind them the room warms into a sunset: sky, a low sun rising behind striped hills,
-//      then my name and a few highlights. (My photo hangs in About: RetroPolaroid.)
+//   1. the record's grooves split into five rings;
+//   2. into the grooves: the rings warm to sunset colours and sweep out past the edges of the screen
+//      while the sky warms in behind them;
+//   3. the label sinks to the horizon and grows into the sun; the striped hills rise over it;
+//   4. my name and a few highlights come in, the navbar drops in from above and the corner record
+//      player fades up. (My photo hangs in About: RetroPolaroid.)
 // "Play music" (or clicking the record) lowers the tonearm and starts the background music.
 // Two layers: .retro-gate-bg (sky, sun, hero text, photo) sits under the corner player, and
 // .retro-gate-stage (record, rings, label) above it, so the label can land on the player.
 // While the record is showing, <html> gets data-gate="in" (the navbar and the player stay put) and
-// --gate-dock / --gate-nav (0 → 1: the player's label and the navbar fade in as the label and rings arrive).
+// --gate-dock / --gate-nav (0 → 1: the corner player's label fades in and the navbar drops in at the end).
 // Styles: .retro-gate* and .retro-hero* in src/retro.css.
 import { ArrowDown, ChevronsRight, Pause, Play } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 import { setBgm } from "../bgm";
 import { showProject } from "../events";
 import { NAV_SECTIONS } from "../data/sections";
@@ -35,6 +36,9 @@ const END = 0.86; // the move is complete here (the timings below were laid out 
 const DURATION = 2300; // ms for the whole move
 const SPINUP = 700; // ms for the record to get up to speed before it splits, like a turntable starting
 const RPM_DEG = 200; // 33⅓ rpm, in degrees per second
+
+// the rings' sunset colours, outermost first (they warm from the grooves' black as they sweep out)
+const RING_COLORS = ["#a8431b", "#c25a24", "#e07a2e", "#e9893f", "#e8a91c"];
 
 const hits = projects.filter((p) => p.stat);
 // the newest three, back to front, for the crate in the hero
@@ -93,9 +97,8 @@ export function RetroGateway() {
       const cx = disc.offsetLeft + d / 2;
       const cy = disc.offsetTop + d / 2;
 
-      // 1 · the solid record hands over to its five rings, which part a little
+      // 1 · the solid record hands over to its rings (same size and place, so the swap can't be seen)
       const split = seg(p, 0.03, 0.05);
-      const spread = ease(seg(p, 0.06, 0.14));
       disc.style.opacity = String(1 - split);
       disc.style.pointerEvents = split > 0.5 ? "none" : "";
       if (hudRef.current) {
@@ -103,62 +106,54 @@ export function RetroGateway() {
         hudRef.current.style.visibility = p > 0.1 ? "hidden" : "visible";
       }
 
-      // 2 · each ring flies to its navbar link (or, when the links are folded away, the menu button)
-      const links = document.querySelectorAll<HTMLElement>(".nav-links a");
-      const menuBtn = [...document.querySelectorAll<HTMLElement>("header button[aria-expanded]")].find(
-        (b) => b.offsetWidth > 0,
-      );
+      // where the sun ends up: the label lands there and becomes it
+      const sun = sunRef.current;
+      const sr = sun?.getBoundingClientRect();
+      const sunX = sr ? sr.left + sr.width / 2 - box.left : cx;
+      const sunY = sr ? sr.top + sr.height / 2 - box.top : cy;
+      const sunD = sr ? sr.width : LABEL * d;
+
+      // 2 · into the grooves: the rings warm from black to sunset colours and sweep out past the edges of
+      //     the screen, the inner ones a beat later, drifting down towards where the sun will sit
+      const reach = Math.hypot(box.width, box.height) * 1.25;
+      const heat = seg(p, 0.1, 0.22);
       ringRefs.current.forEach((ring, i) => {
         if (!ring) return;
-        const link = links[i];
-        let t: DOMRect | undefined = link?.getBoundingClientRect();
-        if (!t || t.width === 0) t = menuBtn?.getBoundingClientRect();
-        const fly = ease(seg(p, 0.22 + i * 0.035, 0.38));
-        const size0 = (d - 2 * i * BAND * d) * (1 + (0.17 - 0.024 * i) * spread);
-        const band = BAND * d * (1 - 0.2 * spread);
-        const tw = t ? t.width : 0;
-        const th = t ? t.height : 0;
-        const tx = t ? t.left + tw / 2 - box.left : cx;
-        const ty = t ? t.top + th / 2 - box.top : cy;
-        const w = lerp(size0, tw, fly);
-        const h = lerp(size0, th, fly);
-        ring.style.width = `${w.toFixed(1)}px`;
-        ring.style.height = `${h.toFixed(1)}px`;
-        ring.style.transform = `translate(${(lerp(cx, tx, fly) - w / 2).toFixed(1)}px, ${(lerp(cy, ty, fly) - h / 2).toFixed(1)}px)`;
-        ring.style.borderWidth = `${lerp(band, 0, fly).toFixed(2)}px`;
-        ring.style.borderRadius = `${lerp(size0 / 2, th / 2, fly).toFixed(1)}px`;
-        ring.style.opacity = String(split * (1 - seg(p, 0.76, 0.08)));
-        ring.style.setProperty("--ring-fly", fly.toFixed(3));
-        ring.style.setProperty("--ring-band", `${band.toFixed(1)}px`);
-        ring.style.setProperty("--ring-name", String(seg(p, 0.08, 0.08)));
+        const size0 = d - 2 * i * BAND * d;
+        const grow = ease(seg(p, 0.08 + i * 0.03, 0.4));
+        const scale = lerp(1, reach / size0, grow);
+        const x = lerp(cx, sunX, grow * 0.6);
+        const y = lerp(cy, sunY, grow * 0.6);
+        ring.style.width = `${size0.toFixed(1)}px`;
+        ring.style.height = `${size0.toFixed(1)}px`;
+        ring.style.borderWidth = `${(BAND * d).toFixed(2)}px`;
+        ring.style.transform = `translate(${(x - size0 / 2).toFixed(1)}px, ${(y - size0 / 2).toFixed(1)}px) scale(${scale.toFixed(4)})`;
+        ring.style.opacity = String(split * (1 - seg(p, 0.36 + i * 0.03, 0.16)));
+        ring.style.setProperty("--heat", heat.toFixed(3));
       });
 
-      // 3 · the label flies onto the corner player's label
+      // 3 · the label sinks to the horizon and grows into the sun, then hands over to it
       const label = labelRef.current;
       if (label) {
-        const target = document.querySelector(".retro-deck-label")?.getBoundingClientRect();
-        const ok = !!target && target.width > 0;
-        const fly = ease(seg(p, 0.2, 0.4));
+        const fly = ease(seg(p, 0.16, 0.36));
         const size = LABEL * d;
-        const tx = ok ? target.left + target.width / 2 - box.left : cx;
-        const ty = ok ? target.top + target.height / 2 - box.top : cy;
-        const s = lerp(1, ok ? target.width / size : 1, fly);
+        const s = lerp(1, sunD / size, fly);
         label.style.width = `${size.toFixed(1)}px`;
         label.style.height = `${size.toFixed(1)}px`;
-        label.style.transform = `translate(${(lerp(cx, tx, fly) - size / 2).toFixed(1)}px, ${(lerp(cy, ty, fly) - size / 2).toFixed(1)}px) scale(${s.toFixed(4)})`;
-        label.style.opacity = String(1 - seg(p, 0.6, 0.06));
-        if (labelTextRef.current) labelTextRef.current.style.opacity = String(1 - seg(p, 0.24, 0.12));
+        label.style.transform = `translate(${(lerp(cx, sunX, fly) - size / 2).toFixed(1)}px, ${(lerp(cy, sunY, fly) - size / 2).toFixed(1)}px) scale(${s.toFixed(4)})`;
+        label.style.setProperty("--label-ring", (1 - seg(p, 0.14, 0.2)).toFixed(3));
+        label.style.opacity = String(1 - seg(p, 0.5, 0.06));
+        const words = String(1 - seg(p, 0.08, 0.1)); // the label's words and spindle hole go before it becomes the sun
+        if (labelTextRef.current) labelTextRef.current.style.opacity = words;
+        const hole = label.querySelector<HTMLElement>(".retro-gate-hole");
+        if (hole) hole.style.opacity = words;
       }
+      if (sun) sun.style.opacity = String(seg(p, 0.48, 0.06));
 
-      // 4 · the sunset behind it all, then the hero
-      if (skyRef.current) skyRef.current.style.opacity = String(seg(p, 0.22, 0.3));
+      // 4 · the sky warms in behind the rings, the hills rise over the sun, then the hero
+      if (skyRef.current) skyRef.current.style.opacity = String(seg(p, 0.1, 0.3));
       if (groundRef.current)
-        groundRef.current.style.transform = `translateY(${((1 - ease(seg(p, 0.24, 0.26))) * 45).toFixed(2)}vh)`;
-      if (sunRef.current) {
-        const rise = ease(seg(p, 0.32, 0.34));
-        sunRef.current.style.transform = `translate(-50%, ${((1 - rise) * 60).toFixed(2)}%)`;
-        sunRef.current.style.opacity = String(seg(p, 0.32, 0.05));
-      }
+        groundRef.current.style.transform = `translateY(${((1 - ease(seg(p, 0.48, 0.24))) * 45).toFixed(2)}vh)`;
       const show = (el: HTMLElement | null, from: number, dx: number, dy: number) => {
         if (!el) return;
         const t = ease(seg(p, from, 0.18));
@@ -166,15 +161,17 @@ export function RetroGateway() {
         el.style.transform = `translate(${((1 - t) * dx).toFixed(1)}px, ${((1 - t) * dy).toFixed(1)}px)`;
         el.style.visibility = t > 0 ? "visible" : "hidden";
       };
-      show(textRef.current, 0.58, -40, 0);
-      show(factsRef.current, 0.66, 0, 24);
-      show(crateRef.current, 0.62, 0, 60);
+      show(textRef.current, 0.6, -60, 0);
+      show(crateRef.current, 0.64, 0, 80);
+      show(factsRef.current, 0.68, 0, 30);
 
-      root.style.setProperty("--gate-dock", seg(p, 0.6, 0.06).toFixed(3));
-      root.style.setProperty("--gate-nav", seg(p, 0.5, 0.22).toFixed(3));
+      // 5 · the navbar drops in from above, the corner player fades up
+      root.style.setProperty("--gate-dock", seg(p, 0.66, 0.14).toFixed(3));
+      root.style.setProperty("--gate-nav", ease(seg(p, 0.6, 0.22)).toFixed(3));
       if (p < END) root.dataset.gate = "in";
       else delete root.dataset.gate;
-      sectionRef.current?.classList.toggle("is-open", p >= END);
+      // data attributes, not classes: React rewrites className when the music starts or stops
+      if (sectionRef.current) sectionRef.current.dataset.open = p >= END ? "true" : "false";
     };
 
     // Play the move towards `target` at a steady pace (each step's own easing is in render).
@@ -290,6 +287,11 @@ export function RetroGateway() {
 
     if (window.scrollY > 8 || window.location.hash.length > 1) p = target = END;
     render();
+    // off screen, the hero's own animations (rays, rings, grooves) pause
+    const away = new IntersectionObserver(([e]) => {
+      if (sectionRef.current) sectionRef.current.dataset.away = e.isIntersecting ? "false" : "true";
+    });
+    if (sectionRef.current) away.observe(sectionRef.current);
     window.addEventListener("wheel", onWheel, { passive: false });
     window.addEventListener("touchstart", onTouchStart, { passive: true });
     window.addEventListener("touchmove", onTouchMove, { passive: false });
@@ -298,6 +300,7 @@ export function RetroGateway() {
     window.addEventListener("resize", onResize);
     return () => {
       cancelAnimationFrame(raf);
+      away.disconnect();
       window.removeEventListener("wheel", onWheel);
       window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("touchmove", onTouchMove);
@@ -443,21 +446,33 @@ export function RetroGateway() {
               ringRefs.current[i] = el;
             }}
             className="retro-gate-ring"
+            style={{ "--ring-sun": RING_COLORS[i % RING_COLORS.length] } as CSSProperties}
             aria-hidden="true"
-          >
-            <span>{s.label}</span>
-          </span>
+          />
         ))}
 
         <span ref={labelRef} className="retro-gate-label" aria-hidden="true">
+          {/* printed like a real record label: my name curving along the top edge, "Portfolio" along the
+              bottom, a thin ring in between and the spindle hole in the middle */}
           <span ref={labelTextRef} className="retro-gate-text">
-            <span className="retro-gate-kicker">Portfolio</span>
-            <span className="retro-gate-name">
-              Chey
-              <br />
-              Rotana
-            </span>
-            <span className="retro-gate-role">{profile.role}</span>
+            <svg viewBox="0 0 200 200" className="retro-gate-print">
+              <defs>
+                <path id="gate-arc-top" d="M 31 100 A 69 69 0 0 1 169 100" />
+                <path id="gate-arc-bottom" d="M 20 100 A 80 80 0 0 0 180 100" />
+              </defs>
+              <circle cx="100" cy="100" r="44" className="retro-gate-print-ring" />
+              <circle cx="100" cy="100" r="38" className="retro-gate-print-ring is-thin" />
+              <text className="retro-gate-print-name">
+                <textPath href="#gate-arc-top" startOffset="50%" textAnchor="middle">
+                  {profile.name}
+                </textPath>
+              </text>
+              <text className="retro-gate-print-kicker">
+                <textPath href="#gate-arc-bottom" startOffset="50%" textAnchor="middle">
+                  Portfolio · Side A
+                </textPath>
+              </text>
+            </svg>
           </span>
           <span className="retro-gate-hole" />
         </span>

@@ -14,6 +14,8 @@ import { P5Clouds } from "./Weather";
 import { Ransom } from "./Ransom";
 import { CarSprite, PaperPlaneSprite, TrainSprite } from "./JourneyVehicles";
 import { MetroDirections } from "./MetroDirections";
+import { RetroPostcards } from "./RetroPostcards";
+import { useThemeAttr } from "../hooks/interactive";
 
 const TRACK_H = 560; // height of the route area before it's scaled to fit the screen
 const CARD_GAP = 30; // space between a stop's marker and its card
@@ -122,7 +124,7 @@ function Cloud({ className, style }: { className: string; style?: React.CSSPrope
   );
 }
 
-function JourneySection() {
+function RouteJourney() {
   const reduceMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -489,6 +491,11 @@ function JourneySection() {
       </div>
     </section>
   );
+}
+
+// Retro shows the journey as postcards on a corkboard; the other themes drive the route.
+function JourneySection() {
+  return useThemeAttr() === "retro" ? <RetroPostcards /> : <RouteJourney />;
 }
 
 export default JourneySection;

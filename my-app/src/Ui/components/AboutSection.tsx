@@ -5,8 +5,8 @@ import { openTerminalWindow } from "../events";
 import { P5Burst, P5Skyline, P5Slab } from "./PersonaDecor";
 import { P5Clouds } from "./Weather";
 import { Reveal, SectionHeader } from "./Reveal";
-import { RetroCredits } from "./RetroDecor";
-import { RetroPolaroid } from "./RetroPolaroid";
+import { RetroAbout } from "./RetroAbout";
+import { useThemeAttr } from "../hooks/interactive";
 
 function greetingFor(hour: number) {
   if (hour < 12) return "Good morning";
@@ -23,6 +23,7 @@ const facts = [
 
 function AboutSection() {
   const [greeting, setGreeting] = useState(() => greetingFor(new Date().getHours()));
+  const retro = useThemeAttr() === "retro"; // Retro has its own layout: the pinned polaroid and a short story
 
   useEffect(() => {
     const id = setInterval(() => setGreeting(greetingFor(new Date().getHours())), 60_000);
@@ -35,17 +36,17 @@ function AboutSection() {
       <P5Clouds count={5} to={72} seed={2} />
       <P5Skyline />
       <div className="relative mx-auto max-w-6xl px-5 sm:px-8">
+        {retro ? (
+          <RetroAbout greeting={greeting} />
+        ) : (
+        <>
         <SectionHeader index="01" eyebrow="About" title="A little about me" />
 
         <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-10 lg:gap-16 items-start">
           {/* Quick facts */}
           <Reveal className="relative">
             <P5Burst className="p5-burst-corner p5-burst-tl" />
-            <span className="only-retro">
-              <RetroPolaroid />
-              <RetroCredits />
-            </span>
-            <dl className="card relative p-6 grid gap-5 max-w-md mx-auto lg:mx-0 not-retro-block">
+            <dl className="card relative p-6 grid gap-5 max-w-md mx-auto lg:mx-0">
               {facts.map(({ icon: Icon, label, value }) => (
                 <div key={label} className="flex gap-3">
                   <Icon size={18} className="text-accent mt-0.5 flex-shrink-0" />
@@ -111,6 +112,8 @@ function AboutSection() {
             </Reveal>
           </div>
         </div>
+        </>
+        )}
       </div>
     </section>
   );
