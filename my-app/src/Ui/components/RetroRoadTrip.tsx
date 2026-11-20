@@ -1,10 +1,14 @@
-// Retro Journey (canvas J1): a road trip in a camper van. The van holds the middle of the road while
-// scrolling drives it on: the stop you're at stands as a big lit billboard, the ones before and after wait
-// small at the roadside, the hills and road dashes roll past, and a strip at the bottom lists every stop.
+// Retro Journey (canvas J4, "night drive"): a road trip in a camper van, at night. The van holds the middle
+// of the road while scrolling drives it on, its headlight on the road: the stop you're at stands as a big
+// lamp-lit billboard in the stereo set's walnut and dark glass, the ones before and after wait small at the
+// roadside, the hills and road dashes roll past under the stars and the city lights, and a car radio at the
+// bottom lists every stop, its red needle on the one you're at.
 import { motion, useMotionValueEvent, useReducedMotion, useScroll, useSpring, useTransform, type MotionValue } from "framer-motion";
-import { ArrowRight, FastForward, Rewind } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { ArrowRight, Compass, FastForward, GraduationCap, Rewind } from "lucide-react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { journey, type JourneyStop } from "../data/profile";
+import { projects } from "../data/projects";
+import { iconOf } from "../retroWork";
 import { showProject } from "../events";
 import { unlock } from "../achievements";
 import { play } from "../sound";
@@ -22,11 +26,17 @@ function Billboard({ stop, i, pos }: { stop: JourneyStop; i: number; pos: Motion
   const opacity = useTransform(d, (v) => Math.max(0, 1 - Math.max(0, Math.abs(v) - 1) * 0.9) * (Math.abs(v) < 0.5 ? 1 : 0.8));
   const y = useTransform(d, (v) => `${(Math.min(1, Math.abs(v)) * 18).toFixed(2)}%`);
   const link = stop.projectId;
+  // the board shows a picture, not a paragraph: the project's app icon, or a symbol for study / what's next
+  const project = link ? projects.find((p) => p.id === link) : undefined;
+  const icon = project && iconOf(project);
   return (
     <motion.div className="rt-board" style={{ x, scale, opacity, y }} data-kind={stop.kind}>
       <article className="rt-board-face">
         <span className="rt-bulbs" aria-hidden="true">
           <span /> <span /> <span /> <span />
+        </span>
+        <span className="rt-board-pic" aria-hidden="true">
+          {icon ? <img src={icon} alt="" /> : stop.kind === "next" ? <Compass /> : <GraduationCap />}
         </span>
         <div className="rt-board-top">
           <span className="rt-board-date">
@@ -36,7 +46,7 @@ function Billboard({ stop, i, pos }: { stop: JourneyStop; i: number; pos: Motion
         </div>
         <h3 className="rt-board-title">{stop.title}</h3>
         <p className="rt-board-org">{stop.org}</p>
-        <p className="rt-board-text">{stop.text}</p>
+        <p className="rt-board-text sr-only">{stop.text}</p>
         {link && (
           <button type="button" className="rt-board-link" onClick={() => showProject(link)} data-cursor="View">
             See the project <ArrowRight size={14} aria-hidden="true" />
@@ -75,16 +85,23 @@ export function RetroRoadTrip() {
   const skipped = useRef(false);
   const lastRaw = useRef(0);
 
-  useMotionValueEvent(pos, "change", (p) => {
-    if (p < lastP.current - 0.002 && !back.current) {
+  // which way the van faces follows the page's scroll direction, not the van's own progress: that stays at
+  // 0 above the section, so a van that had turned round on the way up used to drive back in reversed
+  const { scrollY } = useScroll();
+  useMotionValueEvent(scrollY, "change", (y) => {
+    const step = y - (scrollY.getPrevious() ?? y);
+    if (step < -2 && !back.current) {
       back.current = true;
       heading.set(1);
       setGoingBack(true);
-    } else if (p > lastP.current + 0.002 && back.current) {
+    } else if (step > 2 && back.current) {
       back.current = false;
       heading.set(0);
       setGoingBack(false);
     }
+  });
+
+  useMotionValueEvent(pos, "change", (p) => {
     lastP.current = p;
     const i = Math.round(p);
     setHere((prev) => {
@@ -140,6 +157,7 @@ export function RetroRoadTrip() {
       <div className="rt-stage sticky top-0 h-screen overflow-hidden">
         <span className="rt-rays" aria-hidden="true" />
         <span className="rt-sun" aria-hidden="true" />
+        <span className="rt-city" aria-hidden="true" />
         <motion.div className="rt-hills rt-hills-far" style={{ x: farX }} aria-hidden="true" />
         <motion.div className="rt-hills rt-hills-near" style={{ x: nearX }} aria-hidden="true" />
 
@@ -174,15 +192,19 @@ export function RetroRoadTrip() {
         </div>
 
         <motion.div className="rt-van" style={{ y: bob }} aria-hidden="true">
-          <motion.div style={{ rotateY: turnY, transformPerspective: 600 }}>
+          <motion.div className="rt-van-body" style={{ rotateY: turnY, transformPerspective: 600 }}>
+            <span className="rt-beam" />
             <VanSprite spin={spin} />
           </motion.div>
         </motion.div>
 
         <nav className="rt-strip" aria-label="Journey stops">
           <span className="rt-count">
+            <small>Car radio · stop</small>
             {String(here + 1).padStart(2, "0")} / {String(journey.length).padStart(2, "0")}
           </span>
+          <div className="rt-dial" style={{ "--at": (here + 0.5) / journey.length } as CSSProperties}>
+            <span className="rt-needle" aria-hidden="true" />
           <ol>
             {journey.map((stop, i) => (
               <li key={stop.title}>
@@ -198,6 +220,7 @@ export function RetroRoadTrip() {
               </li>
             ))}
           </ol>
+          </div>
         </nav>
       </div>
     </section>
