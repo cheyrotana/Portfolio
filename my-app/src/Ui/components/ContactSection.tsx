@@ -9,11 +9,10 @@ import { Reveal, SectionHeader } from "./Reveal";
 import { RetroEq } from "./RetroDecor";
 import { RetroAnswering } from "./RetroAnswering";
 import { useThemeAttr } from "../hooks/interactive";
-import { RETRO_ROOM } from "../retroRoomBus";
 
 function ContactSection() {
   // Retro: the answering machine, the third piece of the stereo set (components/RetroAnswering.tsx)
-  const machine = useThemeAttr() === "retro" && !RETRO_ROOM;
+  const machine = useThemeAttr() === "retro";
   return (
     <footer id="contact" className="relative overflow-hidden">
       <div className="bg-decor absolute inset-0 pointer-events-none rotate-180 not-persona-block" aria-hidden="true" />

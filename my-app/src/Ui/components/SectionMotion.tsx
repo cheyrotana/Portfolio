@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { NAV_SECTIONS } from "../data/sections";
-import { RETRO_ROOM } from "../retroRoomBus";
 
 // Section motion, and nothing for visitors who prefer reduced motion:
 // 1. Persona: cards slide in from alternating sides with a tilt as they scroll into view;
@@ -102,7 +101,7 @@ export function SectionMotion() {
 
       const theme = document.documentElement.dataset.theme;
       const kind: Kind | null =
-        theme === "persona" ? "wipe" : theme === "metro" ? "ride" : theme === "retro" && !RETRO_ROOM ? "spin" : null;
+        theme === "persona" ? "wipe" : theme === "metro" ? "ride" : theme === "retro" ? "spin" : null;
       if (!kind || reduced()) {
         if (!jumpLink) return; // ordinary smooth scroll
         e.preventDefault();

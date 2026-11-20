@@ -1,7 +1,3 @@
-// The 3D listening room is parked: the Retro theme uses its earlier design unless the page is opened
-// with ?room (e.g. http://localhost:5180/?room) to compare.
-export const RETRO_ROOM = typeof window !== "undefined" && new URLSearchParams(window.location.search).has("room");
-
 // Retro theme: what the page tells the 3D listening room (components/RetroRoom.tsx). Plain values the room
 // reads every frame, so writing them never re-renders anything.
 export const roomBus = {

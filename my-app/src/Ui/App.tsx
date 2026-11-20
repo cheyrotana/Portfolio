@@ -17,9 +17,6 @@ import { SectionMotion } from "./components/SectionMotion";
 import { MetroDoors, MetroNextStop } from "./components/MetroDecor";
 import { MetroCity } from "./components/MetroCity";
 import { RetroStripes, RetroTurntable } from "./components/RetroDecor";
-import { RetroRoom } from "./components/RetroRoom";
-import { RetroMusicKey } from "./components/RetroRoomHero";
-import { RETRO_ROOM } from "./retroRoomBus";
 import { track, unlock } from "./achievements";
 import { useInteractiveSurfaces, useKonami } from "./hooks/interactive";
 import { useSmoothScroll } from "./hooks/useSmoothScroll";
@@ -60,7 +57,7 @@ function P5Divider({ flip = false }: { flip?: boolean }) {
       <div className="only-persona">
         <div className={`p5-divider ${flip ? "p5-divider-flip" : ""}`} aria-hidden="true" />
       </div>
-      {!RETRO_ROOM && <RetroStripes flip={flip} />}
+      <RetroStripes flip={flip} />
     </>
   );
 }
@@ -258,15 +255,7 @@ function App() {
       </AnimatePresence>
       <P5Stars />
       {theme === "metro" && <MetroCity />}
-      {theme === "retro" &&
-        (RETRO_ROOM ? (
-          <>
-            <RetroRoom />
-            <RetroMusicKey className="room-key-corner" />
-          </>
-        ) : (
-          <RetroTurntable />
-        ))}
+      {theme === "retro" && <RetroTurntable />}
       <main>
         <HeroSection />
         <P5Divider />

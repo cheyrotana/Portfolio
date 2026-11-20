@@ -387,19 +387,6 @@
   }
 }
 
-@keyframes retro-section-in {
-  from {
-    opacity: 0;
-    translate: 0 72px;
-    scale: 0.97;
-  }
-  to {
-    opacity: 1;
-    translate: 0 0;
-    scale: 1;
-  }
-}
-
 /* ── Jumping to a section from the navbar: the record change (SectionMotion.tsx) ──
    Sunset rings grow out of the click, the last one a black record that covers the screen; its label names
    the section while the page jumps underneath; then the rings shrink back, the record first. */
@@ -703,14 +690,6 @@ a:focus-visible > .retro-groove {
   filter: drop-shadow(3px 4px 2px rgb(0 0 0 / 0.5));
 }
 
-.retro-deck-model {
-  fill: var(--r-cream);
-  opacity: 0.8;
-  text-anchor: end;
-  font: 400 10px "Bebas Neue", sans-serif;
-  letter-spacing: 0.08em;
-}
-
 .retro-deck-bar {
   display: flex;
   flex-direction: column;
@@ -792,8 +771,7 @@ a:focus-visible > .retro-groove {
   transform: none;
 }
 
-.retro-deck.is-collapsed .retro-deck-bar,
-.retro-deck.is-collapsed .retro-deck-model {
+.retro-deck.is-collapsed .retro-deck-bar {
   display: none;
 }
 
@@ -846,31 +824,6 @@ a:focus-visible > .retro-groove {
   font: 400 0.85rem/1 "Bebas Neue", sans-serif;
   letter-spacing: 0.08em;
   color: var(--r-mustard);
-}
-
-.retro-request-onair {
-  margin-left: auto;
-  padding: 4px 10px;
-  border-radius: 6px;
-  background: #c8321b;
-  color: #f6ead2;
-  font: 400 0.95rem/1 "Bebas Neue", sans-serif;
-  letter-spacing: 0.1em;
-  box-shadow: 0 0 12px rgb(232 80 40 / 0.7);
-  animation: retro-onair 2.4s ease-in-out infinite;
-}
-
-@keyframes retro-onair {
-  50% {
-    box-shadow: 0 0 4px rgb(232 80 40 / 0.3);
-    opacity: 0.85;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .retro-request-onair {
-    animation: none;
-  }
 }
 
 /* ══ Richer Retro: colour blocks per section, grain, sunbursts, stickers, music-driven motion ══════ */
@@ -1056,14 +1009,6 @@ a:focus-visible > .retro-groove {
   text-shadow: 0.05em 0.05em 0 var(--r-rust);
 }
 
-.retro-barcode {
-  flex: none;
-  width: 74px;
-  height: 38px;
-  background: repeating-linear-gradient(90deg, var(--r-brown) 0 2px, transparent 2px 4px, var(--r-brown) 4px 7px, transparent 7px 8px, var(--r-brown) 8px 9px, transparent 9px 12px);
-  outline: 4px solid #fff8ea;
-}
-
 /* About, design A3: the polaroid pinned to the wood, a short story beside it (components/RetroAbout.tsx) */
 .retro-about {
   display: grid;
@@ -1229,10 +1174,6 @@ a:focus-visible > .retro-groove {
   --card-shadow-hover: 9px 9px 0 var(--r-brown);
 }
 
-.retro-track-no {
-  color: var(--r-olive);
-}
-
 [data-theme="retro"] .vehicle-picker {
   border: 3px solid var(--r-brown);
   border-radius: 999px;
@@ -1264,1094 +1205,7 @@ a:focus-visible > .retro-groove {
 
 /* while the music plays, each player bobs to the beat, a little out of step with the others */
 
-@keyframes retro-bob {
-  to {
-    translate: 0 -5px;
-    rotate: 0.6deg;
-  }
-}
-
 /* ── B1 Work: a big mustard sun behind the station ── */
-
-/* Skills, design S2: cassettes on a shelf and a tape deck (components/RetroTapes.tsx) */
-.retro-tapes {
-  display: grid;
-  gap: 28px;
-}
-
-@media (min-width: 1024px) {
-  .retro-tapes {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-    gap: 56px;
-    align-items: start;
-  }
-}
-
-.retro-tape-shelf {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 16px 16px 0;
-  border: 3px solid var(--r-brown);
-  border-radius: 10px;
-  background: var(--r-wood);
-  box-shadow: 8px 8px 0 var(--r-brown);
-}
-
-/* the shelf board the tapes stand on */
-.retro-tape-shelf::after {
-  content: "";
-  height: 16px;
-  margin: 4px -16px 0;
-  border-top: 3px solid var(--r-brown);
-  border-radius: 0 0 7px 7px;
-  background: #6b3a1a;
-}
-
-.retro-tape {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-height: 58px;
-  padding: 0 16px;
-  border: 3px solid var(--r-brown);
-  border-radius: 6px;
-  background: var(--tape);
-  color: var(--r-brown);
-  text-align: left;
-  cursor: pointer;
-  transition: translate 0.25s cubic-bezier(0.3, 1.4, 0.5, 1), box-shadow 0.25s;
-}
-
-.retro-tape:hover {
-  translate: 10px 0;
-}
-
-.retro-tape[aria-selected="true"] {
-  translate: 28px 0;
-  box-shadow: 6px 6px 0 var(--r-brown);
-}
-
-.retro-tape:focus-visible {
-  outline: 3px solid var(--r-cream);
-  outline-offset: 3px;
-}
-
-.retro-tape-no,
-.retro-tape-count {
-  font: 700 0.8rem "Barlow Condensed", sans-serif;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.retro-tape-name {
-  flex: 1;
-  font: 1.3rem/1.1 "Shrikhand", Georgia, serif;
-}
-
-/* below desktop the shelf scrolls sideways */
-@media (max-width: 1023px) {
-  .retro-tape-shelf {
-    flex-direction: row;
-    overflow-x: auto;
-    padding-bottom: 16px;
-  }
-
-  .retro-tape-shelf::after {
-    display: none;
-  }
-
-  .retro-tape {
-    flex: none;
-  }
-
-  .retro-tape:hover,
-  .retro-tape[aria-selected="true"] {
-    translate: 0 -4px;
-  }
-}
-
-.retro-tdeck {
-  padding: 16px 18px 18px;
-  border: 3px solid var(--r-night);
-  border-radius: 16px;
-  background: linear-gradient(90deg, #6b3a1a, var(--r-wood) 6%, var(--r-wood) 94%, #6b3a1a);
-  box-shadow: 10px 10px 0 var(--r-night);
-}
-
-.retro-tdeck-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  color: var(--r-cream);
-  font-size: 0.85rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
-.retro-tdeck-eq.retro-eq {
-  height: 26px;
-}
-
-.retro-tdeck-well {
-  display: grid;
-  place-items: center;
-  min-height: 230px;
-  padding: 18px;
-  border-radius: 10px;
-  background: var(--r-night);
-  box-shadow: inset 0 3px 10px rgb(0 0 0 / 0.6);
-  overflow: hidden;
-}
-
-.retro-cassette {
-  position: relative;
-  width: min(100%, 440px);
-  aspect-ratio: 1.6;
-  box-sizing: border-box;
-  padding: 12px;
-  border: 3px solid #1a110b;
-  border-radius: 12px;
-  background: var(--r-brown);
-}
-
-/* the bottom edge where the tape shows */
-.retro-cassette::after {
-  content: "";
-  position: absolute;
-  left: 24%;
-  right: 24%;
-  bottom: -3px;
-  height: 13%;
-  border: 3px solid #1a110b;
-  border-bottom: 0;
-  border-radius: 8px 8px 0 0;
-  background: #4a2e1b;
-}
-
-.retro-cassette-label {
-  display: block;
-  height: 50%;
-  padding: 8px 14px;
-  border-radius: 6px;
-  background: linear-gradient(var(--tape) 0 72%, var(--r-orange) 72% 84%, var(--r-rust) 84%);
-  color: var(--r-brown);
-  overflow: hidden;
-}
-
-.retro-cassette-title {
-  font: clamp(1.15rem, 2.4vw, 1.55rem) / 1.1 "Shrikhand", Georgia, serif;
-}
-
-.retro-cassette-side {
-  float: right;
-  margin-top: 4px;
-  font-size: 0.75rem;
-  letter-spacing: 0.16em;
-}
-
-.retro-cassette-blurb {
-  display: block;
-  margin-top: 2px;
-  font: 500 0.85rem/1.3 "Fraunces", Georgia, serif;
-}
-
-.retro-cassette-window {
-  position: absolute;
-  left: 22%;
-  right: 22%;
-  top: 58%;
-  height: 24%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 5%;
-  border-radius: 999px;
-  background: #1a110b;
-  box-shadow: inset 0 0 0 3px var(--r-cream);
-}
-
-.retro-reel {
-  height: 76%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: repeating-conic-gradient(var(--r-cream) 0 20deg, var(--r-night) 20deg 60deg);
-}
-
-[data-theme="retro"][data-music="on"] .retro-reel {
-  animation: retro-spin 2.2s linear infinite;
-}
-
-.retro-tdeck-keys {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 16px;
-}
-
-.retro-tdeck-key {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-width: 52px;
-  height: 48px;
-  padding: 0 14px;
-  border: 3px solid var(--r-night);
-  border-radius: 10px;
-  background: var(--r-cream);
-  color: var(--r-brown);
-  font: 700 0.95rem "Fraunces", Georgia, serif;
-  box-shadow: 0 5px 0 var(--r-night);
-  cursor: pointer;
-  transition: translate 0.1s, box-shadow 0.1s;
-}
-
-.retro-tdeck-key.is-play {
-  padding: 0 20px;
-  background: var(--r-mustard);
-}
-
-.retro-tdeck-key:active,
-.retro-tdeck-key[aria-pressed="true"] {
-  translate: 0 4px;
-  box-shadow: 0 1px 0 var(--r-night);
-}
-
-.retro-tdeck-key:focus-visible {
-  outline: 3px solid var(--r-cream);
-  outline-offset: 3px;
-}
-
-.retro-jcard {
-  margin-top: 22px;
-  padding: 16px 20px;
-  border: 3px solid var(--r-night);
-  border-radius: 6px;
-  background: var(--r-cream);
-  color: var(--r-brown);
-  box-shadow: 6px 6px 0 var(--r-night);
-}
-
-.retro-jcard-head {
-  margin-bottom: 4px;
-  font-size: 0.8rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--r-rust);
-}
-
-.retro-jcard li {
-  display: grid;
-  gap: 6px 14px;
-  align-items: center;
-  padding: 8px 0;
-}
-
-.retro-jcard li + li {
-  border-top: 2px dotted var(--r-brown);
-}
-
-@media (min-width: 640px) {
-  .retro-jcard li {
-    grid-template-columns: 9.5rem 1fr;
-  }
-}
-
-.retro-jcard-tool {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font: 700 1rem "Fraunces", Georgia, serif;
-}
-
-.retro-jcard-used {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.retro-jcard-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  min-height: 30px;
-  padding: 2px 10px;
-  border: 2px solid var(--r-brown);
-  border-radius: 999px;
-  background: transparent;
-  color: var(--r-brown);
-  font: 700 0.8rem "Fraunces", Georgia, serif;
-  cursor: pointer;
-}
-
-.retro-jcard-chip:hover,
-.retro-jcard-chip:focus-visible {
-  background: var(--r-mustard);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  [data-theme="retro"][data-music="on"] .retro-reel {
-    animation: none;
-  }
-}
-
-/* Journey, design J2: postcards on a corkboard (components/RetroPostcards.tsx) */
-.rp-section {
-  background-color: #c8955c;
-  background-image: radial-gradient(rgb(90 50 20 / 0.25) 1.2px, transparent 1.6px),
-    radial-gradient(rgb(255 230 190 / 0.25) 1px, transparent 1.4px);
-  background-size: 14px 14px, 19px 19px;
-  background-position: 0 0, 7px 9px;
-}
-
-.rp-sticky {
-  box-shadow: inset 0 0 120px rgb(58 25 10 / 0.35);
-}
-
-.rp-sub {
-  margin-top: 0.5rem;
-  font: 500 1rem "Fraunces", Georgia, serif;
-  color: var(--r-brown);
-}
-
-.rp-board {
-  min-height: 0;
-}
-
-.rp-route {
-  position: absolute;
-  left: 2%;
-  top: 6%;
-  width: 96%;
-  height: 80%;
-  overflow: visible;
-}
-
-.rp-route-line {
-  fill: none;
-  stroke: var(--r-rust);
-  stroke-width: 5;
-  stroke-dasharray: 14 12;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
-}
-
-/* the route draws itself with the scroll (RetroPostcards sets the dash offset) */
-.rp-route-reveal {
-  fill: none;
-  stroke: #fff;
-  stroke-width: 60;
-  stroke-dasharray: 1 1;
-  stroke-dashoffset: 1;
-}
-
-.rp-card {
-  --sky1: #d4a03a;
-  --sky2: #c97a3e;
-  --sky3: #9a4a2a;
-  --hill1: #747c3a;
-  --hill2: #8c9448;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-  width: min(640px, 86vw);
-  min-height: 340px;
-  background: #f3e8d2;
-  color: var(--r-brown);
-  box-shadow: 0 16px 30px rgb(0 0 0 / 0.35);
-  transform: translate(-50%, -50%);
-  will-change: transform, opacity;
-}
-
-.rp-card[data-kind="project"] {
-  --sky1: #dcb456;
-  --sky2: #cf8650;
-  --sky3: #ad5a32;
-}
-
-.rp-card[data-kind="work"] {
-  --sky1: #c97a3e;
-  --sky2: #9a4a2a;
-  --sky3: #5e220c;
-  --hill1: #5f6926;
-  --hill2: #77822f;
-}
-
-.rp-card[data-kind="next"] {
-  --sky1: #2c2540;
-  --sky2: #6b3a5a;
-  --sky3: #c97a3e;
-  --hill1: #3a2314;
-  --hill2: #4a2e1b;
-}
-
-.rp-pin {
-  position: absolute;
-  left: 50%;
-  top: -10px;
-  z-index: 2;
-  width: 20px;
-  height: 20px;
-  margin-left: -10px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #cf8650, var(--r-rust) 70%);
-  box-shadow: 0 3px 4px rgb(0 0 0 / 0.4);
-}
-
-.rp-pic {
-  position: relative;
-  margin: 14px 0 14px 14px;
-  overflow: hidden;
-  background: linear-gradient(180deg, var(--sky1) 0%, var(--sky2) 55%, var(--sky3) 100%);
-}
-
-.rp-pic-sun {
-  position: absolute;
-  left: 50%;
-  bottom: 14%;
-  width: 46%;
-  aspect-ratio: 1;
-  translate: -50% 0;
-  border-radius: 50%;
-  background: #e6c47a;
-}
-
-.rp-pic-hills {
-  position: absolute;
-  left: -20%;
-  right: -20%;
-  bottom: -40%;
-  height: 70%;
-  border-radius: 50%;
-  background: repeating-radial-gradient(closest-side, var(--hill1) 0 7%, var(--hill2) 7% 14%);
-}
-
-.rp-greet {
-  position: absolute;
-  left: 14px;
-  top: 12px;
-  font: 700 0.75rem "Barlow Condensed", sans-serif;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--r-brown);
-}
-
-.rp-card[data-kind="next"] .rp-greet {
-  color: var(--r-cream);
-}
-
-.rp-place {
-  position: absolute;
-  left: 12px;
-  right: 12px;
-  top: 32px;
-  font: clamp(1.5rem, 3.2vw, 2.2rem) / 1 "Shrikhand", Georgia, serif;
-  color: #f3e8d2;
-  text-shadow: 3px 3px 0 var(--r-brown);
-  overflow-wrap: anywhere;
-}
-
-.rp-back {
-  position: relative;
-  margin-left: 14px;
-  padding: 20px 22px 20px 20px;
-  border-left: 2px solid #d9c49a;
-}
-
-.rp-stamp {
-  position: absolute;
-  right: 16px;
-  top: 16px;
-  display: grid;
-  place-items: center;
-  width: 56px;
-  height: 66px;
-  border: 3px dotted var(--r-rust);
-  background: var(--r-mustard);
-  font: 1.3rem "Shrikhand", Georgia, serif;
-  color: var(--r-rust);
-}
-
-.rp-postmark {
-  position: absolute;
-  right: 50px;
-  top: 50px;
-  display: grid;
-  place-items: center;
-  width: 78px;
-  aspect-ratio: 1;
-  padding: 6px;
-  border: 3px solid rgb(58 35 20 / 0.7);
-  border-radius: 50%;
-  font: 700 0.8rem/1.1 "Barlow Condensed", sans-serif;
-  letter-spacing: 0.1em;
-  text-align: center;
-  text-transform: uppercase;
-  color: rgb(58 35 20 / 0.8);
-  rotate: -14deg;
-}
-
-.rp-kicker {
-  margin-top: 96px;
-  font: 700 0.75rem "Barlow Condensed", sans-serif;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--r-rust);
-}
-
-.rp-title {
-  margin-top: 4px;
-  font: 1.5rem/1.1 "Shrikhand", Georgia, serif;
-  color: var(--r-brown);
-}
-
-.rp-org {
-  margin-top: 2px;
-  font: 700 0.85rem "Fraunces", Georgia, serif;
-}
-
-.rp-text {
-  margin-top: 6px;
-  font: 500 0.9rem/1.45 "Fraunces", Georgia, serif;
-  color: #4a2a16;
-}
-
-.rp-link {
-  margin-top: 10px;
-  min-height: 34px;
-  padding: 4px 12px;
-  border: 2px solid var(--r-rust);
-  border-radius: 4px;
-  background: transparent;
-  color: var(--r-rust);
-  font: 700 0.75rem "Barlow Condensed", sans-serif;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  rotate: -3deg;
-  cursor: pointer;
-}
-
-.rp-link:hover,
-.rp-link:focus-visible {
-  background: var(--r-mustard);
-}
-
-.rp-foot {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding-top: 8px;
-  padding-bottom: 28px;
-}
-
-.rp-count {
-  white-space: nowrap;
-  font: 700 0.9rem "Barlow Condensed", sans-serif;
-  letter-spacing: 0.14em;
-  color: var(--r-brown);
-}
-
-.rp-dots {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.rp-dot {
-  position: relative;
-  width: 16px;
-  height: 16px;
-  padding: 0;
-  border: 3px solid var(--r-brown);
-  border-radius: 50%;
-  background: transparent;
-  cursor: pointer;
-  transition: scale 0.2s, background-color 0.2s, border-color 0.2s;
-}
-
-/* a bigger target than the dot itself */
-.rp-dot::before {
-  content: "";
-  position: absolute;
-  inset: -12px -6px;
-}
-
-.rp-dot[data-done] {
-  border-color: var(--r-rust);
-  background: var(--r-rust);
-}
-
-.rp-dot[aria-current="step"] {
-  background: var(--r-mustard);
-  scale: 1.45;
-}
-
-@media (max-width: 640px) {
-  .rp-card {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: 140px auto;
-  }
-
-  .rp-pic {
-    margin: 12px 12px 0;
-  }
-
-  .rp-back {
-    margin-left: 0;
-    border-left: 0;
-    padding: 16px;
-  }
-
-  .rp-kicker {
-    margin-top: 70px;
-  }
-
-  /* the postmark sits beside the stamp, clear of the title */
-  .rp-postmark {
-    right: 84px;
-    top: 10px;
-    width: 64px;
-    font-size: 0.7rem;
-  }
-
-  .rp-foot {
-    flex-wrap: wrap;
-    row-gap: 10px;
-  }
-
-  .rp-foot .journey-skip {
-    white-space: nowrap;
-  }
-
-  .rp-dots {
-    gap: 6px;
-  }
-
-  .rp-sub {
-    font-size: 0.9rem;
-  }
-}
-
-/* Work, design P1: the listening station (components/RetroListening.tsx) */
-.retro-ls {
-  display: grid;
-  gap: 28px;
-}
-
-@media (min-width: 1024px) {
-  .retro-ls {
-    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
-    gap: 40px;
-    align-items: start;
-  }
-
-  .retro-ls-list {
-    position: sticky;
-    top: 96px;
-  }
-}
-
-.retro-ls-list {
-  padding: 18px 20px;
-  border: 3px solid var(--r-brown);
-  border-radius: 8px;
-  background: var(--r-cream);
-  color: var(--r-brown);
-  box-shadow: 8px 8px 0 var(--r-brown);
-}
-
-.retro-ls-side,
-.retro-ls-kicker,
-.retro-ls-sub {
-  font-size: 0.8rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--r-rust);
-}
-
-.retro-ls-tracks + .retro-ls-side {
-  margin-top: 18px;
-}
-
-.retro-ls-tracks {
-  margin-top: 6px;
-}
-
-.retro-ls-tracks li + li {
-  border-top: 2px dotted var(--r-brown);
-}
-
-.retro-ls-track {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-height: 50px;
-  padding: 0 12px;
-  border: 0;
-  border-radius: 6px;
-  background: none;
-  color: var(--r-brown);
-  text-align: left;
-  cursor: pointer;
-}
-
-.retro-ls-track:hover {
-  background: var(--r-paper);
-}
-
-.retro-ls-track[aria-pressed="true"] {
-  background: var(--r-brown);
-  color: var(--r-cream);
-}
-
-.retro-ls-track:focus-visible {
-  outline: 3px solid var(--r-rust);
-  outline-offset: 2px;
-}
-
-.retro-ls-no,
-.retro-ls-year {
-  font: 700 0.8rem "Barlow Condensed", sans-serif;
-  letter-spacing: 0.12em;
-}
-
-.retro-ls-no {
-  color: var(--r-olive);
-}
-
-.retro-ls-track[aria-pressed="true"] .retro-ls-no {
-  color: var(--r-mustard);
-}
-
-.retro-ls-name {
-  flex: 1;
-  font: 700 1.05rem "Fraunces", Georgia, serif;
-}
-
-.retro-ls-status {
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: var(--r-mustard);
-  color: var(--r-brown);
-  font: 700 0.7rem "Barlow Condensed", sans-serif;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.retro-ls-hint {
-  margin-top: 12px;
-  font: 500 0.8rem "Fraunces", Georgia, serif;
-  color: var(--muted);
-}
-
-.retro-ls-station {
-  padding: 20px;
-  border: 3px solid var(--r-night);
-  border-radius: 16px;
-  background: linear-gradient(90deg, #6b3a1a, var(--r-wood) 6%, var(--r-wood) 94%, #6b3a1a);
-  box-shadow: 10px 10px 0 var(--r-night);
-}
-
-.retro-ls-deck {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: clamp(16px, 3vw, 32px);
-  align-items: center;
-}
-
-.retro-ls-platter {
-  position: relative;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: #1a110b;
-  box-shadow: 0 6px 14px rgb(0 0 0 / 0.5);
-}
-
-.retro-ls-record {
-  position: absolute;
-  inset: 4%;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: repeating-radial-gradient(circle, var(--r-night) 0 2px, #1a110b 2px 5px);
-}
-
-.retro-ls-label {
-  display: grid;
-  place-items: center;
-  width: 36%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: var(--label);
-  box-shadow: inset 0 0 0 3px rgb(0 0 0 / 0.25);
-  overflow: hidden;
-}
-
-.retro-ls-label img {
-  width: 58%;
-  height: 58%;
-  object-fit: contain;
-  border-radius: 22%;
-}
-
-[data-theme="retro"][data-music="on"] .retro-ls-label {
-  animation: retro-spin 1.8s linear infinite;
-}
-
-/* the tonearm: parked at the edge, drops onto the grooves while music plays */
-.retro-ls-arm {
-  position: absolute;
-  right: 0;
-  top: -2%;
-  width: 8px;
-  height: 60%;
-  border-radius: 4px;
-  background: #d9d0bf;
-  box-shadow: 2px 2px 0 var(--r-night);
-  transform-origin: 50% 6px;
-  rotate: 12deg;
-  transition: rotate 0.6s cubic-bezier(0.3, 1.2, 0.4, 1);
-}
-
-.retro-ls-arm::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: -10px;
-  width: 26px;
-  height: 26px;
-  margin-left: -13px;
-  border: 3px solid var(--r-night);
-  border-radius: 50%;
-  background: #d9d0bf;
-}
-
-[data-theme="retro"][data-music="on"] .retro-ls-arm {
-  rotate: 26deg;
-}
-
-.retro-ls-sleeve {
-  position: relative;
-  aspect-ratio: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: clamp(10px, 2vw, 18px);
-  border: 3px solid var(--r-night);
-  border-radius: 4px;
-  box-shadow: 6px 6px 0 var(--r-night);
-  text-align: left;
-  cursor: pointer;
-}
-
-.retro-ls-sleeve:hover {
-  box-shadow: 9px 9px 0 var(--r-night);
-}
-
-.retro-ls-sleeve:focus-visible {
-  outline: 3px solid var(--r-cream);
-  outline-offset: 4px;
-}
-
-.retro-ls-now {
-  font-size: 0.75rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
-.retro-ls-sleeve-title {
-  margin-top: 6px;
-  font: clamp(1.3rem, 3vw, 2.1rem) / 1 "Shrikhand", Georgia, serif;
-}
-
-.retro-ls-sticker {
-  position: absolute;
-  right: -14px;
-  bottom: 16%;
-  display: grid;
-  place-content: center;
-  width: clamp(70px, 9vw, 92px);
-  aspect-ratio: 1;
-  padding: 6px;
-  border: 3px solid var(--r-night);
-  border-radius: 50%;
-  background: var(--r-cream);
-  color: var(--r-brown);
-  font: 700 0.7rem/1.1 "Barlow Condensed", sans-serif;
-  letter-spacing: 0.04em;
-  text-align: center;
-  rotate: 10deg;
-}
-
-.retro-ls-sticker b {
-  display: block;
-  font: 700 1.2rem "Fraunces", Georgia, serif;
-}
-
-.retro-ls-notes {
-  margin-top: 20px;
-  padding: 20px 22px;
-  border: 3px solid var(--r-night);
-  border-radius: 8px;
-  background: var(--r-cream);
-  color: var(--r-brown);
-}
-
-.retro-ls-title {
-  margin-top: 4px;
-  font: clamp(1.6rem, 3vw, 2.2rem) / 1.05 "Shrikhand", Georgia, serif;
-  color: var(--r-brown);
-}
-
-.retro-ls-client {
-  margin-top: 2px;
-  font: 700 0.95rem "Fraunces", Georgia, serif;
-  color: var(--r-olive);
-}
-
-.retro-ls-desc {
-  margin-top: 10px;
-  font: 500 1rem/1.6 "Fraunces", Georgia, serif;
-  color: #4a2a16;
-}
-
-.retro-ls-cols {
-  margin-top: 18px;
-  display: grid;
-  gap: 18px;
-}
-
-@media (min-width: 768px) {
-  .retro-ls-cols {
-    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
-  }
-}
-
-.retro-ls-sub {
-  margin-bottom: 6px;
-}
-
-.retro-ls-highlights li {
-  position: relative;
-  padding-left: 18px;
-  font: 500 0.92rem/1.5 "Fraunces", Georgia, serif;
-}
-
-.retro-ls-highlights li + li {
-  margin-top: 6px;
-}
-
-.retro-ls-highlights li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.5em;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--r-mustard);
-  box-shadow: 0 0 0 2px var(--r-brown);
-}
-
-.retro-ls-shots {
-  display: flex;
-  gap: 10px;
-}
-
-.retro-ls-shots button {
-  flex: 1;
-  min-width: 0;
-  aspect-ratio: 3 / 4;
-  max-height: 210px;
-  padding: 0;
-  border: 3px solid var(--r-night);
-  border-radius: 8px;
-  overflow: hidden;
-  background: var(--r-night);
-  cursor: pointer;
-  transition: translate 0.2s;
-}
-
-.retro-ls-shots button:hover {
-  translate: 0 -3px;
-}
-
-.retro-ls-shots img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top;
-}
-
-.retro-ls-tech {
-  margin-top: 18px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.retro-ls-tech span {
-  padding: 3px 10px;
-  border: 2px solid var(--r-brown);
-  border-radius: 999px;
-  font: 700 0.8rem "Fraunces", Georgia, serif;
-}
-
-.retro-ls-keys {
-  margin-top: 18px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  [data-theme="retro"][data-music="on"] .retro-ls-label {
-    animation: none;
-  }
-}
-
-/* phones: smaller sticker below the title, tighter frames, prev/next side by side above the main button */
-@media (max-width: 640px) {
-  .retro-ls-station {
-    padding: 12px;
-  }
-
-  .retro-ls-notes {
-    padding: 16px;
-  }
-
-  .retro-ls-sticker {
-    right: -8px;
-    bottom: -12px;
-    width: 64px;
-    font-size: 0.55rem;
-  }
-
-  .retro-ls-sticker b {
-    font-size: 0.95rem;
-  }
-
-  .retro-ls-keys .btn-primary {
-    order: 3;
-    flex: 1 1 100%;
-    justify-content: center;
-  }
-}
-
-/* phones: the tape label only has room for the group's name */
-@media (max-width: 520px) {
-  .retro-cassette-blurb {
-    display: none;
-  }
-}
 
 [data-theme="retro"] #work {
   background-image: radial-gradient(circle at 85% 60%, rgb(212 160 58 / 0.45) 0 14%, transparent 14.2%),
@@ -2650,33 +1504,6 @@ a:focus-visible > .retro-groove {
   align-items: center;
   gap: 12px;
   visibility: hidden;
-}
-
-/* a cream sticker with a dashed edge, a little crooked, saying the theme isn't finished */
-.retro-wip {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  padding: 6px 12px;
-  border: 2px dashed var(--r-brown);
-  border-radius: 6px;
-  background: #f3e8d2;
-  color: var(--r-brown);
-  font: 500 0.85rem/1.2 "Fraunces", Georgia, serif;
-  box-shadow: 3px 3px 0 rgb(43 29 21 / 0.5);
-  transform: rotate(-1.5deg);
-}
-
-.retro-hero-facts .retro-wip b {
-  padding: 3px 7px 2px;
-  border-radius: 4px;
-  background: var(--r-mustard);
-  color: var(--r-brown);
-  white-space: nowrap;
-  font: 700 0.75rem/1 "Barlow Condensed", sans-serif;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
 }
 
 .retro-hero-facts > span {
@@ -3106,245 +1933,10 @@ html[data-gate] .retro-deck.is-tucked {
   animation: none !important;
 }
 
-/* ── Hero: my newest work as record sleeves in a crate standing on the hills ── */
-
-.retro-hero-crate {
-  --sl: min(300px, 37vh, 26vw);
-  position: absolute;
-  right: max(24px, calc(50% - min(40vw, 720px)));
-  bottom: calc(100% - var(--horizon) - 40px);
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  visibility: hidden;
-}
-
-.hero-crate-sleeves {
-  position: relative;
-  width: calc(var(--sl) + 60px);
-  height: calc(var(--sl) * 1.32 + 60px);
-}
-
-.hero-sleeve {
-  --lift: 0px;
-  --tilt: 0deg;
-  position: absolute;
-  left: 30px;
-  width: var(--sl);
-  height: var(--sl);
-  text-decoration: none;
-  transform: translateY(var(--lift)) rotate(var(--tilt));
-  transition: transform 0.45s cubic-bezier(0.3, 1.4, 0.4, 1);
-}
-
-.hero-sleeve-0 {
-  top: 0;
-  --tilt: -3deg;
-}
-
-.hero-sleeve-1 {
-  top: calc(var(--sl) * 0.16);
-  --tilt: 2deg;
-}
-
-.hero-sleeve-2 {
-  top: calc(var(--sl) * 0.32);
-  --tilt: 0deg;
-}
-
-/* hovering lifts the sleeve out of the crate and slides its record out of the top */
-.hero-sleeve:hover,
-.hero-sleeve:focus-visible {
-  --lift: -58px;
-  --tilt: -1deg;
-  z-index: 3;
-}
-
-.hero-sleeve:focus-visible {
-  outline: none;
-}
-
-.hero-sleeve:focus-visible .hero-sleeve-cover {
-  outline: 3px solid var(--r-cream);
-  outline-offset: 3px;
-}
-
-.hero-sleeve-disc {
-  position: absolute;
-  left: 8%;
-  top: 4%;
-  width: 84%;
-  height: 84%;
-  border-radius: 50%;
-  background: radial-gradient(circle, #1a1210 0 4%, var(--r-mustard) 4.5% 17%, transparent 17.5%),
-    repeating-radial-gradient(circle, #1a1210 0 3px, #2b201b 3px 5px);
-  transition: transform 0.5s cubic-bezier(0.3, 1.2, 0.4, 1) 0.05s;
-}
-
-.hero-sleeve:hover .hero-sleeve-disc,
-.hero-sleeve:focus-visible .hero-sleeve-disc {
-  transform: translateY(-42%) rotate(40deg);
-}
-
-.hero-sleeve-cover {
-  position: absolute;
-  inset: 0;
-  box-sizing: border-box;
-  padding: calc(var(--sl) * 0.055) calc(var(--sl) * 0.065);
-  border: 3px solid var(--r-brown);
-  border-radius: 6px;
-  color: #f3e8d2;
-  box-shadow: 0 6px 14px rgb(0 0 0 / 0.25);
-}
-
-.hero-sleeve-0 .hero-sleeve-cover {
-  background: radial-gradient(circle at 78% 72%, var(--r-mustard) 0 22%, transparent 22.5%), #747c3a;
-}
-
-.hero-sleeve-1 .hero-sleeve-cover {
-  background: repeating-linear-gradient(180deg, #9a4a2a 0 16px, #ad5a32 16px 32px);
-}
-
-.hero-sleeve-2 .hero-sleeve-cover {
-  background: repeating-conic-gradient(from 0deg at 50% 120%, #dcb456 0 6deg, #d4a03a 6deg 12deg);
-  color: var(--r-brown);
-}
-
-.hero-sleeve-top {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.hero-sleeve-title {
-  font: 400 calc(var(--sl) * 0.085) / 1.05 "Shrikhand", Georgia, serif;
-}
-
-.hero-sleeve-2 .hero-sleeve-title {
-  font-size: calc(var(--sl) * 0.12);
-  color: var(--r-rust);
-}
-
-.hero-sleeve-n {
-  font: 700 0.85rem "Barlow Condensed", sans-serif;
-  letter-spacing: 0.14em;
-}
-
-.hero-sleeve-sticker {
-  position: absolute;
-  right: calc(var(--sl) * 0.05);
-  top: calc(var(--sl) * 0.33);
-  display: grid;
-  place-items: center;
-  width: calc(var(--sl) * 0.27);
-  height: calc(var(--sl) * 0.27);
-  padding: 6px;
-  box-sizing: border-box;
-  border-radius: 50%;
-  background: var(--r-brown);
-  color: #f3e8d2;
-  text-align: center;
-  font: 600 calc(var(--sl) * 0.036) / 1.05 "Fraunces", Georgia, serif;
-  transform: rotate(10deg);
-}
-
-.hero-sleeve-sticker b {
-  display: block;
-  font-size: calc(var(--sl) * 0.06);
-}
-
-/* only the front sleeve shows its sticker until one is lifted */
-.hero-sleeve-0 .hero-sleeve-sticker,
-.hero-sleeve-1 .hero-sleeve-sticker {
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.hero-sleeve:hover .hero-sleeve-sticker {
-  opacity: 1;
-}
-
-.hero-crate-box {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 2;
-  height: calc(var(--sl) * 0.46);
-  box-sizing: border-box;
-  border: 3px solid var(--r-brown);
-  border-radius: 6px;
-  background: repeating-linear-gradient(180deg, #8a5a3c 0 calc(var(--sl) * 0.15), #5e3a24 calc(var(--sl) * 0.15) calc(var(--sl) * 0.16));
-  box-shadow: 6px 6px 0 var(--r-brown);
-  pointer-events: none;
-}
-
-.hero-crate-box::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 12px;
-  width: 80px;
-  height: 16px;
-  margin-left: -40px;
-  border-radius: 8px;
-  background: #2b1d15;
-}
-
-.hero-crate-box span {
-  position: absolute;
-  left: 50%;
-  bottom: 14px;
-  transform: translateX(-50%);
-  padding: 4px 12px;
-  border-radius: 4px;
-  background: var(--r-cream);
-  color: var(--r-brown);
-  font: 700 0.8rem "Barlow Condensed", sans-serif;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.hero-crate-all {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 40px;
-  padding: 0 18px;
-  border-radius: 999px;
-  background: var(--r-brown);
-  color: #f3e8d2;
-  font: 700 0.9rem "Fraunces", Georgia, serif;
-  text-decoration: none;
-  transition: transform 0.2s, background-color 0.2s;
-}
-
-.hero-crate-all:hover {
-  background: var(--r-rust);
-  transform: translateY(-2px);
-}
-
 /* the crate holds the project highlights, so the chips don't repeat them */
 @media (min-width: 900px) {
   .retro-hero-facts > span {
     display: none;
-  }
-}
-
-@media (max-width: 899px) {
-  .retro-hero-crate {
-    display: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-sleeve,
-  .hero-sleeve-disc {
-    transition: none;
   }
 }
 
@@ -4167,7 +2759,6 @@ html[data-rfx][data-theme="retro"] #work [data-in]:is(.retro-hf, .retro-sc > *) 
   animation-delay: calc(0.9s + var(--rfx-i, 0) * 100ms);
 }
 
-
 /* ── About: pulled from the sleeve. A sleeve slides in, the record is pulled out spinning and rolls into
    the section's label, the title pops in, then the pieces fan out like a hand of cards. ── */
 
@@ -4507,7 +3098,6 @@ html[data-rfx][data-theme="retro"] .rt-strip[data-in] {
   text-shadow: 0.03em 0.03em 0 rgb(0 0 0 / 0.35);
 }
 
-
 /* the opening as a scrubbed camera move: a tall section with its stage pinned; the 3D record is the disc */
 .retro-gate-pin {
   position: relative;
@@ -4535,7 +3125,6 @@ html[data-rfx][data-theme="retro"] .rt-strip[data-in] {
 [data-theme="retro"] .retro-slash {
   display: none;
 }
-
 
 /* ══ Walnut: the listening room's palette (its console wood, its lamplight) across the page. No wood
    texture: each section is its own shade from the same family, lit from a different side; Journey keeps
@@ -4591,18 +3180,6 @@ html[data-rfx][data-theme="retro"] .rt-strip[data-in] {
   text-shadow: 0.05em 0.05em 0 var(--r-rust);
 }
 
-/* ── No flicker on the records and the photo ──
-   Hard-edged 2–3px grooves shimmer (moiré) as soon as a record moves, scales or the page glides past, and
-   the page's backgrounds must be cheap to draw while scrolling (pre-made tiles, below). So: soft grooves. */
-[data-theme="retro"] .retro-ls-record {
-  background: repeating-radial-gradient(circle, #1a110b 0, #2b1d15 1.6px, #1a110b 3.2px);
-}
-
-[data-theme="retro"] .hero-sleeve-disc {
-  background: radial-gradient(circle, #1a1210 0 4%, var(--r-mustard) 4.5% 17%, transparent 17.5%),
-    repeating-radial-gradient(circle, #1a1210 0, #2b201b 2px, #1a1210 4px);
-}
-
 /* ── The room as the inspiration, not the wallpaper: each section is a dark corner of the listening room,
    warm brown, a pool of lamplight on one side and a cool touch of moonlight from the other. The room's
    wood is only a whisper under a wash of the section's own colour (tiles in public/textures). ── */
@@ -4612,7 +3189,7 @@ html[data-rfx][data-theme="retro"] .rt-strip[data-in] {
   background: radial-gradient(ellipse 55% 65% at 12% 10%, rgb(255 180 100 / 0.24), transparent 70%),
     radial-gradient(ellipse 45% 60% at 100% 60%, rgb(130 160 255 / 0.07), transparent 70%),
     radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(10 4 1 / 0.55)),
-    linear-gradient(rgb(46 26 14 / 0.84), rgb(46 26 14 / 0.84)), url("/textures/oak-wall.png") 0 0 / 512px 512px, #2e1a0e;
+    linear-gradient(rgb(46 26 14 / 0.84), rgb(46 26 14 / 0.84)), url("/textures/oak-wall.webp") 0 0 / 512px 512px, #2e1a0e;
 }
 
 /* Skills: by the speaker, a deep tobacco brown */
@@ -4620,7 +3197,7 @@ html[data-rfx][data-theme="retro"] .rt-strip[data-in] {
   background: radial-gradient(ellipse 55% 60% at 88% 8%, rgb(255 180 100 / 0.2), transparent 70%),
     radial-gradient(ellipse 45% 60% at 0% 70%, rgb(130 160 255 / 0.06), transparent 70%),
     radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(10 4 1 / 0.55)),
-    linear-gradient(rgb(42 32 16 / 0.86), rgb(42 32 16 / 0.86)), url("/textures/oak-floor.png") 0 0 / 512px 512px, #2a2010;
+    linear-gradient(rgb(42 32 16 / 0.86), rgb(42 32 16 / 0.86)), url("/textures/oak-floor.webp") 0 0 / 512px 512px, #2a2010;
 }
 
 /* Work: at the console, deep mahogany, the lamp right over the records */
@@ -4628,7 +3205,7 @@ html[data-rfx][data-theme="retro"] .rt-strip[data-in] {
   background: radial-gradient(ellipse 60% 55% at 55% 0%, rgb(255 180 100 / 0.22), transparent 70%),
     radial-gradient(ellipse 40% 60% at 0% 40%, rgb(130 160 255 / 0.06), transparent 70%),
     radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(10 4 1 / 0.55)),
-    linear-gradient(rgb(44 20 12 / 0.88), rgb(44 20 12 / 0.88)), url("/textures/slats.png") 0 0 / 280px 1024px, #2c140c;
+    linear-gradient(rgb(44 20 12 / 0.88), rgb(44 20 12 / 0.88)), url("/textures/slats.webp") 0 0 / 280px 1024px, #2c140c;
 }
 
 /* Contact: by the window at night, moonlight across it and the lamp low behind the chat */
@@ -4636,7 +3213,7 @@ html[data-rfx][data-theme="retro"] .rt-strip[data-in] {
   background: radial-gradient(ellipse 55% 60% at 70% 100%, rgb(255 170 90 / 0.24), transparent 70%),
     radial-gradient(ellipse 60% 70% at 0% 20%, rgb(130 160 255 / 0.13), transparent 70%),
     radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(6 4 8 / 0.55)),
-    linear-gradient(rgb(30 22 26 / 0.86), rgb(30 22 26 / 0.86)), url("/textures/oak-dark.png") 0 0 / 512px 512px, #1e161a;
+    linear-gradient(rgb(30 22 26 / 0.86), rgb(30 22 26 / 0.86)), url("/textures/oak-dark.webp") 0 0 / 512px 512px, #1e161a;
 }
 
 /* ── The room at rest: a title card on the left, like a 70s album cover (RetroGateway, ROOM) ── */
@@ -4819,19 +3396,19 @@ html[data-rfx][data-theme="retro"] .rt-strip[data-in] {
 [data-theme="retro"] #about {
   background: radial-gradient(ellipse 55% 60% at 15% 0%, rgb(255 180 100 / 0.22), transparent 70%),
     radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(10 4 1 / 0.55)),
-    linear-gradient(rgb(46 26 14 / 0.88), rgb(46 26 14 / 0.88)), url("/textures/slats.png") 0 0 / 280px 1024px, #2e1a0e;
+    linear-gradient(rgb(46 26 14 / 0.88), rgb(46 26 14 / 0.88)), url("/textures/slats.webp") 0 0 / 280px 1024px, #2e1a0e;
 }
 
 [data-theme="retro"] #skills {
   background: radial-gradient(ellipse 55% 60% at 85% 0%, rgb(255 180 100 / 0.2), transparent 70%),
     radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(10 4 1 / 0.55)),
-    linear-gradient(rgb(40 28 14 / 0.88), rgb(40 28 14 / 0.88)), url("/textures/slats.png") 0 0 / 280px 1024px, #281c0e;
+    linear-gradient(rgb(40 28 14 / 0.88), rgb(40 28 14 / 0.88)), url("/textures/slats.webp") 0 0 / 280px 1024px, #281c0e;
 }
 
 [data-theme="retro"] #contact {
   background: radial-gradient(ellipse 55% 60% at 50% 100%, rgb(255 170 90 / 0.22), transparent 70%),
     radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(8 3 1 / 0.55)),
-    linear-gradient(rgb(36 18 12 / 0.88), rgb(36 18 12 / 0.88)), url("/textures/slats.png") 0 0 / 280px 1024px, #24120c;
+    linear-gradient(rgb(36 18 12 / 0.88), rgb(36 18 12 / 0.88)), url("/textures/slats.webp") 0 0 / 280px 1024px, #24120c;
 }
 
 /* ── Same quiet treatment as Work (dark, a pattern just showing, the lamp), but each section its own
@@ -4840,7 +3417,7 @@ html[data-rfx][data-theme="retro"] .rt-strip[data-in] {
 [data-theme="retro"] #about {
   background: radial-gradient(ellipse 55% 60% at 15% 0%, rgb(255 180 100 / 0.22), transparent 70%),
     radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(10 4 1 / 0.55)),
-    linear-gradient(rgb(46 26 14 / 0.84), rgb(46 26 14 / 0.84)), url("/textures/oak-wall.png") 0 0 / 512px 512px, #2e1a0e;
+    linear-gradient(rgb(46 26 14 / 0.84), rgb(46 26 14 / 0.84)), url("/textures/oak-wall.webp") 0 0 / 512px 512px, #2e1a0e;
 }
 
 [data-theme="retro"] #skills {
@@ -4853,7 +3430,7 @@ html[data-rfx][data-theme="retro"] .rt-strip[data-in] {
 [data-theme="retro"] #contact {
   background: radial-gradient(ellipse 55% 60% at 50% 100%, rgb(255 170 90 / 0.22), transparent 70%),
     radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(8 3 1 / 0.55)),
-    linear-gradient(rgb(36 18 12 / 0.84), rgb(36 18 12 / 0.84)), url("/textures/oak-floor.png") 0 0 / 512px 512px, #24120c;
+    linear-gradient(rgb(36 18 12 / 0.84), rgb(36 18 12 / 0.84)), url("/textures/oak-floor.webp") 0 0 / 512px 512px, #24120c;
 }
 
 /* the title card nearer the left edge, so the scene has the room (wide screens) */
@@ -4867,7 +3444,7 @@ html[data-rfx][data-theme="retro"] .rt-strip[data-in] {
 [data-theme="retro"] #skills {
   background: radial-gradient(ellipse 55% 60% at 85% 0%, rgb(255 180 100 / 0.2), transparent 70%),
     radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(10 4 1 / 0.55)),
-    linear-gradient(rgb(38 24 12 / 0.8), rgb(38 24 12 / 0.8)), url("/textures/oak-dark.png") 0 0 / 360px 360px, #26180c;
+    linear-gradient(rgb(38 24 12 / 0.8), rgb(38 24 12 / 0.8)), url("/textures/oak-dark.webp") 0 0 / 360px 360px, #26180c;
 }
 
 /* Contact: by the window, deep rust velvet in soft folds like the curtains, the lamp low behind the chat */
@@ -4875,22 +3452,6 @@ html[data-rfx][data-theme="retro"] .rt-strip[data-in] {
   background: radial-gradient(ellipse 55% 55% at 70% 100%, rgb(255 170 90 / 0.24), transparent 70%),
     radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(8 3 1 / 0.6)),
     repeating-linear-gradient(90deg, rgb(0 0 0 / 0.3) 0, rgb(255 190 140 / 0.06) 46px, rgb(0 0 0 / 0.3) 92px), #3e1a10;
-}
-
-/* Work: the record stays put and turns on a track change; only its label face cross-fades */
-.retro-ls-record {
-  will-change: transform;
-}
-
-.retro-ls-label {
-  position: relative;
-}
-
-.retro-ls-label-face {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
 }
 
 /* ══ Skills, design S4: one 70s hi-fi receiver (components/RetroTapes.tsx). Walnut case, dark faceplate,
@@ -5348,19 +3909,6 @@ html[data-rfx][data-theme="retro"] .rt-strip[data-in] {
 
 .retro-rx-screen {
   min-height: 0;
-}
-
-/* Work: the leaving and the coming sleeve / notes overlap in one cell while they cross-fade */
-.retro-ls-stack {
-  display: grid;
-}
-
-.retro-ls-stack > * {
-  grid-area: 1 / 1;
-}
-
-.retro-ls-label-face {
-  border-radius: 50%;
 }
 
 @media (prefers-reduced-motion: reduce) {

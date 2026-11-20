@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Profile from "../../assets/Profile.png";
+import Profile from "../../assets/Profile.webp";
 
 const images = [Profile, Profile, Profile];
 
