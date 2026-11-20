@@ -35,6 +35,9 @@ import hrmMlmupc4 from "../../assets/HRM/mlmupc-4.webp";
 import hrmMlmupc5 from "../../assets/HRM/mlmupc-5.jpg";
 import hrmNis1 from "../../assets/HRM/nis-1.webp";
 import hrmNis2 from "../../assets/HRM/nis-2.webp";
+import hrmNisStore1 from "../../assets/HRM/nis-store-1.webp";
+import hrmNisStore2 from "../../assets/HRM/nis-store-2.webp";
+import hrmNisStore3 from "../../assets/HRM/nis-store-3.webp";
 import faceScan1 from "../../assets/FaceScan/1.webp";
 // App icons, copied from each app's own repo
 import faceScanLogo from "../../assets/logos/face-scan.svg";
@@ -126,7 +129,7 @@ export const projects: Project[] = [
     ],
     stat: { value: "500+", label: "officers at NIS" },
     tech: ["Flutter", "Angular", "NestJS", "PostgreSQL", "Socket.IO"],
-    images: [hrmMlmupc1, hrmMlmupc2, hrmMlmupc3, hrmMlmupc4, hrmMlmupc5, hrmNis1, hrmNis2],
+    images: [hrmMlmupc1, hrmMlmupc2, hrmMlmupc3, hrmMlmupc4, hrmMlmupc5, hrmNisStore1, hrmNisStore2, hrmNisStore3, hrmNis1, hrmNis2],
     apps: [
       {
         id: "hrm-mlmupc",
@@ -142,7 +145,7 @@ export const projects: Project[] = [
         client: "NIS",
         logo: hrmNisLogo,
         splash: { bg: "#FFFFFF", logo: hrmNisSplash },
-        images: [hrmNis1, hrmNis2],
+        images: [hrmNisStore1, hrmNisStore2, hrmNisStore3, hrmNis1, hrmNis2],
         stat: { value: "500+", label: "officers at NIS" },
       },
     ],
