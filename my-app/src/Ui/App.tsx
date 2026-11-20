@@ -17,8 +17,12 @@ import { SectionMotion } from "./components/SectionMotion";
 import { MetroDoors, MetroNextStop } from "./components/MetroDecor";
 import { MetroCity } from "./components/MetroCity";
 import { RetroStripes, RetroTurntable } from "./components/RetroDecor";
+import { RetroRoom } from "./components/RetroRoom";
+import { RetroMusicKey } from "./components/RetroRoomHero";
+import { RETRO_ROOM } from "./retroRoomBus";
 import { track, unlock } from "./achievements";
 import { useInteractiveSurfaces, useKonami } from "./hooks/interactive";
+import { useSmoothScroll } from "./hooks/useSmoothScroll";
 import { OPEN_CONTROLS_EVENT, OPEN_TERMINAL_EVENT } from "./events";
 import { play } from "./sound";
 import { Navbar } from "./components/Navbar";
@@ -56,7 +60,7 @@ function P5Divider({ flip = false }: { flip?: boolean }) {
       <div className="only-persona">
         <div className={`p5-divider ${flip ? "p5-divider-flip" : ""}`} aria-hidden="true" />
       </div>
-      <RetroStripes flip={flip} />
+      {!RETRO_ROOM && <RetroStripes flip={flip} />}
     </>
   );
 }
@@ -87,6 +91,7 @@ function App() {
   useEffect(() => () => window.clearTimeout(swapTimer.current), []);
 
   useInteractiveSurfaces();
+  useSmoothScroll(theme === "retro"); // Retro's opening follows the scroll, so the wheel has to glide
 
   // Overlays: command palette (Ctrl/⌘ K), terminal (Alt+T, ` or Ctrl/⌘ `) and the achievements panel.
   const [paletteOpen, setPaletteOpen] = useState(false);
@@ -173,11 +178,21 @@ function App() {
   const [hidden, setHidden] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
 
-  // Hide the navbar while scrolling down, show it again when scrolling up.
+  // Hide the navbar while scrolling down, show it again when scrolling up. It only reacts once the page has
+  // moved ~40px one way: fast scrolling (and the smooth scroll easing out) wobbles a pixel back and forth, and
+  // reacting to each wobble made the bar flicker in and out.
+  const scrollRun = useRef(0);
   useMotionValueEvent(scrollY, "change", (latest) => {
-    const previous = scrollY.getPrevious() ?? 0;
-    // (not while the Retro hero is playing its move: its rings land on the nav links)
-    setHidden(latest > previous && latest > 200 && !document.documentElement.dataset.gate);
+    const step = latest - (scrollY.getPrevious() ?? 0);
+    // (never while the Retro hero is playing its move: its rings land on the nav links)
+    if (latest <= 200 || document.documentElement.dataset.gate) {
+      scrollRun.current = 0;
+      setHidden(false);
+      return;
+    }
+    scrollRun.current = Math.sign(step) === Math.sign(scrollRun.current) ? scrollRun.current + step : step;
+    if (scrollRun.current > 40) setHidden(true);
+    else if (scrollRun.current < -40) setHidden(false);
   });
 
   // Highlight the nav link of the section currently in the middle of the screen.
@@ -243,7 +258,15 @@ function App() {
       </AnimatePresence>
       <P5Stars />
       {theme === "metro" && <MetroCity />}
-      {theme === "retro" && <RetroTurntable />}
+      {theme === "retro" &&
+        (RETRO_ROOM ? (
+          <>
+            <RetroRoom />
+            <RetroMusicKey className="room-key-corner" />
+          </>
+        ) : (
+          <RetroTurntable />
+        ))}
       <main>
         <HeroSection />
         <P5Divider />

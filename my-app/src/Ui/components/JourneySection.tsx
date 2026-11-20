@@ -14,7 +14,9 @@ import { P5Clouds } from "./Weather";
 import { Ransom } from "./Ransom";
 import { CarSprite, PaperPlaneSprite, TrainSprite } from "./JourneyVehicles";
 import { MetroDirections } from "./MetroDirections";
-import { RetroPostcards } from "./RetroPostcards";
+import { RetroRoadTrip } from "./RetroRoadTrip";
+import { RetroSideB } from "./RetroSideB";
+import { RETRO_ROOM } from "../retroRoomBus";
 import { useThemeAttr } from "../hooks/interactive";
 
 const TRACK_H = 560; // height of the route area before it's scaled to fit the screen
@@ -493,9 +495,10 @@ function RouteJourney() {
   );
 }
 
-// Retro shows the journey as postcards on a corkboard; the other themes drive the route.
+// Retro drives a camper van past roadside billboards (canvas J1; with ?room, Side B of the parked 3D room);
+// the other themes drive the route.
 function JourneySection() {
-  return useThemeAttr() === "retro" ? <RetroPostcards /> : <RouteJourney />;
+  return useThemeAttr() === "retro" ? RETRO_ROOM ? <RetroSideB /> : <RetroRoadTrip /> : <RouteJourney />;
 }
 
 export default JourneySection;

@@ -46,6 +46,7 @@ import unifinderSplash from "../../assets/logos/unifinder-splash.png";
 import hrmMlmupcLogo from "../../assets/logos/hrm-mlmupc.png";
 import hrmNisLogo from "../../assets/logos/hrm-nis.png";
 import modulaLogo from "../../assets/logos/modula.svg";
+import frostGuardLogo from "../../assets/logos/frost-guard.svg"; // a stand-in: the game has no app icon
 import phumiYerngLogo from "../../assets/logos/phumiyerng.png";
 import unifinderLogo from "../../assets/logos/unifinder.png";
 import phumiYerng1 from "../../assets/PhumiYerng/1.jpg";
@@ -246,6 +247,7 @@ export const projects: Project[] = [
       "The Winter Siege is a tower defense strategy game where players defend their castle from waves of enemies in a magical, endless winter world. Players place and upgrade towers, manage resources, and plan strategically to survive increasingly difficult enemy waves.",
     highlights: [],
     tech: ["Unity", "C#"],
+    logo: frostGuardLogo,
     splash: { bg: "#0b1530" },
     images: [frostGuard1, frostGuard2, frostGuard3, frostGuard4, frostGuard5],
     githubUrl: "https://github.com/Ra-Fat/Frost-Guard.git",

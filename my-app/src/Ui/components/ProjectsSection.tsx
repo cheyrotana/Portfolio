@@ -10,7 +10,7 @@ import { P5Slab } from "./PersonaDecor";
 import { P5Clouds } from "./Weather";
 import { ProjectModal } from "./ProjectModal";
 import { SectionHeader } from "./Reveal";
-import { RetroListening } from "./RetroListening";
+import { RetroWork } from "./RetroWork";
 import { useThemeAttr } from "../hooks/interactive";
 
 function ProjectsSection() {
@@ -171,7 +171,7 @@ function ProjectsSection() {
 
         {/* The projects as apps on a phone, with the story beside it (Retro: a listening station) */}
         {retro ? (
-          <RetroListening projects={projects} onOpen={openFromPhone} />
+          <RetroWork projects={projects} onOpen={openFromPhone} />
         ) : (
           <ProjectPhone
             appId={appId}

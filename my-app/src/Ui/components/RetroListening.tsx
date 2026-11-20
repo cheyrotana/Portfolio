@@ -1,70 +1,77 @@
-// Retro theme, Work section (design P1): a listening station. The track list on the left splits the projects
-// into Side A (client work) and Side B (team and study projects); the picked one drops onto the turntable,
-// with its sleeve beside it and liner notes below: what it is, the highlights, a few screens, the tools and
-// links. The record spins while the music plays. ← → change track. Styles: .retro-ls* in src/retro.css.
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, ExternalLink, Github, SkipBack, SkipForward } from "lucide-react";
-import { useState, type CSSProperties, type KeyboardEvent } from "react";
-import { CATEGORIES, type Project } from "../data/projects";
+// Retro theme, Work section (design P5): the second piece of the same stereo as the Skills receiver: the same
+// walnut case and dark faceplate. A turntable on the left plays the picked project (its logo on the label,
+// the tonearm on the record while the music plays) over a "Now playing" readout and back / next knobs; the
+// faceplate on the right holds the track list (Side A client work, Side B team and study projects) and the
+// project's notes, lit like the receiver's screen. Every project's notes and label are always there, stacked,
+// and only the picked one shows, so changing track never empties a panel or changes the height.
+// ← → change track. Styles: .retro-hf* in src/retro.css.
+import { ArrowRight, ChevronLeft, ChevronRight, ExternalLink, Github } from "lucide-react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import type { Project } from "../data/projects";
+import { setRoomTrack } from "../retroRoomBus";
+import { iconOf, kindOf, LABELS, TECH_ICONS } from "../retroWork";
 import { play } from "../sound";
 
-// Sleeve art per project (falls back to HRM's): background, ink colour, vinyl label colour.
-const COVERS: Record<string, { cover: string; ink: string; label: string }> = {
-  hrm: {
-    cover: "linear-gradient(#a8431b 0 54%, #e07a2e 54% 69%, #e8a91c 69% 84%, #f4e6c8 84%)",
-    ink: "#f4e6c8",
-    label: "#e8a91c",
-  },
-  "face-scan": {
-    cover: "repeating-linear-gradient(90deg, #1d1828 0 18px, #2c2540 18px 36px)",
-    ink: "#e8a91c",
-    label: "#a8431b",
-  },
-  phumiyerng: {
-    cover: "radial-gradient(circle at 70% 70%, #e8a91c 0 18%, #f4e6c8 18% 30%, #a8431b 30% 42%, #6f7a2c 42%)",
-    ink: "#f4e6c8",
-    label: "#6f7a2c",
-  },
-  unifinder: {
-    cover: "repeating-conic-gradient(from 180deg at 50% 100%, #a8431b 0 10deg, #e8a91c 10deg 20deg)",
-    ink: "#3a2314",
-    label: "#a8431b",
-  },
-  modula: {
-    cover: "repeating-linear-gradient(45deg, #6f7a2c 0 26px, #e8a91c 26px 52px)",
-    ink: "#3a2314",
-    label: "#e07a2e",
-  },
-  "frost-guard": {
-    cover: "linear-gradient(160deg, #2f5d7c 0 50%, #9cc3d5 50%)",
-    ink: "#f4e6c8",
-    label: "#9cc3d5",
-  },
-};
-
-const kindOf = (p: Project) =>
-  p.categories
-    .filter((c) => c !== "client")
-    .map((c) => CATEGORIES.find((x) => x.id === c)?.label)
-    .join(" & ");
-
 export function RetroListening({ projects, onOpen }: { projects: Project[]; onOpen: (id: string) => void }) {
-  const reduceMotion = useReducedMotion();
   // Side A first, then Side B: the order the tracks are played in
   const sideA = projects.filter((p) => p.categories.includes("client"));
   const sideB = projects.filter((p) => !p.categories.includes("client"));
   const order = [...sideA, ...sideB];
   const [pickedId, setPickedId] = useState(order[0]?.id);
+  const [shot, setShot] = useState(0); // which of the playing project's screens shows
+  const labelRef = useRef<HTMLSpanElement>(null);
+  const armRef = useRef<HTMLSpanElement>(null);
+  const lastId = useRef(pickedId);
   const k = Math.max(0, order.findIndex((p) => p.id === pickedId));
   const cur = order[k];
+  // the 3D room's record shows the picked project on its label (RetroRoom reads it)
+  useEffect(() => {
+    setRoomTrack(cur ? { title: cur.title, side: cur.categories.includes("client") ? "Side A" : "Side B" } : null);
+    return () => setRoomTrack(null);
+  }, [cur]);
+
+  // A track change is a needle drop: the arm lifts off and comes back, the label turns once (the Web
+  // Animations API on two small parts: no re-mount, nothing else moves)
+  useEffect(() => {
+    if (!cur || lastId.current === cur.id) return;
+    lastId.current = cur.id;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    labelRef.current?.animate([{ rotate: "0deg" }, { rotate: "360deg" }], {
+      duration: 900,
+      easing: "cubic-bezier(0.2, 0.7, 0.2, 1)",
+    });
+    armRef.current?.animate(
+      [
+        { transform: "none" },
+        { transform: "rotate(-16deg) translateY(-3px)", offset: 0.35 },
+        { transform: "rotate(-16deg) translateY(-3px)", offset: 0.55 },
+        { transform: "none" },
+      ],
+      { duration: 1000, easing: "ease-in-out" },
+    );
+  }, [cur]);
+
+  // The playing project's screens take turns on the faceplate
+  const screens = cur ? cur.images.slice(0, 4).length : 0;
+  useEffect(() => {
+    if (screens < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const t = window.setInterval(() => setShot((i) => i + 1), 3200);
+    return () => window.clearInterval(t);
+  }, [screens, pickedId]);
+
   if (!cur) return null;
-  const art = COVERS[cur.id] ?? COVERS.hrm;
+
+  const trackNo = (p: Project) => {
+    const i = order.indexOf(p);
+    return i < sideA.length ? `A${i + 1}` : `B${i - sideA.length + 1}`;
+  };
 
   const go = (i: number) => {
     const next = order[(i + order.length) % order.length];
     if (next.id === cur.id) return;
     play("tick");
     setPickedId(next.id);
+    setShot(0);
   };
 
   const onKey = (e: KeyboardEvent) => {
@@ -75,170 +82,173 @@ export function RetroListening({ projects, onOpen }: { projects: Project[]; onOp
     e.preventDefault();
   };
 
-  const side = (label: string, list: Project[], letter: string) =>
+  const side = (label: string, list: Project[]) =>
     list.length > 0 && (
-      <>
-        <p className="retro-cond retro-ls-side">{label}</p>
-        <ol className="retro-ls-tracks">
-          {list.map((p, i) => (
+      <div className="retro-hf-side">
+        <p className="retro-hf-label">{label}</p>
+        <ol>
+          {list.map((p) => (
             <li key={p.id}>
               <button
                 type="button"
-                className="retro-ls-track"
+                className="retro-hf-track"
                 aria-pressed={p.id === cur.id}
                 onClick={() => go(order.indexOf(p))}
                 data-cursor="Play"
               >
-                <span className="retro-ls-no">
-                  {letter}
-                  {i + 1}
-                </span>
-                <span className="retro-ls-name">{p.title}</span>
-                {p.status ? <span className="retro-ls-status">{p.status}</span> : <span className="retro-ls-year">{p.year}</span>}
+                <span className="retro-hf-no">{trackNo(p)}</span>
+                <span className="retro-hf-name">{p.title}</span>
+                {p.status && <span className="retro-hf-status">{p.status}</span>}
               </button>
             </li>
           ))}
         </ol>
-      </>
+      </div>
     );
 
   return (
-    <div className="retro-ls" onKeyDown={onKey}>
-      {/* The track list */}
-      <nav className="retro-ls-list" aria-label="Projects">
-        {side("Side A · Client work", sideA, "A")}
-        {side("Side B · Team & study projects", sideB, "B")}
-        <p className="retro-ls-hint">
-          {order.length} tracks · use ← → to change track
-        </p>
-      </nav>
-
-      {/* The station */}
-      <div className="retro-ls-station" style={{ "--label": art.label } as CSSProperties}>
-        <div className="retro-ls-deck">
-          <div className="retro-ls-platter" aria-hidden="true">
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.span
-                key={cur.id}
-                className="retro-ls-record"
-                initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -30, scale: 1.06 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={reduceMotion ? { opacity: 0 } : { opacity: 0, x: 40 }}
-                transition={{ duration: reduceMotion ? 0.12 : 0.3, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <span className="retro-ls-label">{cur.logo && <img src={cur.logo} alt="" />}</span>
-              </motion.span>
-            </AnimatePresence>
-            <span className="retro-ls-arm" />
-          </div>
-
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.button
-              key={cur.id}
-              type="button"
-              className="retro-ls-sleeve"
-              style={{ background: art.cover, color: art.ink }}
-              onClick={() => onOpen(cur.id)}
-              aria-label={`See the full project: ${cur.title}`}
-              data-cursor="Open"
-              initial={reduceMotion ? { opacity: 0 } : { opacity: 0, rotate: -6, y: 16 }}
-              animate={{ opacity: 1, rotate: -2, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: reduceMotion ? 0.12 : 0.3 }}
-            >
-              <span className="retro-cond retro-ls-now">
-                Now playing · {k < sideA.length ? `A${k + 1}` : `B${k - sideA.length + 1}`}
-              </span>
-              <span className="retro-ls-sleeve-title">{cur.title}</span>
-              {cur.stat && (
-                <span className="retro-ls-sticker">
-                  <b>{cur.stat.value}</b>
-                  {cur.stat.label}
-                </span>
-              )}
-            </motion.button>
-          </AnimatePresence>
+    <div className="retro-hf" onKeyDown={onKey}>
+      {/* The turntable */}
+      <div className="retro-hf-deck">
+        <div className="retro-hf-platter" aria-hidden="true">
+          <span className="retro-hf-record">
+            <span className="retro-hf-label-disc" ref={labelRef}>
+              {order.map((p) => {
+                const icon = iconOf(p);
+                return (
+                  <span
+                    key={p.id}
+                    className="retro-hf-face"
+                    data-on={p.id === cur.id}
+                    style={{ background: LABELS[p.id] ?? LABELS.hrm }}
+                  >
+                    {icon && <img src={icon} alt="" loading="lazy" />}
+                  </span>
+                );
+              })}
+            </span>
+          </span>
+          <span className="retro-hf-pivot" />
+          <span className="retro-hf-arm" ref={armRef} />
         </div>
 
-        {/* Liner notes */}
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.article
-            key={cur.id}
-            className="retro-ls-notes"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: reduceMotion ? 0.1 : 0.22 }}
-          >
-            <p className="retro-cond retro-ls-kicker">
-              {cur.role} · {cur.year} · {kindOf(cur) || "Client work"}
-              {cur.status ? ` · ${cur.status}` : ""}
-            </p>
-            <h3 className="retro-ls-title">{cur.title}</h3>
-            <p className="retro-ls-client">{cur.client}</p>
-            <p className="retro-ls-desc">{cur.description}</p>
+        <div className="retro-hf-readout" aria-live="polite">
+          <span className="retro-hf-label">Now playing</span>
+          <b>{trackNo(cur)}</b>
+          <span className="retro-hf-readout-name">{cur.title}</span>
+          <span className="retro-hf-vu" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+            <i />
+            <i />
+          </span>
+        </div>
 
-            <div className="retro-ls-cols">
-              <div>
-                <p className="retro-cond retro-ls-sub">Highlights</p>
-                <ul className="retro-ls-highlights">
-                  {cur.highlights.slice(0, 3).map((h) => (
-                    <li key={h}>{h}</li>
-                  ))}
-                </ul>
-              </div>
-              {cur.images.length > 0 && (
-                <div>
-                  <p className="retro-cond retro-ls-sub">Screens</p>
-                  <div className="retro-ls-shots">
-                    {cur.images.slice(0, 3).map((src, i) => (
-                      <button
-                        key={src}
-                        type="button"
-                        onClick={() => onOpen(cur.id)}
-                        aria-label={`${cur.title}, screen ${i + 1}: open the project`}
-                        data-cursor="Open"
-                      >
-                        <img src={src} alt="" loading="lazy" />
-                      </button>
-                    ))}
+        <div className="retro-hf-knobs">
+          <button type="button" className="retro-rx-knob" onClick={() => go(k - 1)} aria-label="Previous track">
+            <ChevronLeft size={18} aria-hidden="true" />
+          </button>
+          <span className="retro-hf-label" aria-hidden="true">
+            Track
+          </span>
+          <button type="button" className="retro-rx-knob" onClick={() => go(k + 1)} aria-label="Next track">
+            <ChevronRight size={18} aria-hidden="true" />
+          </button>
+        </div>
+      </div>
+
+      {/* The faceplate: track list and notes */}
+      <div className="retro-hf-plate">
+        <nav className="retro-hf-tracks" aria-label="Projects">
+          {side("Side A · Client work", sideA)}
+          {side("Side B · Team & study", sideB)}
+        </nav>
+
+        <div className="retro-hf-screen">
+          {order.map((p) => {
+            const shots = p.images.slice(0, 4);
+            const on = p.id === cur.id ? shot % Math.max(1, shots.length) : 0;
+            return (
+              <article
+                key={p.id}
+                className="retro-hf-notes"
+                data-on={p.id === cur.id}
+                aria-hidden={p.id !== cur.id}
+                aria-label={p.title}
+              >
+                <div className="retro-hf-notes-text">
+                  <p className="retro-hf-label">
+                    {p.role} · {p.year} · {kindOf(p) || "Client work"}
+                    {p.status ? ` · ${p.status}` : ""}
+                  </p>
+                  <h3 className="retro-hf-title">{p.title}</h3>
+                  <p className="retro-hf-client">{p.client}</p>
+                  {/* the short summary beside the highlights; with none, the full description fills the space */}
+                  <p className="retro-hf-desc">{p.highlights.length > 0 ? p.summary : p.description}</p>
+                  {p.highlights.length > 0 && (
+                    <ul className="retro-hf-highlights">
+                      {p.highlights.slice(0, 3).map((h) => (
+                        <li key={h}>{h}</li>
+                      ))}
+                    </ul>
+                  )}
+                  <ul className="retro-hf-tech" aria-label="Built with">
+                    {p.tech.map((t) => {
+                      const Icon = TECH_ICONS[t];
+                      return (
+                        <li key={t} className="retro-rx-logo" title={t}>
+                          {Icon ? <Icon aria-hidden="true" /> : <span aria-hidden="true">{t.slice(0, 2)}</span>}
+                          <span className="sr-only">{t}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                  <div className="retro-hf-actions">
+                    <button type="button" className="retro-hf-open" onClick={() => onOpen(p.id)}>
+                      See the full project
+                      <ArrowRight size={16} aria-hidden="true" />
+                    </button>
+                    {p.githubUrl && (
+                      <a className="retro-hf-link" href={p.githubUrl} target="_blank" rel="noreferrer">
+                        <Github size={16} aria-hidden="true" />
+                        Code
+                      </a>
+                    )}
+                    {p.demoUrl && (
+                      <a className="retro-hf-link" href={p.demoUrl} target="_blank" rel="noreferrer">
+                        <ExternalLink size={16} aria-hidden="true" />
+                        Live
+                      </a>
+                    )}
                   </div>
                 </div>
-              )}
-            </div>
-
-            <p className="retro-ls-tech">
-              {cur.tech.map((t) => (
-                <span key={t}>{t}</span>
-              ))}
-            </p>
-
-            <div className="retro-ls-keys">
-              <button type="button" className="retro-tdeck-key" onClick={() => go(k - 1)} aria-label="Previous track">
-                <SkipBack size={18} aria-hidden="true" />
-              </button>
-              <button type="button" className="btn btn-primary" onClick={() => onOpen(cur.id)}>
-                See the full project
-                <ArrowRight size={18} aria-hidden="true" />
-              </button>
-              {cur.githubUrl && (
-                <a className="btn" href={cur.githubUrl} target="_blank" rel="noreferrer">
-                  <Github size={18} aria-hidden="true" />
-                  Code
-                </a>
-              )}
-              {cur.demoUrl && (
-                <a className="btn" href={cur.demoUrl} target="_blank" rel="noreferrer">
-                  <ExternalLink size={18} aria-hidden="true" />
-                  Live
-                </a>
-              )}
-              <button type="button" className="retro-tdeck-key" onClick={() => go(k + 1)} aria-label="Next track">
-                <SkipForward size={18} aria-hidden="true" />
-              </button>
-            </div>
-          </motion.article>
-        </AnimatePresence>
+                {shots.length > 0 && (
+                  <div className="retro-hf-shotcol">
+                    <button
+                      type="button"
+                      className="retro-hf-shot"
+                      onClick={() => onOpen(p.id)}
+                      aria-label={`${p.title}: open the project`}
+                      data-cursor="Open"
+                    >
+                      {shots.map((src, i) => (
+                        <img key={src} src={src} alt="" loading="lazy" data-on={i === on} />
+                      ))}
+                    </button>
+                    {shots.length > 1 && (
+                      <span className="retro-hf-dots" aria-hidden="true">
+                        {shots.map((src, i) => (
+                          <i key={src} data-on={i === on} />
+                        ))}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </article>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

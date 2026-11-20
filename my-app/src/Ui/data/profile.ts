@@ -33,6 +33,8 @@ export interface Skill {
   icon: IconType;
   // Brand colour, shown in the colourful themes. Omitted for black logos so they follow the text colour.
   color?: string;
+  // Used on every project (version control, design), so it isn't listed in each project's tech
+  everywhere?: boolean;
 }
 
 export interface SkillGroup {
@@ -86,10 +88,10 @@ export const skillGroups: SkillGroup[] = [
     title: "Tools",
     blurb: "How the work gets done.",
     skills: [
-      { name: "Git", icon: SiGit, color: "#f05032" },
-      { name: "GitHub", icon: SiGithub },
-      { name: "GitLab", icon: SiGitlab, color: "#fc6d26" },
-      { name: "Figma", icon: SiFigma, color: "#f24e1e" },
+      { name: "Git", icon: SiGit, color: "#f05032", everywhere: true },
+      { name: "GitHub", icon: SiGithub, everywhere: true },
+      { name: "GitLab", icon: SiGitlab, color: "#fc6d26", everywhere: true },
+      { name: "Figma", icon: SiFigma, color: "#f24e1e", everywhere: true },
     ],
   },
 ];

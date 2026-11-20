@@ -69,10 +69,16 @@
   transition: transform 0.15s, box-shadow 0.15s, background-color 0.2s;
 }
 
+/* a calm hover: just a small lift (no leaning towards the cursor; the inline translate comes from
+   useInteractiveSurfaces) */
+[data-theme="retro"] :is(.btn, .icon-btn) {
+  translate: none !important;
+}
+
 [data-theme="retro"] .btn:hover {
   filter: none;
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 var(--r-brown);
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 var(--r-brown);
 }
 
 [data-theme="retro"] .btn:active {
@@ -82,11 +88,11 @@
 
 [data-theme="retro"] .btn-primary {
   background: var(--r-rust);
-  color: #fbf1dc;
+  color: #f3e8d2;
 }
 
 [data-theme="retro"] .btn-primary:hover {
-  background: #b94e22;
+  background: #a8532e;
 }
 
 [data-theme="retro"] .btn-ghost {
@@ -163,12 +169,14 @@
 }
 
 [data-theme="retro"] .bg-decor {
-  background: radial-gradient(ellipse 60% 50% at 80% 0%, rgb(232 169 28 / 0.22), transparent 70%);
+  background: radial-gradient(ellipse 60% 50% at 80% 0%, rgb(212 160 58 / 0.22), transparent 70%);
 }
 
 /* ── Navbar: a cream label strip with the record company's name and track codes ── */
 
 [data-theme="retro"] .nav-bar {
+  /* as wide as the hero below it (same side margins as .retro-hero-text / .retro-hero-crate) */
+  max-width: min(80vw, 1440px);
   background: color-mix(in srgb, var(--r-cream) 94%, transparent);
   border: 3px solid var(--r-brown);
   box-shadow: 5px 5px 0 var(--r-rust);
@@ -216,7 +224,7 @@
 }
 
 [data-theme="retro"] .nav-link:hover {
-  color: #fff4dc;
+  color: #f6ead2;
 }
 
 [data-theme="retro"] .nav-link.text-accent {
@@ -229,7 +237,7 @@
 
 /* while music plays on the corner player, the dial lights up and the needle wobbles to the beat */
 [data-theme="retro"] .nav-bar[data-live] .nav-links {
-  box-shadow: inset 0 3px 8px rgb(0 0 0 / 0.5), inset 0 0 22px rgb(232 169 28 / 0.35);
+  box-shadow: inset 0 3px 8px rgb(0 0 0 / 0.5), inset 0 0 22px rgb(212 160 58 / 0.35);
 }
 
 /* when the navbar hides on the way down, only the bar tucks away: the cream strip, my name and the knob
@@ -367,13 +375,7 @@
     animation-range: cover;
   }
 
-  /* "backwards" only: once a section is in, nothing stays applied (a lasting translate would trap the
-     fixed-position windows some sections open) */
-  [data-theme="retro"] main > section:not(#home) > div {
-    animation: retro-section-in cubic-bezier(0.2, 0.7, 0.3, 1) backwards;
-    animation-timeline: view();
-    animation-range: entry 0% entry 70%;
-  }
+  /* (the whole-section rise-in is gone: each section's own parts now play an entrance, retroReveal.ts) */
 }
 
 @keyframes retro-wave-drift {
@@ -639,7 +641,7 @@ a:focus-visible > .retro-groove {
 
 .retro-deck-shine {
   fill: none;
-  stroke: rgb(244 230 200 / 0.18);
+  stroke: rgb(239 225 197 / 0.18);
   stroke-width: 6;
   stroke-linecap: round;
   pointer-events: none;
@@ -744,7 +746,7 @@ a:focus-visible > .retro-groove {
 }
 
 .retro-deck-btn:hover {
-  background: #b94e22;
+  background: #a8532e;
 }
 
 .retro-deck-btn:active {
@@ -851,7 +853,7 @@ a:focus-visible > .retro-groove {
   padding: 4px 10px;
   border-radius: 6px;
   background: #c8321b;
-  color: #fff4dc;
+  color: #f6ead2;
   font: 400 0.95rem/1 "Bebas Neue", sans-serif;
   letter-spacing: 0.1em;
   box-shadow: 0 0 12px rgb(232 80 40 / 0.7);
@@ -900,7 +902,7 @@ a:focus-visible > .retro-groove {
   width: 480px;
   height: 480px;
   border-radius: 50%;
-  background: repeating-conic-gradient(var(--sun-ray, rgb(232 169 28 / 0.55)) 0 7.5deg, transparent 7.5deg 15deg);
+  background: repeating-conic-gradient(var(--sun-ray, rgb(212 160 58 / 0.55)) 0 7.5deg, transparent 7.5deg 15deg);
   -webkit-mask: radial-gradient(circle, #000 0 22%, transparent 68%);
   mask: radial-gradient(circle, #000 0 22%, transparent 68%);
   pointer-events: none;
@@ -1025,13 +1027,13 @@ a:focus-visible > .retro-groove {
 
 [data-theme="retro"] #about {
   --bg-alt: #3a2314;
-  --fg: #f4e6c8;
+  --fg: #efe1c5;
   --muted: #e2cfa6;
   --surface: #4a2e1b;
   --surface-2: #5a3822;
-  --line: #f4e6c8;
-  --accent: #e8a91c;
-  --sun-ray: rgb(232 169 28 / 0.35);
+  --line: #efe1c5;
+  --accent: #d4a03a;
+  --sun-ray: rgb(212 160 58 / 0.35);
   background-image: repeating-linear-gradient(90deg, rgb(0 0 0 / 0.22) 0 3px, transparent 3px 96px),
     repeating-linear-gradient(91deg, rgb(255 255 255 / 0.035) 0 1px, transparent 1px 9px),
     linear-gradient(#4a2b17, #2b1a0e);
@@ -1092,7 +1094,7 @@ a:focus-visible > .retro-groove {
 
 .retro-about-lead {
   font: 700 clamp(1.35rem, 2.4vw, 1.75rem) / 1.3 "Fraunces", Georgia, serif;
-  color: #fffaf0;
+  color: #f5eddf;
 }
 
 .retro-about-body {
@@ -1176,20 +1178,20 @@ a:focus-visible > .retro-groove {
 /* ── A2 Journey: an orange sunburst, the stops as tracks ── */
 
 [data-theme="retro"] #journey {
-  --bg: #e07a2e;
+  --bg: #c97a3e;
   --fg: #3a2314;
   --muted: #4a2a16;
-  --surface: #f4e6c8;
+  --surface: #efe1c5;
   --surface-2: #ead6ad;
   --line: #3a2314;
-  --accent: #a8431b;
-  --sun-ray: rgb(244 230 200 / 0.6);
+  --accent: #9a4a2a;
+  --sun-ray: rgb(239 225 197 / 0.6);
 }
 
 [data-theme="retro"] #journey .bg-decor {
   opacity: 1;
-  background: repeating-conic-gradient(from 0deg at 50% 115%, rgb(232 169 28 / 0.55) 0 5deg, transparent 5deg 10deg),
-    linear-gradient(#e8892f, #d8692a);
+  background: repeating-conic-gradient(from 0deg at 50% 115%, rgb(212 160 58 / 0.55) 0 5deg, transparent 5deg 10deg),
+    linear-gradient(#cf8545, #c06838);
 }
 
 [data-theme="retro"] #journey .heading {
@@ -1240,13 +1242,13 @@ a:focus-visible > .retro-groove {
 /* ── A3 Skills: olive 70s wallpaper ── */
 
 [data-theme="retro"] #skills {
-  --fg: #f4e6c8;
+  --fg: #efe1c5;
   --muted: #f1e3c0;
   --line: #3a2314;
-  --sun-ray: rgb(232 169 28 / 0.45);
-  background-color: #6f7a2c;
-  background-image: radial-gradient(circle, transparent 0 16px, rgb(232 169 28 / 0.3) 16px 22px, transparent 22px 28px, rgb(58 35 20 / 0.2) 28px 33px, transparent 33px),
-    radial-gradient(circle, transparent 0 16px, rgb(232 169 28 / 0.3) 16px 22px, transparent 22px 28px, rgb(58 35 20 / 0.2) 28px 33px, transparent 33px);
+  --sun-ray: rgb(212 160 58 / 0.45);
+  background-color: #67703a;
+  background-image: radial-gradient(circle, transparent 0 16px, rgb(212 160 58 / 0.3) 16px 22px, transparent 22px 28px, rgb(58 35 20 / 0.2) 28px 33px, transparent 33px),
+    radial-gradient(circle, transparent 0 16px, rgb(212 160 58 / 0.3) 16px 22px, transparent 22px 28px, rgb(58 35 20 / 0.2) 28px 33px, transparent 33px);
   background-size: 84px 84px;
   background-position: 0 0, 42px 42px;
 }
@@ -1646,11 +1648,11 @@ a:focus-visible > .retro-groove {
 }
 
 .rp-card {
-  --sky1: #e8a91c;
-  --sky2: #e07a2e;
-  --sky3: #a8431b;
-  --hill1: #7d8630;
-  --hill2: #98a23e;
+  --sky1: #d4a03a;
+  --sky2: #c97a3e;
+  --sky3: #9a4a2a;
+  --hill1: #747c3a;
+  --hill2: #8c9448;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -1658,7 +1660,7 @@ a:focus-visible > .retro-groove {
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
   width: min(640px, 86vw);
   min-height: 340px;
-  background: #fbf1dc;
+  background: #f3e8d2;
   color: var(--r-brown);
   box-shadow: 0 16px 30px rgb(0 0 0 / 0.35);
   transform: translate(-50%, -50%);
@@ -1666,14 +1668,14 @@ a:focus-visible > .retro-groove {
 }
 
 .rp-card[data-kind="project"] {
-  --sky1: #f4c542;
-  --sky2: #e9893f;
-  --sky3: #c25a24;
+  --sky1: #dcb456;
+  --sky2: #cf8650;
+  --sky3: #ad5a32;
 }
 
 .rp-card[data-kind="work"] {
-  --sky1: #e07a2e;
-  --sky2: #a8431b;
+  --sky1: #c97a3e;
+  --sky2: #9a4a2a;
   --sky3: #5e220c;
   --hill1: #5f6926;
   --hill2: #77822f;
@@ -1682,7 +1684,7 @@ a:focus-visible > .retro-groove {
 .rp-card[data-kind="next"] {
   --sky1: #2c2540;
   --sky2: #6b3a5a;
-  --sky3: #e07a2e;
+  --sky3: #c97a3e;
   --hill1: #3a2314;
   --hill2: #4a2e1b;
 }
@@ -1696,7 +1698,7 @@ a:focus-visible > .retro-groove {
   height: 20px;
   margin-left: -10px;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #e9893f, var(--r-rust) 70%);
+  background: radial-gradient(circle at 35% 35%, #cf8650, var(--r-rust) 70%);
   box-shadow: 0 3px 4px rgb(0 0 0 / 0.4);
 }
 
@@ -1715,7 +1717,7 @@ a:focus-visible > .retro-groove {
   aspect-ratio: 1;
   translate: -50% 0;
   border-radius: 50%;
-  background: #fbd56a;
+  background: #e6c47a;
 }
 
 .rp-pic-hills {
@@ -1748,7 +1750,7 @@ a:focus-visible > .retro-groove {
   right: 12px;
   top: 32px;
   font: clamp(1.5rem, 3.2vw, 2.2rem) / 1 "Shrikhand", Georgia, serif;
-  color: #fbf1dc;
+  color: #f3e8d2;
   text-shadow: 3px 3px 0 var(--r-brown);
   overflow-wrap: anywhere;
 }
@@ -2352,25 +2354,25 @@ a:focus-visible > .retro-groove {
 }
 
 [data-theme="retro"] #work {
-  background-image: radial-gradient(circle at 85% 60%, rgb(232 169 28 / 0.45) 0 14%, transparent 14.2%),
+  background-image: radial-gradient(circle at 85% 60%, rgb(212 160 58 / 0.45) 0 14%, transparent 14.2%),
     repeating-radial-gradient(circle at 85% 60%, transparent 0 15%, rgb(224 122 46 / 0.16) 15% 17%, transparent 17% 20%);
 }
 
 /* ── B2 Contact: a rust sunset, the chat inside a jukebox ── */
 
 [data-theme="retro"] #contact {
-  --fg: #f4e6c8;
+  --fg: #efe1c5;
   --muted: #f4dcb0;
   --surface: #3a2314;
   --surface-2: #4a2e1b;
-  --line: #f4e6c8;
-  --accent: #e8a91c;
-  --sun-ray: rgb(232 169 28 / 0.5);
-  background: linear-gradient(#a8431b 0%, #8a3414 55%, #5e220c 100%);
+  --line: #efe1c5;
+  --accent: #d4a03a;
+  --sun-ray: rgb(212 160 58 / 0.5);
+  background: linear-gradient(#9a4a2a 0%, #8a3414 55%, #5e220c 100%);
 }
 
 [data-theme="retro"] #contact .bg-decor {
-  background: repeating-conic-gradient(from 0deg at 50% 100%, rgb(232 169 28 / 0.18) 0 4deg, transparent 4deg 8deg);
+  background: repeating-conic-gradient(from 0deg at 50% 100%, rgb(212 160 58 / 0.18) 0 4deg, transparent 4deg 8deg);
 }
 
 [data-theme="retro"] #contact .heading .accent-text {
@@ -2454,7 +2456,7 @@ a:focus-visible > .retro-groove {
 .retro-gate-rings {
   position: absolute;
   inset: -40%;
-  background: repeating-radial-gradient(circle, rgb(232 169 28 / 0.07) 0 2px, transparent 2px 46px);
+  background: repeating-radial-gradient(circle, rgb(212 160 58 / 0.07) 0 2px, transparent 2px 46px);
   animation: retro-gate-pulse 6s ease-in-out infinite;
 }
 
@@ -2474,7 +2476,7 @@ a:focus-visible > .retro-groove {
   position: absolute;
   inset: 0;
   opacity: 0;
-  background: linear-gradient(180deg, #e8a91c 0%, #e07a2e 42%, #a8431b var(--horizon));
+  background: linear-gradient(180deg, #d4a03a 0%, #c97a3e 42%, #9a4a2a var(--horizon));
 }
 
 /* soft rays turning slowly behind the sun */
@@ -2485,7 +2487,7 @@ a:focus-visible > .retro-groove {
   width: 240vmax;
   height: 240vmax;
   translate: -50% -50%;
-  background: repeating-conic-gradient(rgb(255 244 200 / 0.16) 0 5deg, transparent 5deg 15deg);
+  background: repeating-conic-gradient(rgb(240 228 196 / 0.16) 0 5deg, transparent 5deg 15deg);
   mask-image: radial-gradient(circle, #000 0 8%, transparent 32%);
   animation: retro-spin 140s linear infinite;
 }
@@ -2499,8 +2501,8 @@ a:focus-visible > .retro-groove {
   border-radius: 50%;
   opacity: 0;
   transform: translate(-50%, 0); /* it doesn't rise: the record's label lands here and becomes it */
-  background: linear-gradient(180deg, #fbd56a, #f4c542 40%, #e8a91c);
-  box-shadow: 0 0 140px 40px rgb(251 213 106 / 0.35);
+  background: linear-gradient(180deg, #e6c47a, #dcb456 40%, #d4a03a);
+  box-shadow: 0 0 140px 40px rgb(230 196 122 / 0.35);
 }
 
 /* the hills: four overlapping hills in two-tone contour stripes, like a 70s screen print */
@@ -2520,7 +2522,7 @@ a:focus-visible > .retro-groove {
   top: -12.5%;
   width: 101.5%;
   height: 196%;
-  background: repeating-radial-gradient(closest-side, #d9692a 0 5%, #e9893f 5% 10%);
+  background: repeating-radial-gradient(closest-side, #c26a3a 0 5%, #cf8650 5% 10%);
 }
 
 .retro-hill:nth-child(2) {
@@ -2528,7 +2530,7 @@ a:focus-visible > .retro-groove {
   top: -2%;
   width: 94%;
   height: 187%;
-  background: repeating-radial-gradient(closest-side, #a8431b 0 5%, #c25a24 5% 10%);
+  background: repeating-radial-gradient(closest-side, #9a4a2a 0 5%, #ad5a32 5% 10%);
 }
 
 .retro-hill:nth-child(3) {
@@ -2536,7 +2538,7 @@ a:focus-visible > .retro-groove {
   top: 28.5%;
   width: 90%;
   height: 170%;
-  background: repeating-radial-gradient(closest-side, #7d8630 0 6%, #98a23e 6% 12%);
+  background: repeating-radial-gradient(closest-side, #747c3a 0 6%, #8c9448 6% 12%);
 }
 
 .retro-hill:nth-child(4) {
@@ -2548,15 +2550,16 @@ a:focus-visible > .retro-groove {
 }
 
 /* the hero itself */
+/* laid out like the canvas design (hero A / crate T1): 10% side margins at 1280px, wider on big screens */
 .retro-hero-text {
   position: absolute;
-  left: max(16px, calc(50% - 560px));
+  left: max(16px, calc(50% - min(40vw, 720px)));
   top: 16vh;
   z-index: 2;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-width: min(560px, calc(100% - 32px));
+  max-width: min(600px, calc(100% - 32px));
   color: var(--r-brown);
   visibility: hidden;
 }
@@ -2569,8 +2572,8 @@ a:focus-visible > .retro-groove {
 
 .retro-hero-name {
   margin: 0;
-  font: 400 clamp(3.4rem, 8.5vw, 7rem) / 0.86 "Shrikhand", Georgia, serif;
-  color: #fff4dc;
+  font: 400 clamp(3.4rem, min(8.5vw, 15vh), 8rem) / 0.86 "Shrikhand", Georgia, serif;
+  color: #f6ead2;
   text-shadow: 0.05em 0.05em 0 var(--r-brown);
 }
 
@@ -2599,14 +2602,14 @@ a:focus-visible > .retro-groove {
   padding: 0 22px;
   border-radius: 999px;
   background: var(--r-rust);
-  color: #fff4dc;
+  color: #f6ead2;
   font: 800 1rem "Fraunces", Georgia, serif;
   box-shadow: 0 0 0 2px var(--r-brown), 3px 3px 0 var(--r-brown);
   transition: transform 0.15s;
 }
 
 .retro-hero-btn.is-ghost {
-  background: #f4e6c8;
+  background: #efe1c5;
   color: var(--r-brown);
 }
 
@@ -2658,7 +2661,7 @@ a:focus-visible > .retro-groove {
   padding: 6px 12px;
   border: 2px dashed var(--r-brown);
   border-radius: 6px;
-  background: #fbf1dc;
+  background: #f3e8d2;
   color: var(--r-brown);
   font: 500 0.85rem/1.2 "Fraunces", Georgia, serif;
   box-shadow: 3px 3px 0 rgb(43 29 21 / 0.5);
@@ -2679,9 +2682,9 @@ a:focus-visible > .retro-groove {
 .retro-hero-facts > span {
   background: rgb(43 29 21 / 0.45);
   padding: 8px 14px;
-  border: 1px solid rgb(244 230 200 / 0.3);
+  border: 1px solid rgb(239 225 197 / 0.3);
   border-radius: 999px;
-  color: #f4e6c8;
+  color: #efe1c5;
   font: 500 0.92rem / 1.2 "Fraunces", Georgia, serif;
 }
 
@@ -2780,14 +2783,26 @@ a:focus-visible > .retro-groove {
   top: 0;
   box-sizing: border-box;
   border: 0 solid;
-  /* groove black, warming to its sunset colour (--ring-sun) as it sweeps out (--heat 0 → 1) */
-  border-color: color-mix(in srgb, var(--ring-sun, #1f1915) calc(var(--heat, 0) * 100%), #1f1915);
+  /* groove black; its sunset colour (::before, --ring-sun) fades in over it as it sweeps out (--heat 0 → 1).
+     An opacity fade instead of a colour mix, so the huge scaled rings aren't repainted every frame */
+  border-color: #1f1915;
   border-radius: 50%;
   opacity: 0;
   pointer-events: none;
   transform-origin: 50% 50%;
   will-change: transform, opacity;
   box-shadow: inset 0 0 0 1px rgb(255 235 200 / 0.08), 0 0 0 1px rgb(255 235 200 / 0.05);
+}
+
+.retro-gate-ring::before {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--ring-bw, 0px));
+  border: inherit;
+  border-color: var(--ring-sun, #1f1915);
+  border-radius: 50%;
+  opacity: var(--heat, 0);
+  will-change: opacity;
 }
 
 .retro-gate-ring > span {
@@ -2813,10 +2828,21 @@ a:focus-visible > .retro-groove {
   background: var(--r-mustard);
   /* its rust edge fades (--label-ring 1 → 0) as it turns into the sun */
   box-shadow: 0 0 0 calc(var(--disc) * 0.014 * var(--label-ring, 1)) var(--r-rust),
-    inset 0 0 0 calc(var(--disc) * 0.03 * var(--label-ring, 1)) rgb(168 67 27 / 0.25),
-    0 0 calc(140px * (1 - var(--label-ring, 1))) calc(30px * (1 - var(--label-ring, 1))) rgb(251 213 106 / 0.35);
+    inset 0 0 0 calc(var(--disc) * 0.03 * var(--label-ring, 1)) rgb(168 67 27 / 0.25);
   pointer-events: none;
   will-change: transform, opacity;
+}
+
+/* the sun's glow: a fixed blur that fades in, rather than a blur that grows (a repaint every frame) */
+.retro-gate-label::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 140px 30px rgb(230 196 122 / 0.35);
+  opacity: calc(1 - var(--label-ring, 1));
+  pointer-events: none;
+  will-change: opacity;
 }
 
 .retro-gate-hole {
@@ -2849,14 +2875,20 @@ a:focus-visible > .retro-groove {
   letter-spacing: 0.5px;
   fill: var(--r-rust);
   paint-order: stroke;
-  stroke: #f4e6c8;
+  stroke: #efe1c5;
   stroke-width: 3px;
   stroke-linejoin: round;
 }
 
 .retro-gate-print-kicker {
-  font: 400 13px "Bebas Neue", sans-serif;
-  letter-spacing: 4px;
+  font: 400 26px "Bebas Neue", sans-serif;
+  letter-spacing: 6px;
+  fill: var(--r-brown);
+}
+
+.retro-gate-print-small {
+  font: 400 10px "Bebas Neue", sans-serif;
+  letter-spacing: 1.5px;
   fill: var(--r-brown);
 }
 
@@ -2947,7 +2979,7 @@ a:focus-visible > .retro-groove {
   padding: 0 0 4px;
   border: 0;
   border-radius: 8px;
-  background: #f4e6c8;
+  background: #efe1c5;
   color: var(--r-brown);
   font: 700 0.8rem/1 "Barlow Condensed", sans-serif;
   letter-spacing: 0.16em;
@@ -2958,7 +2990,7 @@ a:focus-visible > .retro-groove {
 }
 
 .retro-key:hover {
-  background: #fbf1dc;
+  background: #f3e8d2;
 }
 
 /* pressed in: lower, with the lip gone */
@@ -2970,19 +3002,19 @@ a:focus-visible > .retro-groove {
 
 .retro-key-lit {
   background: var(--r-mustard);
-  box-shadow: inset 0 -6px 0 #b77f0f, 0 0 18px rgb(232 169 28 / 0.45);
+  box-shadow: inset 0 -6px 0 #b77f0f, 0 0 18px rgb(212 160 58 / 0.45);
 }
 
 .retro-key-lit:hover {
-  background: #f4c542;
+  background: #dcb456;
 }
 
 .retro-key-lit:active {
-  box-shadow: inset 0 -2px 0 #b77f0f, 0 0 18px rgb(232 169 28 / 0.45);
+  box-shadow: inset 0 -2px 0 #b77f0f, 0 0 18px rgb(212 160 58 / 0.45);
 }
 
 .retro-key[aria-pressed="true"] {
-  background: #98a23e;
+  background: #8c9448;
 }
 
 .retro-key:focus-visible {
@@ -3077,9 +3109,9 @@ html[data-gate] .retro-deck.is-tucked {
 /* ── Hero: my newest work as record sleeves in a crate standing on the hills ── */
 
 .retro-hero-crate {
-  --sl: min(210px, 24vh);
+  --sl: min(300px, 37vh, 26vw);
   position: absolute;
-  right: max(24px, calc(50% - 560px));
+  right: max(24px, calc(50% - min(40vw, 720px)));
   bottom: calc(100% - var(--horizon) - 40px);
   z-index: 1;
   display: flex;
@@ -3092,7 +3124,7 @@ html[data-gate] .retro-deck.is-tucked {
 .hero-crate-sleeves {
   position: relative;
   width: calc(var(--sl) + 60px);
-  height: calc(var(--sl) + 96px);
+  height: calc(var(--sl) * 1.32 + 60px);
 }
 
 .hero-sleeve {
@@ -3113,12 +3145,12 @@ html[data-gate] .retro-deck.is-tucked {
 }
 
 .hero-sleeve-1 {
-  top: 34px;
+  top: calc(var(--sl) * 0.16);
   --tilt: 2deg;
 }
 
 .hero-sleeve-2 {
-  top: 68px;
+  top: calc(var(--sl) * 0.32);
   --tilt: 0deg;
 }
 
@@ -3160,23 +3192,23 @@ html[data-gate] .retro-deck.is-tucked {
   position: absolute;
   inset: 0;
   box-sizing: border-box;
-  padding: 12px 14px;
+  padding: calc(var(--sl) * 0.055) calc(var(--sl) * 0.065);
   border: 3px solid var(--r-brown);
   border-radius: 6px;
-  color: #fbf1dc;
+  color: #f3e8d2;
   box-shadow: 0 6px 14px rgb(0 0 0 / 0.25);
 }
 
 .hero-sleeve-0 .hero-sleeve-cover {
-  background: radial-gradient(circle at 78% 72%, var(--r-mustard) 0 22%, transparent 22.5%), #7d8630;
+  background: radial-gradient(circle at 78% 72%, var(--r-mustard) 0 22%, transparent 22.5%), #747c3a;
 }
 
 .hero-sleeve-1 .hero-sleeve-cover {
-  background: repeating-linear-gradient(180deg, #a8431b 0 16px, #c25a24 16px 32px);
+  background: repeating-linear-gradient(180deg, #9a4a2a 0 16px, #ad5a32 16px 32px);
 }
 
 .hero-sleeve-2 .hero-sleeve-cover {
-  background: repeating-conic-gradient(from 0deg at 50% 120%, #f4c542 0 6deg, #e8a91c 6deg 12deg);
+  background: repeating-conic-gradient(from 0deg at 50% 120%, #dcb456 0 6deg, #d4a03a 6deg 12deg);
   color: var(--r-brown);
 }
 
@@ -3188,11 +3220,11 @@ html[data-gate] .retro-deck.is-tucked {
 }
 
 .hero-sleeve-title {
-  font: 400 1.25rem/1.05 "Shrikhand", Georgia, serif;
+  font: 400 calc(var(--sl) * 0.085) / 1.05 "Shrikhand", Georgia, serif;
 }
 
 .hero-sleeve-2 .hero-sleeve-title {
-  font-size: 1.6rem;
+  font-size: calc(var(--sl) * 0.12);
   color: var(--r-rust);
 }
 
@@ -3203,25 +3235,25 @@ html[data-gate] .retro-deck.is-tucked {
 
 .hero-sleeve-sticker {
   position: absolute;
-  right: 10px;
-  top: 52px;
+  right: calc(var(--sl) * 0.05);
+  top: calc(var(--sl) * 0.33);
   display: grid;
   place-items: center;
-  width: 70px;
-  height: 70px;
+  width: calc(var(--sl) * 0.27);
+  height: calc(var(--sl) * 0.27);
   padding: 6px;
   box-sizing: border-box;
   border-radius: 50%;
   background: var(--r-brown);
-  color: #fbf1dc;
+  color: #f3e8d2;
   text-align: center;
-  font: 600 0.62rem/1.05 "Fraunces", Georgia, serif;
+  font: 600 calc(var(--sl) * 0.036) / 1.05 "Fraunces", Georgia, serif;
   transform: rotate(10deg);
 }
 
 .hero-sleeve-sticker b {
   display: block;
-  font-size: 0.95rem;
+  font-size: calc(var(--sl) * 0.06);
 }
 
 /* only the front sleeve shows its sticker until one is lifted */
@@ -3241,11 +3273,11 @@ html[data-gate] .retro-deck.is-tucked {
   right: 0;
   bottom: 0;
   z-index: 2;
-  height: 96px;
+  height: calc(var(--sl) * 0.46);
   box-sizing: border-box;
   border: 3px solid var(--r-brown);
   border-radius: 6px;
-  background: repeating-linear-gradient(180deg, #8a5a3c 0 30px, #5e3a24 30px 33px);
+  background: repeating-linear-gradient(180deg, #8a5a3c 0 calc(var(--sl) * 0.15), #5e3a24 calc(var(--sl) * 0.15) calc(var(--sl) * 0.16));
   box-shadow: 6px 6px 0 var(--r-brown);
   pointer-events: none;
 }
@@ -3285,7 +3317,7 @@ html[data-gate] .retro-deck.is-tucked {
   padding: 0 18px;
   border-radius: 999px;
   background: var(--r-brown);
-  color: #fbf1dc;
+  color: #f3e8d2;
   font: 700 0.9rem "Fraunces", Georgia, serif;
   text-decoration: none;
   transition: transform 0.2s, background-color 0.2s;
@@ -3389,4 +3421,4095 @@ html[data-gate] .retro-deck.is-tucked {
   background: radial-gradient(circle at 35% 30%, #f08a64 0 18%, #c8401c 40%, #8e2a10 100%);
   box-shadow: 1px 3px 4px rgb(0 0 0 / 0.35);
   pointer-events: none;
+}
+
+/* ── J1 Journey: a road trip in a camper van (RetroRoadTrip.tsx) ── */
+
+.rt-stage {
+  background: linear-gradient(180deg, #d4a03a 0%, #c97a3e 48%, #ad5a32 72%);
+  color: #3a2314;
+}
+
+.rt-rays {
+  position: absolute;
+  left: 50%;
+  top: 62%;
+  width: 240vmax;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  background: repeating-conic-gradient(rgb(240 228 196 / 0.14) 0 5deg, transparent 5deg 15deg);
+  -webkit-mask-image: radial-gradient(circle, #000 0 10%, transparent 34%);
+  mask-image: radial-gradient(circle, #000 0 10%, transparent 34%);
+  pointer-events: none;
+}
+
+.rt-sun {
+  position: absolute;
+  left: 50%;
+  top: 62%;
+  width: min(30vw, 340px);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: linear-gradient(#e6c47a, #dcb456 45%, #d4a03a);
+}
+
+/* striped 70s hills, tiled sideways; they only ever move with transform */
+.rt-hills {
+  position: absolute;
+  left: 0;
+  width: calc(100% + 1300px);
+  background-repeat: repeat-x;
+  background-position: left bottom;
+  will-change: transform;
+  pointer-events: none;
+}
+
+.rt-hills-far {
+  bottom: 22%;
+  height: 30%;
+  background-size: 900px 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 300' preserveAspectRatio='none'%3E%3Cdefs%3E%3Cpattern id='s' width='900' height='22' patternUnits='userSpaceOnUse'%3E%3Crect width='900' height='11' fill='%23d9692a'/%3E%3Crect y='11' width='900' height='11' fill='%23e9893f'/%3E%3C/pattern%3E%3C/defs%3E%3Cpath d='M0 300 L0 140 C150 30 300 30 450 140 C600 40 760 40 900 140 L900 300 Z' fill='url(%23s)'/%3E%3C/svg%3E");
+}
+
+.rt-hills-near {
+  bottom: 0;
+  height: 34%;
+  background-size: 1300px 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1300 300' preserveAspectRatio='none'%3E%3Cdefs%3E%3Cpattern id='g' width='1300' height='26' patternUnits='userSpaceOnUse'%3E%3Crect width='1300' height='13' fill='%237d8630'/%3E%3Crect y='13' width='1300' height='13' fill='%2398a23e'/%3E%3C/pattern%3E%3C/defs%3E%3Cpath d='M0 300 L0 90 C220 0 430 0 650 90 C870 10 1080 10 1300 90 L1300 300 Z' fill='url(%23g)'/%3E%3C/svg%3E");
+}
+
+.rt-road {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 13%;
+  height: 54px;
+  background: #1d1612;
+  overflow: hidden;
+}
+
+.rt-dashes {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: calc(100% + 88px);
+  height: 4px;
+  margin-top: -2px;
+  background: repeating-linear-gradient(90deg, #d4a03a 0 52px, transparent 52px 88px);
+  will-change: transform;
+}
+
+.rt-van {
+  position: absolute;
+  left: 50%;
+  bottom: calc(13% + 30px);
+  margin-left: -95px;
+  z-index: 3;
+  filter: drop-shadow(0 6px 0 rgb(29 22 18 / 0.35));
+}
+
+.rt-van .veh-dark {
+  fill: #2b1d15;
+}
+
+.rt-van .veh-light {
+  fill: #d9d0bf;
+}
+
+.rt-van .veh-spoke {
+  stroke: #2b1d15;
+  stroke-width: 2;
+}
+
+.rt-heading {
+  color: #f3e8d2;
+  text-shadow: 0.07em 0.07em 0 #3a2314;
+}
+
+.rt-sub {
+  color: #3a2314;
+  font-weight: 600;
+}
+
+/* billboards: every stop on one line, moved by transform; the one you're at is full size */
+.rt-boards {
+  position: absolute;
+  left: 50%;
+  bottom: calc(13% + 54px);
+  width: 0;
+  height: 0;
+  z-index: 2;
+}
+
+.rt-board {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: min(520px, 84vw);
+  margin-left: calc(min(520px, 84vw) / -2);
+  transform-origin: 50% 100%;
+  will-change: transform, opacity;
+}
+
+.rt-board-face {
+  position: relative;
+  padding: 20px 24px 18px;
+  border: 4px solid #3a2314;
+  border-radius: 10px;
+  background: #efe1c5;
+  box-shadow: 8px 8px 0 #3a2314;
+}
+
+.rt-bulbs {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: -10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.rt-bulbs > span {
+  width: 14px;
+  height: 14px;
+  border: 3px solid #3a2314;
+  border-radius: 50%;
+  background: #d4a03a;
+  box-shadow: 0 0 10px 3px rgb(230 196 122 / 0.8);
+}
+
+.rt-board-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.rt-board-date {
+  font: 700 14px "Barlow Condensed", sans-serif;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #9a4a2a;
+}
+
+.rt-board-kind {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #67703a;
+  color: #f3e8d2;
+  font: 700 12px "Barlow Condensed", sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.rt-board-title {
+  margin-top: 6px;
+  font: 30px/1.05 "Shrikhand", cursive;
+  color: #9a4a2a;
+}
+
+.rt-board-org {
+  margin-top: 4px;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.rt-board-text {
+  margin-top: 8px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.rt-board-link {
+  margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 14px;
+  color: #3a2314;
+  cursor: pointer;
+}
+
+.rt-board-link:hover {
+  color: #9a4a2a;
+}
+
+.rt-posts {
+  display: flex;
+  justify-content: space-around;
+  padding: 0 80px;
+}
+
+.rt-posts > span {
+  width: 8px;
+  height: clamp(40px, 9vh, 110px);
+  background: #3a2314;
+}
+
+/* the strip of all the stops */
+.rt-strip {
+  position: absolute;
+  left: max(16px, calc(50% - 544px));
+  right: max(16px, calc(50% - 544px));
+  bottom: 18px;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 14px;
+  border: 3px solid #2b1d15;
+  border-radius: 12px;
+  background: #efe1c5;
+  box-shadow: 5px 5px 0 #2b1d15;
+}
+
+.rt-count {
+  font: 700 13px "Barlow Condensed", sans-serif;
+  letter-spacing: 0.14em;
+  color: #9a4a2a;
+  white-space: nowrap;
+}
+
+.rt-strip ol {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.rt-strip button {
+  width: 100%;
+  padding: 6px 2px;
+  border-radius: 6px;
+  font: 700 11px "Barlow Condensed", sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  color: #6b4a35;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.rt-strip button[data-past] {
+  background: #ead6ad;
+  color: #3a2314;
+}
+
+.rt-strip button[aria-current] {
+  background: #3a2314;
+  color: #d4a03a;
+}
+
+@media (max-width: 640px) {
+  .rt-strip button {
+    font-size: 9px;
+    letter-spacing: 0;
+  }
+
+  .rt-board-text {
+    font-size: 13px;
+  }
+
+  .rt-posts > span {
+    height: 24px;
+  }
+
+  .rt-van {
+    margin-left: -75px;
+  }
+}
+
+/* ── Retro: entrances as things come into view (Ui/retroReveal.ts marks [data-in]) ──
+   "Big type sweep" (canvas W3): the section's name sweeps across the screen and stays behind the title as a
+   faint backdrop, the 70s stripes slash through, the section number rolls like an odometer, a rule draws
+   out and the title rises from behind it; then the content is uncovered from the bottom up, one after
+   another. Transform / opacity / clip-path only. */
+
+@keyframes rfx-left {
+  from {
+    opacity: 0;
+    translate: -70px 0;
+  }
+}
+
+@keyframes rfx-rise {
+  from {
+    opacity: 0;
+    translate: 0 40px;
+  }
+}
+
+@keyframes rfx-sweep {
+  0% {
+    opacity: 0.85;
+    translate: 110vw 0;
+  }
+  62% {
+    opacity: 0.85;
+    translate: -4% 0;
+  }
+}
+
+@keyframes rfx-slash {
+  0% {
+    opacity: 1;
+    translate: -170vw 0;
+  }
+  100% {
+    opacity: 1;
+    translate: 170vw 0;
+  }
+}
+
+@keyframes rfx-roll {
+  from {
+    translate: 0 0;
+  }
+}
+
+@keyframes rfx-rule {
+  from {
+    scale: 0 1;
+  }
+}
+
+@keyframes rfx-lift {
+  from {
+    translate: 0 110%;
+  }
+}
+
+@keyframes rfx-uncover {
+  from {
+    clip-path: inset(100% -24px -24px -24px);
+    translate: 0 40px;
+  }
+  to {
+    clip-path: inset(-24px -24px -24px -24px);
+    translate: 0 0;
+  }
+}
+
+/* the pieces (outside Retro they're display: none with their .only-retro wrapper) */
+[data-theme="retro"] .section-header {
+  isolation: isolate;
+}
+
+.retro-sweep {
+  position: absolute;
+  left: -0.04em;
+  top: -0.32em;
+  z-index: -1;
+  font: 400 clamp(150px, 24vw, 380px) / 0.8 "Bebas Neue", "Arial Narrow", sans-serif;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: currentColor;
+  opacity: 0.13;
+  pointer-events: none;
+}
+
+.retro-slash {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  z-index: 2;
+  width: 140vw;
+  margin-left: -70vw;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  rotate: -9deg;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.retro-slash > span {
+  height: 16px;
+}
+
+.retro-slash > span:nth-child(1) {
+  background: var(--r-rust);
+}
+
+.retro-slash > span:nth-child(2) {
+  background: var(--r-orange);
+}
+
+.retro-slash > span:nth-child(3) {
+  background: var(--r-mustard);
+}
+
+.retro-slash > span:nth-child(4) {
+  background: var(--r-olive);
+}
+
+.retro-odo {
+  position: absolute;
+  right: 0;
+  top: -0.5em;
+  display: none;
+  font: 400 104px / 1 "Bebas Neue", "Arial Narrow", sans-serif;
+  color: var(--r-mustard);
+  text-shadow: 3px 3px 0 var(--r-brown);
+  pointer-events: none;
+}
+
+@media (min-width: 1024px) {
+  .retro-odo {
+    display: flex;
+  }
+}
+
+.retro-odo-win {
+  display: block;
+  height: 1em;
+  overflow: hidden;
+}
+
+.retro-odo-reel {
+  display: flex;
+  flex-direction: column;
+  translate: 0 calc(var(--odo, 0) * -1em);
+}
+
+.retro-odo-reel > span {
+  height: 1em;
+}
+
+.retro-rule {
+  display: block;
+  width: min(420px, 70%);
+  height: 4px;
+  margin-top: 0.75rem;
+  border-radius: 2px;
+  background: currentColor;
+  opacity: 0.85;
+  transform-origin: 0 50%;
+}
+
+[data-theme="retro"] .title-mask {
+  display: block;
+  overflow: hidden;
+  /* room for the drop shadow and descenders, taken back with the negative margin */
+  padding: 0 0.14em 0.16em 0;
+  margin-bottom: -0.16em;
+}
+
+[data-theme="retro"] .title-lift {
+  display: block;
+}
+
+/* waiting to come in */
+html[data-rfx][data-theme="retro"] .section-header:not([data-in]) :is(.retro-sweep, .retro-odo, .eyebrow),
+html[data-rfx][data-theme="retro"] :is(.retro-about-photo, .retro-about-lead, .retro-about-body, .retro-about-facts > *, .retro-about-keys > *):not([data-in]),
+html[data-rfx][data-theme="retro"] :is(.retro-rx, .retro-hf, .retro-sc > *):not([data-in]),
+html[data-rfx][data-theme="retro"] #contact .card:not([data-in]) {
+  opacity: 0;
+}
+
+html[data-rfx][data-theme="retro"] .section-header:not([data-in]) .retro-rule {
+  scale: 0 1;
+}
+
+html[data-rfx][data-theme="retro"] .section-header:not([data-in]) .title-lift {
+  translate: 0 110%;
+}
+
+/* the header, in order */
+html[data-rfx][data-theme="retro"] .section-header[data-in] .retro-sweep {
+  animation: rfx-sweep 1.3s cubic-bezier(0.6, 0, 0.2, 1) backwards;
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] .retro-slash {
+  animation: rfx-slash 0.9s cubic-bezier(0.7, 0, 0.3, 1) 0.15s;
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] .retro-odo {
+  animation: rfx-rise 0.4s ease-out 0.3s backwards;
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] .retro-odo-reel {
+  animation: rfx-roll 1.1s cubic-bezier(0.5, 0, 0.2, 1.12) 0.35s backwards;
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] .eyebrow {
+  animation: rfx-left 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.35s backwards;
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] .retro-rule {
+  animation: rfx-rule 0.7s cubic-bezier(0.6, 0, 0.2, 1) 0.45s backwards;
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] [data-entrance="sweep"] .title-lift {
+  animation: rfx-lift 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.7s backwards;
+}
+
+/* Skills and Contact (big type sweep): the content is uncovered from the bottom up, one after another */
+html[data-rfx][data-theme="retro"] [data-in]:is(.retro-rx),
+html[data-rfx][data-theme="retro"] #contact [data-in].card {
+  animation: rfx-uncover 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  animation-delay: calc(0.25s + var(--rfx-i, 0) * 100ms);
+}
+
+[data-theme="retro"] .not-retro {
+  display: none;
+}
+
+/* ── Work: needle drop. A tonearm swings over the title and drops; the header gives a small jolt, a ripple
+   runs out from the needle, the title's letters fall in and bounce, then the pieces spring up. ── */
+
+@keyframes rfx-arm {
+  0% {
+    opacity: 0;
+    rotate: -40deg;
+  }
+  12% {
+    opacity: 1;
+  }
+  40% {
+    rotate: 0deg;
+  }
+  44% {
+    rotate: 1.5deg;
+  }
+  48%,
+  70% {
+    opacity: 1;
+    rotate: 0deg;
+  }
+  100% {
+    opacity: 0;
+    rotate: -40deg;
+  }
+}
+
+@keyframes rfx-ring {
+  0% {
+    opacity: 0.9;
+    scale: 0.2;
+  }
+  100% {
+    opacity: 0;
+    scale: 14;
+  }
+}
+
+@keyframes rfx-jolt {
+  30% {
+    translate: 0 6px;
+  }
+  60% {
+    translate: 0 -3px;
+  }
+}
+
+@keyframes rfx-drop {
+  0% {
+    opacity: 0;
+    translate: 0 -1.6em;
+    rotate: -14deg;
+  }
+  55% {
+    opacity: 1;
+    translate: 0 0.12em;
+    rotate: 3deg;
+  }
+  75% {
+    translate: 0 -0.05em;
+    rotate: 0deg;
+  }
+  100% {
+    opacity: 1;
+    translate: 0 0;
+    rotate: 0deg;
+  }
+}
+
+@keyframes rfx-spring {
+  0% {
+    opacity: 0;
+    translate: 0 120px;
+    rotate: var(--spring-r, -4deg);
+    scale: 0.9;
+  }
+  65% {
+    opacity: 1;
+    translate: 0 -10px;
+    rotate: 0deg;
+    scale: 1.02;
+  }
+}
+
+.drop-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.drop-letter {
+  display: inline-block;
+}
+
+[data-entrance="needle"] {
+  --drop-at: 0.72s;
+}
+
+.retro-drop {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: none;
+  pointer-events: none;
+}
+
+@media (min-width: 1024px) {
+  .retro-drop {
+    display: block;
+  }
+}
+
+@media (max-width: 1023px) {
+  [data-entrance="needle"] {
+    --drop-at: 0.15s;
+  }
+}
+
+/* the pivot; the bar hangs from it at 150° so the needle lands 343px left of and 198px below it, on the title */
+.retro-drop-arm {
+  position: absolute;
+  left: 560px;
+  top: -110px;
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+.retro-drop-arm::before {
+  content: "";
+  position: absolute;
+  left: -26px;
+  top: -26px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #d9d0bf;
+  border: 4px solid var(--r-brown);
+}
+
+.retro-drop-bar {
+  position: absolute;
+  left: 0;
+  top: -5px;
+  width: 380px;
+  height: 10px;
+  border-radius: 5px;
+  background: #d9d0bf;
+  border: 3px solid var(--r-brown);
+  transform-origin: 0 50%;
+  rotate: 150deg;
+}
+
+.retro-drop-bar::after {
+  content: "";
+  position: absolute;
+  right: -18px;
+  top: -11px;
+  width: 34px;
+  height: 26px;
+  border-radius: 4px;
+  background: var(--r-brown);
+}
+
+.retro-drop-ring {
+  position: absolute;
+  left: 177px;
+  top: 48px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid var(--r-mustard);
+  opacity: 0;
+}
+
+.retro-drop-ring.is-late {
+  border-color: var(--r-rust);
+}
+
+html[data-rfx][data-theme="retro"] .section-header:not([data-in]) .drop-letter {
+  opacity: 0;
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] .retro-drop-arm {
+  animation: rfx-arm 1.8s cubic-bezier(0.5, 0, 0.3, 1);
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] .retro-drop-ring {
+  animation: rfx-ring 1s cubic-bezier(0.1, 0.6, 0.3, 1) var(--drop-at);
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] .retro-drop-ring.is-late {
+  animation-delay: calc(var(--drop-at) + 0.18s);
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] [data-entrance="needle"] {
+  animation: rfx-jolt 0.3s linear var(--drop-at);
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] .drop-letter {
+  animation: rfx-drop 0.7s cubic-bezier(0.3, 0.8, 0.3, 1) backwards;
+  animation-delay: calc(var(--drop-at) + var(--li, 0) * 35ms);
+}
+
+html[data-rfx][data-theme="retro"] #work [data-in]:is(.retro-hf, .retro-sc > *) {
+  animation: rfx-spring 0.9s cubic-bezier(0.2, 0.9, 0.3, 1) backwards;
+  animation-delay: calc(0.9s + var(--rfx-i, 0) * 100ms);
+}
+
+
+/* ── About: pulled from the sleeve. A sleeve slides in, the record is pulled out spinning and rolls into
+   the section's label, the title pops in, then the pieces fan out like a hand of cards. ── */
+
+@keyframes rfx-sleeve {
+  0% {
+    opacity: 1;
+    translate: -60vw 0;
+    rotate: -8deg;
+  }
+  22%,
+  50% {
+    opacity: 1;
+    translate: 0 0;
+    rotate: 0deg;
+  }
+  72%,
+  100% {
+    opacity: 0;
+    translate: 0 70px;
+    rotate: 6deg;
+  }
+}
+
+@keyframes rfx-record-out {
+  0%,
+  22% {
+    opacity: 1;
+    translate: 0 0;
+    rotate: 0deg;
+    scale: 1;
+  }
+  60% {
+    opacity: 1;
+    translate: 260px 0;
+    rotate: 540deg;
+    scale: 1;
+  }
+  100% {
+    opacity: 0;
+    translate: -59px -29px;
+    rotate: 900deg;
+    scale: 0.18;
+  }
+}
+
+@keyframes rfx-pop {
+  0% {
+    opacity: 0;
+    scale: 1.5;
+  }
+  60% {
+    opacity: 1;
+    scale: 0.97;
+  }
+}
+
+@keyframes rfx-fan {
+  from {
+    opacity: 0;
+    translate: -80px -60px;
+    rotate: var(--fan-r, -14deg);
+    scale: 0.6;
+  }
+}
+
+.retro-pull {
+  position: absolute;
+  left: 0;
+  top: -30px;
+  z-index: 3;
+  width: 150px;
+  height: 150px;
+  pointer-events: none;
+}
+
+.retro-pull-sleeve {
+  position: absolute;
+  inset: 0;
+  padding: 14px;
+  border: 4px solid var(--r-brown);
+  border-radius: 6px;
+  background: linear-gradient(transparent 0 56%, var(--r-rust) 56% 66%, var(--r-orange) 66% 76%, var(--r-mustard) 76% 86%, var(--r-olive) 86%),
+    var(--r-cream);
+  box-shadow: 6px 6px 0 rgb(0 0 0 / 0.35);
+  font: 400 26px / 1 "Shrikhand", Georgia, serif;
+  color: var(--r-brown);
+  opacity: 0;
+}
+
+.retro-pull-record {
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #1f1915 0 3%, var(--r-mustard) 3.5% 18%, #1f1915 18.5% 20%, transparent 20%),
+    repeating-radial-gradient(circle, #1f1915 0 2px, #2c2420 2px 4px);
+  opacity: 0;
+}
+
+[data-theme="retro"] [data-entrance="sleeve"] .title-mask {
+  overflow: visible;
+}
+
+[data-theme="retro"] [data-entrance="sleeve"] .title-lift {
+  transform-origin: 0 60%;
+}
+
+html[data-rfx][data-theme="retro"] .section-header:not([data-in]) [data-entrance="sleeve"] .title-lift {
+  opacity: 0;
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] .retro-pull-sleeve {
+  animation: rfx-sleeve 1.6s cubic-bezier(0.6, 0, 0.3, 1);
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] .retro-pull-record {
+  animation: rfx-record-out 1.6s cubic-bezier(0.45, 0, 0.25, 1);
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] [data-entrance="sleeve"] .eyebrow {
+  animation-delay: 1.15s;
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] [data-entrance="sleeve"] .title-lift {
+  animation: rfx-pop 0.7s cubic-bezier(0.2, 0.8, 0.3, 1) 1.2s backwards;
+}
+
+html[data-rfx][data-theme="retro"] [data-in]:is(.retro-about-photo, .retro-about-lead, .retro-about-body, .retro-about-facts > *, .retro-about-keys > *) {
+  animation: rfx-fan 0.8s cubic-bezier(0.2, 0.9, 0.3, 1.1) backwards;
+  animation-delay: calc(0.3s + var(--rfx-i, 0) * 80ms);
+}
+
+html[data-rfx][data-theme="retro"] :is(.retro-about-facts > *:nth-child(even), .retro-about-keys > *:nth-child(even), .retro-about-body) {
+  --fan-r: 12deg;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .retro-drop,
+  .retro-pull {
+    display: none;
+  }
+}
+
+/* timing the Journey pieces below share */
+html[data-rfx][data-theme="retro"] #journey [data-in] {
+  animation-duration: 0.8s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: backwards;
+  animation-delay: calc(var(--rfx-i, 0) * 90ms);
+}
+
+/* Journey: the sun comes up, the van drives in from the left, the stop strip rises */
+@keyframes rfx-sun-up {
+  from {
+    opacity: 0;
+    translate: -50% 20%;
+  }
+}
+
+@keyframes rfx-drive-in {
+  from {
+    translate: -70vw 0;
+  }
+}
+
+html[data-rfx][data-theme="retro"] :is(#journey .rt-head > *, .rt-sun, .rt-strip):not([data-in]) {
+  opacity: 0;
+}
+
+/* the van box stays where it parks (so the observer can see it); only its inside starts off to the left */
+html[data-rfx][data-theme="retro"] .rt-van:not([data-in]) > * {
+  translate: -70vw 0;
+}
+
+html[data-rfx][data-theme="retro"] #journey .rt-head > [data-in] {
+  animation-name: rfx-left;
+}
+
+html[data-rfx][data-theme="retro"] .rt-sun[data-in] {
+  animation-name: rfx-sun-up;
+  animation-duration: 1.4s;
+}
+
+html[data-rfx][data-theme="retro"] .rt-van[data-in] {
+  animation: none;
+}
+
+html[data-rfx][data-theme="retro"] .rt-van[data-in] > * {
+  animation: rfx-drive-in 1.6s cubic-bezier(0.25, 1, 0.4, 1) 0.2s backwards;
+}
+
+html[data-rfx][data-theme="retro"] .rt-strip[data-in] {
+  animation-name: rfx-rise;
+  animation-delay: 0.4s;
+}
+
+/* room at the end of the trip for the next section's ribbon, so it never covers the stop strip */
+.rt {
+  padding-bottom: 120px;
+}
+
+/* ══ Lamp-lit: the listening room's mood on the earlier design ══
+   The opening ends in the 3D room (RetroRoom heroOnly) instead of the sunset; every section below is
+   dimmed to warm browns with a pool of lamplight, so the oranges and mustards read as accents, not walls. */
+
+/* the opening: the room in place of the sky, sun and hills */
+.retro-gate[data-room] {
+  background: #140c08;
+}
+
+/* the sky layer only darkens the room's edges once it's lit (the room itself is .retro-gate-room) */
+.retro-gate[data-room] .retro-gate-sky {
+  background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgb(20 12 8 / 0.55));
+}
+
+.retro-gate-room {
+  position: absolute;
+  inset: 0;
+}
+
+.retro-gate[data-room] :is(.retro-gate-rays, .retro-gate-sun, .retro-gate-ground) {
+  display: none;
+}
+
+.retro-room.is-hero {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.retro-room.is-hero .retro-room-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.retro-room.is-hero[data-ready] .retro-room-canvas {
+  opacity: 1;
+}
+
+/* the hero's words sit on a pool of shade, in lamplight colours */
+.retro-gate[data-room] .retro-hero-text {
+  color: #efe1c5;
+  padding: 22px 26px;
+  border-radius: 10px;
+  background: radial-gradient(ellipse at 30% 40%, rgb(20 12 8 / 0.72), rgb(20 12 8 / 0.35) 70%, transparent);
+}
+
+.retro-gate[data-room] .retro-hero-kicker {
+  color: var(--r-mustard);
+}
+
+/* the page: dark warm wood with a lamp's glow from the top corner */
+[data-theme="retro"] body {
+  background-color: #1f130b;
+  background-image: radial-gradient(ellipse 70% 50% at 85% 0%, rgb(255 190 110 / 0.1), transparent 70%),
+    radial-gradient(rgb(0 0 0 / 0.18) 1px, transparent 1.4px);
+  background-size: auto, 6px 6px;
+}
+
+[data-theme="retro"] body::after {
+  box-shadow: inset 0 0 220px rgb(10 5 2 / 0.75);
+}
+
+/* each section: its own colour, dimmed, lit from one side */
+[data-theme="retro"] #about {
+  background-image: radial-gradient(ellipse 60% 70% at 15% 20%, rgb(255 190 110 / 0.14), transparent 70%),
+    repeating-linear-gradient(90deg, rgb(0 0 0 / 0.25) 0 3px, transparent 3px 96px),
+    linear-gradient(#2e1b0e, #1a0f08);
+}
+
+[data-theme="retro"] #journey .bg-decor {
+  background: radial-gradient(ellipse 70% 60% at 50% 100%, rgb(212 160 58 / 0.35), transparent 70%),
+    repeating-conic-gradient(from 0deg at 50% 115%, rgb(212 160 58 / 0.16) 0 5deg, transparent 5deg 10deg),
+    linear-gradient(#5a2a14, #3a190b);
+}
+
+[data-theme="retro"] #journey {
+  --bg: #3a1d0e;
+  --fg: #efe1c5;
+  --muted: #e2cfa6;
+}
+
+[data-theme="retro"] #skills {
+  background-color: #2b2e17;
+  background-image: radial-gradient(ellipse 60% 60% at 80% 15%, rgb(255 190 110 / 0.14), transparent 70%),
+    radial-gradient(circle, transparent 0 16px, rgb(212 160 58 / 0.14) 16px 22px, transparent 22px 28px, rgb(0 0 0 / 0.2) 28px 33px, transparent 33px),
+    radial-gradient(circle, transparent 0 16px, rgb(212 160 58 / 0.14) 16px 22px, transparent 22px 28px, rgb(0 0 0 / 0.2) 28px 33px, transparent 33px);
+  background-size: auto, 84px 84px, 84px 84px;
+  background-position: 0 0, 0 0, 42px 42px;
+}
+
+/* Work stays cream paper, but as a page under a lamp: bright in the middle, dim at the edges */
+[data-theme="retro"] #work {
+  background-image: radial-gradient(ellipse 75% 65% at 50% 45%, transparent 55%, rgb(40 22 10 / 0.55) 100%),
+    radial-gradient(circle at 85% 60%, rgb(212 160 58 / 0.35) 0 14%, transparent 14.2%),
+    repeating-radial-gradient(circle at 85% 60%, transparent 0 15%, rgb(224 122 46 / 0.12) 15% 17%, transparent 17% 20%);
+  background-color: #e6d4b0;
+}
+
+[data-theme="retro"] #contact {
+  background: radial-gradient(ellipse 60% 60% at 50% 100%, rgb(212 120 58 / 0.3), transparent 70%),
+    linear-gradient(#4a1d0c 0%, #33140a 60%, #1f0c05 100%);
+}
+
+/* Journey at dusk: the sun low and glowing, the hills in shade, the billboards' bulbs carry the light */
+.rt-stage {
+  background: linear-gradient(180deg, #2e170b 0%, #4a2412 40%, #7a3418 64%, #a04a1e 74%); /* walnut dusk */
+  color: #efe1c5;
+}
+
+.rt-stage .rt-rays {
+  opacity: 0.55;
+}
+
+.rt-stage .rt-sun {
+  background: linear-gradient(#f0c070, #e09040 55%, #c8602a);
+  box-shadow: 0 0 120px 40px rgb(232 140 60 / 0.35);
+}
+
+.rt-stage .rt-hills {
+  filter: brightness(0.5) saturate(0.85);
+}
+
+.rt-stage :is(.rt-sub, .eyebrow) {
+  color: #e2cfa6;
+}
+
+/* the big word that sweeps in behind each title stays readable once it settles (it vanished on the dark rooms) */
+[data-theme="retro"] .retro-sweep {
+  opacity: 0.3;
+  color: var(--r-mustard);
+  text-shadow: 0.03em 0.03em 0 rgb(0 0 0 / 0.35);
+}
+
+
+/* the opening as a scrubbed camera move: a tall section with its stage pinned; the 3D record is the disc */
+.retro-gate-pin {
+  position: relative;
+  height: 100%;
+}
+
+.retro-gate[data-scrub] {
+  height: 260vh;
+  min-height: 0;
+}
+
+.retro-gate[data-scrub] .retro-gate-pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.retro-gate[data-room] :is(.retro-gate-zoom, .retro-gate-ring, .retro-gate-label, .retro-gate-rings) {
+  display: none;
+}
+
+/* the title entrances: no slash running across the screen */
+[data-theme="retro"] .retro-slash {
+  display: none;
+}
+
+
+/* ══ Walnut: the listening room's palette (its console wood, its lamplight) across the page. No wood
+   texture: each section is its own shade from the same family, lit from a different side; Journey keeps
+   its dusk drive, in walnut browns. ══ */
+
+[data-theme="retro"] :is(#about, #skills, #work, #contact) {
+  --fg: #efe1c5;
+  --muted: #e2cfa6;
+}
+
+/* walnut, like the console */
+[data-theme="retro"] #about {
+  background-color: #5a3119;
+  background-image: radial-gradient(ellipse 60% 70% at 15% 15%, rgb(255 190 110 / 0.16), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 50%, rgb(20 8 2 / 0.45)),
+    linear-gradient(180deg, #6a3c22, #4a2714);
+  background-size: auto;
+}
+
+/* tobacco */
+[data-theme="retro"] #skills {
+  background-color: #4e3a1e;
+  background-image: radial-gradient(ellipse 60% 60% at 85% 10%, rgb(255 190 110 / 0.15), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 50%, rgb(20 8 2 / 0.45)),
+    linear-gradient(180deg, #5c4524, #3a2a14);
+  background-size: auto;
+  background-position: 0 0;
+}
+
+/* mahogany */
+[data-theme="retro"] #work {
+  background-color: #4e2216;
+  background-image: radial-gradient(ellipse 70% 60% at 50% 25%, rgb(255 180 110 / 0.14), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 50%, rgb(20 6 2 / 0.45)),
+    linear-gradient(180deg, #5e2a1a, #3a170d);
+}
+
+/* dark chocolate, the lamp low behind the chat */
+[data-theme="retro"] #contact {
+  background: radial-gradient(ellipse 60% 60% at 50% 100%, rgb(255 170 90 / 0.2), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 50%, rgb(10 4 1 / 0.5)),
+    linear-gradient(180deg, #3e2416, #22130a);
+}
+
+/* the old per-section wallpapers' decor layers stay off */
+[data-theme="retro"] :is(#about, #skills, #work, #contact) .bg-decor {
+  display: none;
+}
+
+/* Work on mahogany: its title in lamplight colours, like the other sections */
+[data-theme="retro"] #work .heading {
+  color: var(--r-mustard);
+  text-shadow: 0.05em 0.05em 0 var(--r-rust);
+}
+
+/* ── No flicker on the records and the photo ──
+   Hard-edged 2–3px grooves shimmer (moiré) as soon as a record moves, scales or the page glides past, and
+   the page's backgrounds must be cheap to draw while scrolling (pre-made tiles, below). So: soft grooves. */
+[data-theme="retro"] .retro-ls-record {
+  background: repeating-radial-gradient(circle, #1a110b 0, #2b1d15 1.6px, #1a110b 3.2px);
+}
+
+[data-theme="retro"] .hero-sleeve-disc {
+  background: radial-gradient(circle, #1a1210 0 4%, var(--r-mustard) 4.5% 17%, transparent 17.5%),
+    repeating-radial-gradient(circle, #1a1210 0, #2b201b 2px, #1a1210 4px);
+}
+
+/* ── The room as the inspiration, not the wallpaper: each section is a dark corner of the listening room,
+   warm brown, a pool of lamplight on one side and a cool touch of moonlight from the other. The room's
+   wood is only a whisper under a wash of the section's own colour (tiles in public/textures). ── */
+
+/* About: the walnut wall by the lamp */
+[data-theme="retro"] #about {
+  background: radial-gradient(ellipse 55% 65% at 12% 10%, rgb(255 180 100 / 0.24), transparent 70%),
+    radial-gradient(ellipse 45% 60% at 100% 60%, rgb(130 160 255 / 0.07), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(10 4 1 / 0.55)),
+    linear-gradient(rgb(46 26 14 / 0.84), rgb(46 26 14 / 0.84)), url("/textures/oak-wall.png") 0 0 / 512px 512px, #2e1a0e;
+}
+
+/* Skills: by the speaker, a deep tobacco brown */
+[data-theme="retro"] #skills {
+  background: radial-gradient(ellipse 55% 60% at 88% 8%, rgb(255 180 100 / 0.2), transparent 70%),
+    radial-gradient(ellipse 45% 60% at 0% 70%, rgb(130 160 255 / 0.06), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(10 4 1 / 0.55)),
+    linear-gradient(rgb(42 32 16 / 0.86), rgb(42 32 16 / 0.86)), url("/textures/oak-floor.png") 0 0 / 512px 512px, #2a2010;
+}
+
+/* Work: at the console, deep mahogany, the lamp right over the records */
+[data-theme="retro"] #work {
+  background: radial-gradient(ellipse 60% 55% at 55% 0%, rgb(255 180 100 / 0.22), transparent 70%),
+    radial-gradient(ellipse 40% 60% at 0% 40%, rgb(130 160 255 / 0.06), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(10 4 1 / 0.55)),
+    linear-gradient(rgb(44 20 12 / 0.88), rgb(44 20 12 / 0.88)), url("/textures/slats.png") 0 0 / 280px 1024px, #2c140c;
+}
+
+/* Contact: by the window at night, moonlight across it and the lamp low behind the chat */
+[data-theme="retro"] #contact {
+  background: radial-gradient(ellipse 55% 60% at 70% 100%, rgb(255 170 90 / 0.24), transparent 70%),
+    radial-gradient(ellipse 60% 70% at 0% 20%, rgb(130 160 255 / 0.13), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(6 4 8 / 0.55)),
+    linear-gradient(rgb(30 22 26 / 0.86), rgb(30 22 26 / 0.86)), url("/textures/oak-dark.png") 0 0 / 512px 512px, #1e161a;
+}
+
+/* ── The room at rest: a title card on the left, like a 70s album cover (RetroGateway, ROOM) ── */
+.retro-gate[data-room] .retro-gate-hud {
+  display: none;
+}
+
+.retro-title {
+  position: absolute;
+  z-index: 3;
+  left: max(20px, calc(50% - min(42vw, 740px)));
+  top: 50%;
+  margin-top: -190px;
+  width: min(500px, calc(100% - 40px));
+  color: #efe1c5;
+}
+
+.retro-title-kicker {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font: 400 1.05rem / 1 "Bebas Neue", sans-serif;
+  letter-spacing: 0.32em;
+  color: var(--r-mustard);
+}
+
+.retro-title-kicker::after {
+  content: "";
+  flex: 0 0 64px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--r-mustard), transparent);
+}
+
+.retro-title-name {
+  margin: 14px 0 0;
+  font: 400 clamp(3.6rem, min(8vw, 14vh), 7.4rem) / 0.86 "Shrikhand", Georgia, serif;
+  color: #f6ead2;
+  text-shadow: 0.045em 0.045em 0 var(--r-rust), 0.09em 0.09em 0 rgb(0 0 0 / 0.35);
+}
+
+.retro-title-role {
+  margin: 18px 0 0;
+  font: 600 1.05rem / 1.4 "Fraunces", Georgia, serif;
+  color: #e2cfa6;
+}
+
+.retro-title-actions {
+  margin-top: 26px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+}
+
+.retro-title-drop {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px 12px 14px;
+  border: 2px solid #f6ead2;
+  border-radius: 999px;
+  background: var(--r-rust);
+  color: #f6ead2;
+  font: 700 1rem / 1 "Fraunces", Georgia, serif;
+  box-shadow: 4px 4px 0 rgb(0 0 0 / 0.45);
+  cursor: pointer;
+  transition: translate 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+.retro-title-drop:hover {
+  translate: -2px -2px;
+  box-shadow: 6px 6px 0 rgb(0 0 0 / 0.45);
+  background: #ad5a32;
+}
+
+/* a tiny record with a tonearm that dips, as if about to drop */
+.retro-title-needle {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: repeating-radial-gradient(circle, #1a110b 0, #2b1d15 1.4px, #1a110b 2.8px);
+  box-shadow: inset 0 0 0 4px #1a110b;
+}
+
+.retro-title-needle::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border-radius: 50%;
+  background: var(--r-mustard);
+}
+
+.retro-title-needle::after {
+  content: "";
+  position: absolute;
+  right: -5px;
+  top: -6px;
+  width: 2px;
+  height: 18px;
+  border-radius: 2px;
+  background: #e8dcc0;
+  transform-origin: top;
+  rotate: 28deg;
+  animation: retro-title-dip 2.4s ease-in-out infinite;
+}
+
+@keyframes retro-title-dip {
+  0%,
+  60%,
+  100% {
+    rotate: 28deg;
+  }
+  75% {
+    rotate: 10deg;
+  }
+}
+
+.retro-title-music,
+.retro-title-skip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 4px;
+  border: 0;
+  background: none;
+  color: #e2cfa6;
+  font: 400 1rem / 1 "Bebas Neue", sans-serif;
+  letter-spacing: 0.14em;
+  cursor: pointer;
+}
+
+.retro-title-music:hover,
+.retro-title-skip:hover {
+  color: var(--r-mustard);
+}
+
+.retro-title-hint {
+  margin: 30px 0 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 400 0.85rem / 1 "Bebas Neue", sans-serif;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgb(226 207 166 / 0.55);
+}
+
+.retro-title-hint svg {
+  animation: retro-title-bob 1.6s ease-in-out infinite;
+}
+
+@keyframes retro-title-bob {
+  50% {
+    translate: 0 3px;
+  }
+}
+
+/* narrow screens: the title over the top of the scene, on a soft shade */
+@media (max-width: 1023px) {
+  .retro-title {
+    top: 12vh;
+    margin-top: 0;
+    padding: 18px 20px;
+    border-radius: 10px;
+    background: radial-gradient(ellipse at 30% 40%, rgb(10 6 4 / 0.75), rgb(10 6 4 / 0.35) 75%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .retro-title-needle::after,
+  .retro-title-hint svg {
+    animation: none;
+  }
+}
+
+/* ── Every section like Work: a dark brown with the console's fine slats just showing, lit by the lamp.
+   Only the brown and where the lamp sits change. ── */
+[data-theme="retro"] #about {
+  background: radial-gradient(ellipse 55% 60% at 15% 0%, rgb(255 180 100 / 0.22), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(10 4 1 / 0.55)),
+    linear-gradient(rgb(46 26 14 / 0.88), rgb(46 26 14 / 0.88)), url("/textures/slats.png") 0 0 / 280px 1024px, #2e1a0e;
+}
+
+[data-theme="retro"] #skills {
+  background: radial-gradient(ellipse 55% 60% at 85% 0%, rgb(255 180 100 / 0.2), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(10 4 1 / 0.55)),
+    linear-gradient(rgb(40 28 14 / 0.88), rgb(40 28 14 / 0.88)), url("/textures/slats.png") 0 0 / 280px 1024px, #281c0e;
+}
+
+[data-theme="retro"] #contact {
+  background: radial-gradient(ellipse 55% 60% at 50% 100%, rgb(255 170 90 / 0.22), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(8 3 1 / 0.55)),
+    linear-gradient(rgb(36 18 12 / 0.88), rgb(36 18 12 / 0.88)), url("/textures/slats.png") 0 0 / 280px 1024px, #24120c;
+}
+
+/* ── Same quiet treatment as Work (dark, a pattern just showing, the lamp), but each section its own
+   pattern from the room: About the wall planks, Skills the speaker grille, Work the console slats,
+   Contact the floorboards. ── */
+[data-theme="retro"] #about {
+  background: radial-gradient(ellipse 55% 60% at 15% 0%, rgb(255 180 100 / 0.22), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(10 4 1 / 0.55)),
+    linear-gradient(rgb(46 26 14 / 0.84), rgb(46 26 14 / 0.84)), url("/textures/oak-wall.png") 0 0 / 512px 512px, #2e1a0e;
+}
+
+[data-theme="retro"] #skills {
+  background: radial-gradient(ellipse 55% 60% at 85% 0%, rgb(255 180 100 / 0.2), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(10 4 1 / 0.55)),
+    radial-gradient(circle, rgb(0 0 0 / 0.42) 1.3px, transparent 1.8px) 0 0 / 8px 8px,
+    radial-gradient(circle, rgb(255 220 170 / 0.05) 1.3px, transparent 1.8px) 1px 1px / 8px 8px, #33240f;
+}
+
+[data-theme="retro"] #contact {
+  background: radial-gradient(ellipse 55% 60% at 50% 100%, rgb(255 170 90 / 0.22), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(8 3 1 / 0.55)),
+    linear-gradient(rgb(36 18 12 / 0.84), rgb(36 18 12 / 0.84)), url("/textures/oak-floor.png") 0 0 / 512px 512px, #24120c;
+}
+
+/* the title card nearer the left edge, so the scene has the room (wide screens) */
+@media (min-width: 1024px) {
+  .retro-title {
+    left: max(28px, 4.5vw);
+  }
+}
+
+/* Skills: darker oak boards, lit from the right */
+[data-theme="retro"] #skills {
+  background: radial-gradient(ellipse 55% 60% at 85% 0%, rgb(255 180 100 / 0.2), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(10 4 1 / 0.55)),
+    linear-gradient(rgb(38 24 12 / 0.8), rgb(38 24 12 / 0.8)), url("/textures/oak-dark.png") 0 0 / 360px 360px, #26180c;
+}
+
+/* Contact: by the window, deep rust velvet in soft folds like the curtains, the lamp low behind the chat */
+[data-theme="retro"] #contact {
+  background: radial-gradient(ellipse 55% 55% at 70% 100%, rgb(255 170 90 / 0.24), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(8 3 1 / 0.6)),
+    repeating-linear-gradient(90deg, rgb(0 0 0 / 0.3) 0, rgb(255 190 140 / 0.06) 46px, rgb(0 0 0 / 0.3) 92px), #3e1a10;
+}
+
+/* Work: the record stays put and turns on a track change; only its label face cross-fades */
+.retro-ls-record {
+  will-change: transform;
+}
+
+.retro-ls-label {
+  position: relative;
+}
+
+.retro-ls-label-face {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+/* ══ Skills, design S4: one 70s hi-fi receiver (components/RetroTapes.tsx). Walnut case, dark faceplate,
+   amber dial with a red needle (the group picker), the screen (the tools), the display strip (every logo). ══ */
+.retro-rx {
+  --rx-amber: #f3b544;
+  --rx-glow: #ffc861;
+  --rx-hot: #ffd27a;
+  --rx-dim: rgb(243 181 68 / 0.55);
+  --rx-glass: #120c07;
+  padding: 18px;
+  border-radius: 16px;
+  background: linear-gradient(90deg, #4a2812, #6b3c1d 4%, #74421f 50%, #6b3c1d 96%, #4a2812);
+  box-shadow: 0 30px 60px rgb(0 0 0 / 0.5), inset 0 2px 0 rgb(255 220 170 / 0.18);
+  color: #f4e6c8;
+}
+
+.retro-rx-face {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 8px;
+  background: linear-gradient(#1f150d, #170f09);
+  box-shadow: inset 0 0 0 2px #0e0905;
+}
+
+.retro-rx-label {
+  margin: 0;
+  font: 700 0.8rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rx-dim);
+}
+
+/* the dial */
+.retro-rx-dial {
+  position: relative;
+  padding: 44px 24px 10px;
+  border-radius: 6px;
+  background: radial-gradient(ellipse 70% 120% at 50% 100%, rgb(255 176 64 / 0.32), transparent 70%),
+    linear-gradient(#3a230f, #2a180a);
+  box-shadow: inset 0 0 0 2px #4a3016, inset 0 8px 18px rgb(0 0 0 / 0.5);
+  overflow: hidden;
+}
+
+.retro-rx-scale {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  top: 14px;
+  height: 22px;
+  background: linear-gradient(rgb(243 181 68 / 0.45), rgb(243 181 68 / 0.45)) 0 100% / 100% 2px no-repeat,
+    repeating-linear-gradient(90deg, rgb(243 181 68 / 0.55) 0 2px, transparent 2px 18px) 0 0 / 100% 14px no-repeat;
+}
+
+.retro-rx-stations {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.retro-rx-station {
+  height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--rx-dim);
+  font: 700 0.95rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.25s, text-shadow 0.25s;
+}
+
+.retro-rx-station:hover {
+  color: var(--rx-amber);
+}
+
+.retro-rx-station[aria-selected="true"] {
+  color: var(--rx-hot);
+  text-shadow: 0 0 12px rgb(255 190 80 / 0.85);
+}
+
+.retro-rx-needle {
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: calc(24px + (100% - 48px) * var(--at, 0.5));
+  width: 3px;
+  margin-left: -1px;
+  border-radius: 2px;
+  background: #e8462a;
+  box-shadow: 0 0 10px rgb(232 70 42 / 0.9);
+  transition: left 0.5s cubic-bezier(0.3, 1.3, 0.5, 1);
+  pointer-events: none;
+}
+
+/* the info panel and the screen */
+.retro-rx-main {
+  display: grid;
+  gap: 14px;
+}
+
+@media (min-width: 900px) {
+  .retro-rx-main {
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: 18px;
+  }
+}
+
+.retro-rx-info,
+.retro-rx-screen {
+  padding: 20px;
+  border-radius: 6px;
+  background: var(--rx-glass);
+  box-shadow: inset 0 0 0 2px #2a1b0e;
+}
+
+.retro-rx-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.retro-rx-title {
+  margin: 8px 0 0;
+  font: 400 clamp(1.6rem, 2.6vw, 2rem) / 1.05 "Shrikhand", Georgia, serif;
+  color: var(--rx-glow);
+  text-shadow: 0 0 18px rgb(255 180 70 / 0.45);
+}
+
+.retro-rx-blurb {
+  margin: 10px 0 0;
+  font: 500 0.95rem / 1.45 "Fraunces", Georgia, serif;
+  color: #e9d7b4;
+}
+
+.retro-rx-count {
+  margin: 14px 0 0;
+  font: 700 0.9rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--rx-amber);
+}
+
+.retro-rx-tuning {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 20px;
+}
+
+.retro-rx-knob {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 2px solid #5a3a1c;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #8a6a44, #3a2614);
+  color: #f4e6c8;
+  box-shadow: 0 3px 0 #0e0905;
+  cursor: pointer;
+  transition: translate 0.1s, box-shadow 0.1s;
+}
+
+.retro-rx-knob:active {
+  translate: 0 2px;
+  box-shadow: 0 1px 0 #0e0905;
+}
+
+.retro-rx-screen {
+  padding: 14px 22px;
+  min-height: 300px;
+}
+
+/* a tool's logo, lit amber like the dial */
+.retro-rx-logo {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border: 1.5px solid rgb(243 181 68 / 0.7);
+  border-radius: 8px;
+  color: var(--rx-glow);
+  font-size: 18px;
+  filter: drop-shadow(0 0 6px rgb(255 180 70 / 0.35));
+}
+
+.retro-rx-logo.is-small {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.retro-rx-cols,
+.retro-rx-tools li {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  align-items: center;
+}
+
+.retro-rx-cols {
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgb(243 181 68 / 0.25);
+}
+
+.retro-rx-tools,
+.retro-rx-all {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.retro-rx-tools li {
+  gap: 6px 0;
+  min-height: 54px;
+  padding: 6px 0;
+  border-bottom: 1px dashed rgb(243 181 68 / 0.18);
+}
+
+.retro-rx-tools li:last-child,
+.retro-rx-all li:last-child {
+  border-bottom: 0;
+}
+
+.retro-rx-tool {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font: 700 1.1rem "Fraunces", Georgia, serif;
+}
+
+.retro-rx-used {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.retro-rx-used button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border: 1.5px solid rgb(243 181 68 / 0.5);
+  border-radius: 999px;
+  background: none;
+  color: #f4e6c8;
+  font: 600 0.82rem "Fraunces", Georgia, serif;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.retro-rx-used button:hover {
+  border-color: var(--rx-amber);
+  background: rgb(243 181 68 / 0.16);
+}
+
+.retro-rx-none {
+  color: rgb(244 230 200 / 0.4);
+}
+
+/* "All tools" */
+.retro-rx-all li {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px 12px;
+  padding: 10px 0;
+  border-bottom: 1px dashed rgb(243 181 68 / 0.18);
+}
+
+.retro-rx-all .retro-rx-label {
+  color: var(--rx-amber);
+}
+
+.retro-rx-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.retro-rx-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px 4px 4px;
+  border-radius: 8px;
+  background: rgb(243 181 68 / 0.08);
+  font: 600 0.88rem "Fraunces", Georgia, serif;
+}
+
+/* the display strip */
+.retro-rx-strip {
+  height: 60px;
+  border-radius: 6px;
+  background: #0b0704;
+  box-shadow: inset 0 0 0 2px #2a1b0e;
+  overflow: hidden;
+}
+
+.retro-rx-marquee {
+  display: flex;
+  width: max-content;
+  height: 100%;
+  animation: marquee 50s linear infinite;
+}
+
+.retro-rx-run {
+  display: flex;
+  align-items: center;
+  gap: 34px;
+  padding-right: 34px;
+}
+
+.retro-rx-strip .retro-rx-logo {
+  box-shadow: 0 0 12px rgb(255 180 70 / 0.25);
+}
+
+.retro-rx-station:focus-visible,
+.retro-rx-knob:focus-visible,
+.retro-rx-used button:focus-visible {
+  outline: 2px solid var(--rx-hot);
+  outline-offset: 3px;
+}
+
+/* phones: the dial is two rows of three, no needle; the lit station shows the pick */
+@media (max-width: 767px) {
+  .retro-rx {
+    padding: 10px;
+  }
+
+  .retro-rx-face {
+    padding: 12px;
+  }
+
+  .retro-rx-dial {
+    padding: 10px 8px;
+  }
+
+  .retro-rx-scale,
+  .retro-rx-needle {
+    display: none;
+  }
+
+  .retro-rx-stations {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .retro-rx-cols {
+    display: none;
+  }
+
+  .retro-rx-tools li,
+  .retro-rx-all li {
+    grid-template-columns: 1fr;
+  }
+
+  .retro-rx-screen {
+    min-height: 0;
+    padding: 10px 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .retro-rx-marquee {
+    animation: none;
+  }
+
+  .retro-rx-needle {
+    transition: none;
+  }
+}
+
+/* Skills receiver: "Used in" is the projects' app icons, each with its name under it */
+.retro-rx-used {
+  gap: 10px 14px;
+}
+
+.retro-rx-tools li {
+  padding: 10px 0;
+}
+
+.retro-rx-used button.retro-rx-app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  width: 78px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+
+.retro-rx-used button.retro-rx-app:hover {
+  background: none;
+}
+
+.retro-rx-app-icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #2a1b0e;
+  box-shadow: 0 0 0 1.5px rgb(243 181 68 / 0.45), 0 3px 8px rgb(0 0 0 / 0.5);
+  color: var(--rx-glow);
+  font: 700 1rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.06em;
+  transition: translate 0.2s, box-shadow 0.2s;
+}
+
+.retro-rx-app-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.retro-rx-app:hover .retro-rx-app-icon,
+.retro-rx-app:focus-visible .retro-rx-app-icon {
+  translate: 0 -3px;
+  box-shadow: 0 0 0 2px var(--rx-amber), 0 0 14px rgb(255 180 70 / 0.45);
+}
+
+.retro-rx-app-name {
+  max-width: 100%;
+  font: 600 0.72rem / 1.2 "Fraunces", Georgia, serif;
+  color: #e9d7b4;
+  text-align: center;
+}
+
+/* Skills receiver: every group's info and screen are always there, stacked; only the tuned one shows. So
+   the receiver keeps one height (the tallest) and the page never jumps when you change station. */
+.retro-rx-stack {
+  display: grid;
+}
+
+.retro-rx-layer {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0s 0.2s;
+}
+
+.retro-rx-layer[data-on="true"] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.25s 0.08s;
+}
+
+.retro-rx-screen {
+  min-height: 0;
+}
+
+/* Work: the leaving and the coming sleeve / notes overlap in one cell while they cross-fade */
+.retro-ls-stack {
+  display: grid;
+}
+
+.retro-ls-stack > * {
+  grid-area: 1 / 1;
+}
+
+.retro-ls-label-face {
+  border-radius: 50%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .retro-rx-layer,
+  .retro-rx-layer[data-on="true"] {
+    transition: none;
+  }
+}
+
+/* Skills receiver: a tool used on every project shows all the app icons, overlapped, over "Every project" */
+.retro-rx-every {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+.retro-rx-every-icons {
+  display: flex;
+  padding-left: 12px;
+}
+
+.retro-rx-every-icons .retro-rx-app-icon {
+  width: 38px;
+  height: 38px;
+  margin-left: -12px;
+  border-radius: 10px;
+  box-shadow: 0 0 0 2px var(--rx-glass), 0 0 0 3.5px rgb(243 181 68 / 0.45);
+}
+
+.retro-rx-every .retro-rx-app-name {
+  color: var(--rx-amber);
+  font-weight: 700;
+}
+
+/* ── Skills receiver: more of a real radio. Frequency numbers on the dial; on the left panel, indicator
+   lamps, a frequency readout, a signal meter and a big tuning knob that turns with the station. ── */
+.retro-rx-dial {
+  padding-top: 52px;
+}
+
+.retro-rx-mhz {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  top: 6px;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  text-align: center;
+  font: 700 0.7rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.1em;
+  color: rgb(243 181 68 / 0.6);
+}
+
+.retro-rx-scale {
+  top: 22px;
+}
+
+.retro-rx-info {
+  gap: 0;
+}
+
+.retro-rx-lamps {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.retro-rx-lamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 700 0.7rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgb(243 181 68 / 0.45);
+}
+
+.retro-rx-lamp::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #3a2614;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.5);
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.retro-rx-lamp.is-tuned {
+  color: var(--rx-amber);
+}
+
+.retro-rx-lamp.is-tuned::before {
+  background: #8fd14f;
+  box-shadow: 0 0 8px rgb(143 209 79 / 0.8);
+}
+
+[data-theme="retro"][data-music="on"] .retro-rx-lamp.is-stereo {
+  color: var(--rx-amber);
+}
+
+[data-theme="retro"][data-music="on"] .retro-rx-lamp.is-stereo::before {
+  background: #ff5a3a;
+  box-shadow: 0 0 8px rgb(255 90 58 / 0.85);
+}
+
+/* the frequency readout */
+.retro-rx-freq {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0 0 14px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background: #0b0704;
+  box-shadow: inset 0 0 0 1.5px #2a1b0e, inset 0 4px 10px rgb(0 0 0 / 0.6);
+  font: 700 2rem/1 "Barlow Condensed", sans-serif;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+  color: var(--rx-hot);
+  text-shadow: 0 0 10px rgb(255 190 80 / 0.7);
+}
+
+.retro-rx-freq small {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: var(--rx-dim);
+  text-shadow: none;
+}
+
+/* the signal meter: a little lit gauge, its needle up by how full the station is; it bounces with the music */
+.retro-rx-meter {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.retro-rx-meter-face {
+  position: relative;
+  width: 132px;
+  height: 66px;
+  border-radius: 66px 66px 6px 6px;
+  background: radial-gradient(circle at 50% 100%, transparent 0 46px, rgb(58 35 20 / 0.6) 46px 47px, transparent 47px),
+    repeating-conic-gradient(from -60deg at 50% 100%, rgb(58 35 20 / 0.7) 0 1.2deg, transparent 1.2deg 12deg) 0 0 / 100% 100%,
+    linear-gradient(#f6dca0, #e9b85a);
+  box-shadow: inset 0 0 0 2px #2a1b0e, 0 0 16px rgb(255 180 70 / 0.25);
+  overflow: hidden;
+}
+
+.retro-rx-meter-face::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 34%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgb(200 60 30 / 0.28));
+}
+
+.retro-rx-meter-needle {
+  position: absolute;
+  left: 50%;
+  bottom: -2px;
+  width: 2px;
+  height: 58px;
+  margin-left: -1px;
+  border-radius: 2px;
+  background: #2b1d15;
+  transform-origin: 50% 100%;
+  rotate: calc(-55deg + var(--sig, 0.5) * 110deg);
+  transition: rotate 0.7s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+
+[data-theme="retro"][data-music="on"] .retro-rx-meter-needle {
+  animation: rx-vu 0.9s ease-in-out infinite alternate;
+}
+
+@keyframes rx-vu {
+  0% {
+    translate: 0 0;
+    transform: rotate(-6deg);
+  }
+
+  45% {
+    transform: rotate(4deg);
+  }
+
+  100% {
+    transform: rotate(-2deg);
+  }
+}
+
+/* the tuning knob: big, ridged, turns with the station */
+.retro-rx-tuning {
+  padding-top: 18px;
+}
+
+.retro-rx-dialknob {
+  position: relative;
+  display: block;
+  flex: none;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, #5b3f24 0 44%, transparent 45%),
+    repeating-conic-gradient(#8a6a44 0 6deg, #4a3018 6deg 12deg);
+  box-shadow: 0 0 0 2px #2a1b0e, 0 4px 8px rgb(0 0 0 / 0.6), inset 0 0 0 1px rgb(255 220 170 / 0.15);
+  rotate: var(--turn, 0deg);
+  transition: rotate 0.6s cubic-bezier(0.3, 1.3, 0.5, 1);
+}
+
+.retro-rx-dialknob span {
+  position: absolute;
+  left: 50%;
+  top: 9px;
+  width: 4px;
+  height: 14px;
+  margin-left: -2px;
+  border-radius: 2px;
+  background: var(--rx-hot);
+  box-shadow: 0 0 6px rgb(255 190 80 / 0.8);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="retro"][data-music="on"] .retro-rx-meter-needle {
+    animation: none;
+  }
+
+  .retro-rx-dialknob,
+  .retro-rx-meter-needle {
+    transition: none;
+  }
+}
+
+/* signal meter: ticks only in a band along the arc; a clear red needle */
+.retro-rx-meter-face {
+  background: linear-gradient(#f6dca0, #e9b85a);
+}
+
+.retro-rx-meter-face::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-conic-gradient(from -60deg at 50% 100%, #3a2314 0 1.4deg, transparent 1.4deg 12deg);
+  -webkit-mask: radial-gradient(circle at 50% 100%, transparent 0 46px, #000 46px 58px, transparent 58px);
+  mask: radial-gradient(circle at 50% 100%, transparent 0 46px, #000 46px 58px, transparent 58px);
+}
+
+.retro-rx-meter-needle {
+  z-index: 1;
+  width: 3px;
+  margin-left: -1.5px;
+  background: #c8321c;
+}
+
+.retro-rx-meter-face > .retro-rx-meter-needle::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  border-radius: 50%;
+  background: #2b1d15;
+}
+
+/* the left panel's controls on one centre line: readout, meter and knobs the same width, labels under them */
+.retro-rx-lamps {
+  justify-content: space-between;
+}
+
+.retro-rx-freq {
+  justify-content: center;
+}
+
+.retro-rx-meter,
+.retro-rx-tuning {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+}
+
+.retro-rx-meter {
+  margin-top: auto;
+  padding-top: 18px;
+}
+
+.retro-rx-meter-face {
+  width: 100%;
+  max-width: 200px;
+  height: 84px;
+  border-radius: 100px 100px 6px 6px;
+}
+
+.retro-rx-meter-face::before {
+  -webkit-mask: radial-gradient(circle at 50% 100%, transparent 0 62px, #000 62px 76px, transparent 76px);
+  mask: radial-gradient(circle at 50% 100%, transparent 0 62px, #000 62px 76px, transparent 76px);
+}
+
+.retro-rx-meter-needle {
+  height: 74px;
+}
+
+.retro-rx-tuning {
+  grid-template-columns: 46px 62px 46px;
+  grid-template-areas: "prev knob next" "label label label";
+  align-items: center;
+  justify-content: center;
+  column-gap: 18px;
+  margin-top: 16px;
+  padding-top: 0;
+}
+
+.retro-rx-tuning > .retro-rx-knob:first-child {
+  grid-area: prev;
+}
+
+.retro-rx-tuning > .retro-rx-dialknob {
+  grid-area: knob;
+}
+
+.retro-rx-tuning > .retro-rx-knob:nth-child(3) {
+  grid-area: next;
+}
+
+.retro-rx-tuning > .retro-rx-label {
+  grid-area: label;
+}
+
+/* the left panel reads down one centre line, text included */
+.retro-rx-info {
+  text-align: center;
+}
+
+.retro-rx-lamps {
+  justify-content: center;
+  gap: 22px;
+}
+
+/* ══ Work, design P5: the second piece of the stereo (components/RetroListening.tsx). The Skills receiver's
+   walnut case and dark faceplate; a turntable on the left, the track list and the notes lit on the right. ══ */
+.retro-hf {
+  --rx-amber: #f3b544;
+  --rx-glow: #ffc861;
+  --rx-hot: #ffd27a;
+  --rx-dim: rgb(243 181 68 / 0.6);
+  --rx-glass: #120c07;
+  display: grid;
+  gap: 18px;
+  padding: 18px;
+  border-radius: 16px;
+  background: linear-gradient(90deg, #4a2812, #6b3c1d 4%, #74421f 50%, #6b3c1d 96%, #4a2812);
+  box-shadow: 0 30px 60px rgb(0 0 0 / 0.5), inset 0 2px 0 rgb(255 220 170 / 0.18);
+  color: #f4e6c8;
+}
+
+@media (min-width: 960px) {
+  .retro-hf {
+    grid-template-columns: 360px minmax(0, 1fr);
+  }
+}
+
+.retro-hf-label {
+  margin: 0;
+  font: 700 0.78rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rx-dim);
+}
+
+/* the turntable on its plinth */
+.retro-hf-deck {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 22px 18px 18px;
+  border-radius: 8px;
+  background: linear-gradient(#5e3418, #4a2812);
+  box-shadow: inset 0 0 0 2px #2b170a;
+}
+
+.retro-hf-platter {
+  position: relative;
+  width: min(100%, 300px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #1a110b;
+  box-shadow: 0 6px 16px rgb(0 0 0 / 0.55);
+}
+
+.retro-hf-record {
+  position: absolute;
+  inset: 4%;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: repeating-radial-gradient(circle, #1a110b 0, #2b1d15 1.6px, #1a110b 3.2px);
+}
+
+.retro-hf-label-disc {
+  position: relative;
+  display: grid;
+  width: 36%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 3px rgb(0 0 0 / 0.25);
+}
+
+[data-theme="retro"][data-music="on"] .retro-hf-label-disc {
+  animation: retro-spin 1.8s linear infinite;
+}
+
+.retro-hf-face {
+  grid-area: 1 / 1;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.retro-hf-face[data-on="true"] {
+  opacity: 1;
+}
+
+.retro-hf-face img {
+  width: 56%;
+  height: 56%;
+  object-fit: contain;
+  border-radius: 22%;
+}
+
+/* the tonearm: parked off the record, on the grooves while the music plays */
+.retro-hf-pivot {
+  position: absolute;
+  right: -2%;
+  top: -2%;
+  width: 11%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #d9d0bf, #8b8273);
+  box-shadow: 0 3px 6px rgb(0 0 0 / 0.5);
+}
+
+.retro-hf-arm {
+  position: absolute;
+  right: 3%;
+  top: 3%;
+  width: 2.4%;
+  height: 62%;
+  border-radius: 4px;
+  background: #d9d0bf;
+  box-shadow: 2px 2px 0 rgb(0 0 0 / 0.4);
+  transform-origin: 50% 0;
+  rotate: 8deg;
+  transition: rotate 0.7s cubic-bezier(0.3, 1.2, 0.4, 1);
+}
+
+[data-theme="retro"][data-music="on"] .retro-hf-arm {
+  rotate: 24deg;
+}
+
+.retro-hf-readout {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 14px;
+  border-radius: 4px;
+  background: #0b0704;
+  box-shadow: inset 0 0 0 1.5px #2a1b0e, inset 0 4px 10px rgb(0 0 0 / 0.6);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.retro-hf-readout b {
+  font: 700 1.6rem/1 "Barlow Condensed", sans-serif;
+  letter-spacing: 0.06em;
+  color: var(--rx-hot);
+  text-shadow: 0 0 10px rgb(255 190 80 / 0.7);
+}
+
+.retro-hf-readout-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font: 700 1rem "Fraunces", Georgia, serif;
+  color: var(--rx-glow);
+}
+
+.retro-hf-knobs {
+  display: grid;
+  grid-template-columns: 46px auto 46px;
+  align-items: center;
+  gap: 16px;
+}
+
+/* the faceplate */
+.retro-hf-plate {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+  padding: 16px 18px;
+  border-radius: 8px;
+  background: linear-gradient(#1f150d, #170f09);
+  box-shadow: inset 0 0 0 2px #0e0905;
+}
+
+.retro-hf-tracks {
+  display: grid;
+  gap: 10px 22px;
+  padding: 12px 16px;
+  border-radius: 6px;
+  background: var(--rx-glass);
+  box-shadow: inset 0 0 0 2px #2a1b0e;
+}
+
+@media (min-width: 640px) {
+  .retro-hf-tracks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.retro-hf-side ol {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.retro-hf-track {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 36px;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: rgb(244 230 200 / 0.72);
+  font: 700 0.98rem "Fraunces", Georgia, serif;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.2s, background-color 0.2s, text-shadow 0.2s;
+}
+
+.retro-hf-track:hover {
+  color: #f4e6c8;
+  background: rgb(243 181 68 / 0.08);
+}
+
+.retro-hf-track[aria-pressed="true"] {
+  color: var(--rx-hot);
+  text-shadow: 0 0 10px rgb(255 190 80 / 0.55);
+}
+
+.retro-hf-no {
+  min-width: 30px;
+  font: 700 0.85rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.06em;
+  color: var(--rx-dim);
+}
+
+.retro-hf-track[aria-pressed="true"] .retro-hf-no::before {
+  content: "▶ ";
+}
+
+.retro-hf-track[aria-pressed="true"] .retro-hf-no {
+  color: var(--rx-hot);
+}
+
+.retro-hf-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.retro-hf-status {
+  padding: 1px 8px;
+  border-radius: 999px;
+  border: 1.5px solid rgb(243 181 68 / 0.5);
+  font: 700 0.68rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--rx-amber);
+  text-shadow: none;
+  white-space: nowrap;
+}
+
+/* the screen: every project's notes stacked in one cell; only the playing one shows */
+.retro-hf-screen {
+  flex: 1;
+  display: grid;
+  padding: 18px 20px;
+  border-radius: 6px;
+  background: var(--rx-glass);
+  box-shadow: inset 0 0 0 2px #2a1b0e;
+}
+
+.retro-hf-notes {
+  grid-area: 1 / 1;
+  display: grid;
+  gap: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0s 0.2s;
+}
+
+.retro-hf-notes[data-on="true"] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.25s 0.08s;
+}
+
+@media (min-width: 720px) {
+  .retro-hf-notes {
+    grid-template-columns: minmax(0, 1fr) 170px;
+  }
+}
+
+.retro-hf-notes-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.retro-hf-title {
+  margin: 6px 0 0;
+  font: 400 clamp(1.6rem, 2.6vw, 2.1rem) / 1.05 "Shrikhand", Georgia, serif;
+  color: var(--rx-glow);
+  text-shadow: 0 0 18px rgb(255 180 70 / 0.4);
+}
+
+.retro-hf-client {
+  margin: 4px 0 0;
+  font: 500 0.95rem "Fraunces", Georgia, serif;
+  color: #e9d7b4;
+}
+
+.retro-hf-desc {
+  margin: 12px 0 0;
+  font: 500 0.98rem / 1.5 "Fraunces", Georgia, serif;
+  color: #f4e6c8;
+}
+
+.retro-hf-highlights {
+  display: grid;
+  gap: 4px;
+  margin: 12px 0 0;
+  padding-left: 18px;
+  font: 500 0.9rem / 1.4 "Fraunces", Georgia, serif;
+  color: #e9d7b4;
+}
+
+.retro-hf-highlights li::marker {
+  color: var(--rx-amber);
+}
+
+.retro-hf-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 14px 0 0;
+}
+
+.retro-hf-tech span {
+  padding: 3px 10px;
+  border: 1.5px solid rgb(243 181 68 / 0.45);
+  border-radius: 999px;
+  font: 600 0.8rem "Fraunces", Georgia, serif;
+}
+
+.retro-hf-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 18px;
+}
+
+.retro-hf-open,
+.retro-hf-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font: 700 0.92rem "Fraunces", Georgia, serif;
+  text-decoration: none;
+  cursor: pointer;
+  transition: translate 0.1s, box-shadow 0.1s;
+}
+
+.retro-hf-open {
+  border: 0;
+  background: linear-gradient(#ffd27a, #e8a91c);
+  color: #2b1d15;
+  box-shadow: 0 3px 0 #0e0905;
+}
+
+.retro-hf-link {
+  border: 1.5px solid rgb(243 181 68 / 0.5);
+  color: #f4e6c8;
+}
+
+.retro-hf-link:hover {
+  background: rgb(243 181 68 / 0.12);
+}
+
+.retro-hf-open:active {
+  translate: 0 2px;
+  box-shadow: 0 1px 0 #0e0905;
+}
+
+.retro-hf-shot {
+  align-self: start;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  background: none;
+  overflow: hidden;
+  box-shadow: 0 0 0 2px rgb(243 181 68 / 0.35), 0 10px 20px rgb(0 0 0 / 0.5);
+  cursor: pointer;
+  transition: translate 0.2s, box-shadow 0.2s;
+}
+
+.retro-hf-shot:hover {
+  translate: 0 -3px;
+  box-shadow: 0 0 0 2px var(--rx-amber), 0 14px 26px rgb(0 0 0 / 0.55);
+}
+
+.retro-hf-shot img {
+  display: block;
+  width: 100%;
+  max-height: 320px;
+  object-fit: cover;
+}
+
+.retro-hf-track:focus-visible,
+.retro-hf-open:focus-visible,
+.retro-hf-link:focus-visible,
+.retro-hf-shot:focus-visible {
+  outline: 2px solid var(--rx-hot);
+  outline-offset: 3px;
+}
+
+@media (max-width: 719px) {
+  .retro-hf-shot {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .retro-hf-notes,
+  .retro-hf-notes[data-on="true"],
+  .retro-hf-face,
+  .retro-hf-arm {
+    transition: none;
+  }
+}
+
+.retro-hf-deck {
+  justify-content: center;
+}
+
+.retro-hf-readout {
+  justify-content: center;
+}
+
+/* Work: the tech as lit logos (the Skills receiver's tiles), names on hover and for screen readers */
+.retro-hf-tech {
+  list-style: none;
+  padding: 0;
+  gap: 8px;
+}
+
+.retro-hf-tech .retro-rx-logo {
+  cursor: default;
+}
+
+/* the needle and the tuning knob move together, the same time and ease, no overshoot past the station;
+   six marks round the knob, one per station, the tuned one lit, so the knob's pointer reads true */
+.retro-rx-needle {
+  transition: left 0.5s cubic-bezier(0.25, 0.8, 0.3, 1);
+}
+
+.retro-rx-dialknob {
+  transition: rotate 0.5s cubic-bezier(0.25, 0.8, 0.3, 1);
+}
+
+.retro-rx-knobwrap {
+  position: relative;
+  grid-area: knob;
+  display: grid;
+  place-items: center;
+  width: 86px;
+  height: 86px;
+}
+
+.retro-rx-tuning {
+  grid-template-columns: 46px 86px 46px;
+}
+
+.retro-rx-tick {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4px;
+  height: 7px;
+  margin: -3.5px 0 0 -2px;
+  border-radius: 2px;
+  background: rgb(243 181 68 / 0.3);
+  transform: rotate(var(--a)) translateY(-39px);
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.retro-rx-tick[data-on="true"] {
+  background: var(--rx-hot);
+  box-shadow: 0 0 8px rgb(255 190 80 / 0.9);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .retro-rx-tick {
+    transition: none;
+  }
+}
+
+/* Work extras: the screens take turns (stacked, cross-fading), dots under them; level bars in the readout */
+.retro-hf-shotcol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  align-self: start;
+}
+
+.retro-hf-shot {
+  display: grid;
+  width: 100%;
+}
+
+.retro-hf-shot img {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+
+.retro-hf-shot img[data-on="true"] {
+  opacity: 1;
+}
+
+.retro-hf-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.retro-hf-dots i {
+  width: 7px;
+  height: 7px;
+  border-radius: 4px;
+  background: rgb(243 181 68 / 0.3);
+  transition: width 0.3s, background-color 0.3s;
+}
+
+.retro-hf-dots i[data-on="true"] {
+  width: 18px;
+  background: var(--rx-hot);
+}
+
+.retro-hf-vu {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 16px;
+  margin-left: 4px;
+}
+
+.retro-hf-vu i {
+  width: 3px;
+  height: 100%;
+  border-radius: 1px;
+  background: linear-gradient(#ff5a3a 0 22%, var(--rx-amber) 22%);
+  transform-origin: 50% 100%;
+  scale: 1 0.2;
+  opacity: 0.7;
+}
+
+[data-theme="retro"][data-music="on"] .retro-hf-vu i {
+  animation: hf-vu 0.5s ease-in-out infinite alternate;
+  opacity: 1;
+}
+
+.retro-hf-vu i:nth-child(2) {
+  animation-delay: -0.2s;
+  animation-duration: 0.42s;
+}
+
+.retro-hf-vu i:nth-child(3) {
+  animation-delay: -0.35s;
+  animation-duration: 0.58s;
+}
+
+.retro-hf-vu i:nth-child(4) {
+  animation-delay: -0.1s;
+  animation-duration: 0.46s;
+}
+
+.retro-hf-vu i:nth-child(5) {
+  animation-delay: -0.28s;
+  animation-duration: 0.62s;
+}
+
+@keyframes hf-vu {
+  from {
+    scale: 1 0.25;
+  }
+
+  to {
+    scale: 1 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="retro"][data-music="on"] .retro-hf-vu i {
+    animation: none;
+    scale: 1 0.6;
+  }
+
+  .retro-hf-shot img,
+  .retro-hf-dots i {
+    transition: none;
+  }
+}
+
+/* ══ Contact, design C7: the answering machine (components/RetroAnswering.tsx), the third piece of the
+   stereo set: the receiver's walnut case and dark faceplate. The chat is ContactForm, restyled here. ══ */
+.retro-am {
+  --rx-amber: #f3b544;
+  --rx-glow: #ffc861;
+  --rx-hot: #ffd27a;
+  --rx-dim: rgb(243 181 68 / 0.6);
+  --rx-glass: #120c07;
+  color: #f4e6c8;
+}
+
+.retro-am-intro {
+  max-width: 560px;
+  margin: 0 0 28px;
+  font: 500 1.05rem / 1.55 "Fraunces", Georgia, serif;
+  color: #f1dcb4;
+}
+
+.retro-am-case {
+  display: grid;
+  gap: 18px;
+  padding: 18px;
+  border-radius: 16px;
+  background: linear-gradient(90deg, #4a2812, #6b3c1d 4%, #74421f 50%, #6b3c1d 96%, #4a2812);
+  box-shadow: 0 30px 60px rgb(0 0 0 / 0.5), inset 0 2px 0 rgb(255 220 170 / 0.18);
+}
+
+@media (min-width: 960px) {
+  .retro-am-case {
+    grid-template-columns: 330px minmax(0, 1fr);
+  }
+}
+
+.retro-am-label {
+  margin: 0;
+  font: 700 0.75rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rx-dim);
+}
+
+/* the deck */
+.retro-am-deck {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px;
+  border-radius: 8px;
+  background: linear-gradient(#5e3418, #4a2812);
+  box-shadow: inset 0 0 0 2px #2b170a;
+}
+
+.retro-am-counter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: 4px;
+  background: #0b0704;
+  box-shadow: inset 0 0 0 1.5px #2a1b0e, inset 0 4px 10px rgb(0 0 0 / 0.6);
+}
+
+.retro-am-counter b {
+  font: 700 2rem/1 "Barlow Condensed", sans-serif;
+  font-variant-numeric: tabular-nums;
+  color: #ff5a3a;
+  text-shadow: 0 0 10px rgb(255 90 58 / 0.8);
+}
+
+.retro-am-lamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 64px;
+  font: 700 0.75rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rx-dim);
+}
+
+.retro-am-lamp::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #8fd14f;
+  box-shadow: 0 0 8px rgb(143 209 79 / 0.8);
+}
+
+.retro-am-lamp[data-state="rec"] {
+  color: #ff5a3a;
+}
+
+.retro-am-lamp[data-state="rec"]::before {
+  background: #ff5a3a;
+  box-shadow: 0 0 8px #ff5a3a;
+  animation: am-blink 1.2s steps(1) infinite;
+}
+
+.retro-am-lamp[data-state="sent"] {
+  color: #8fd14f;
+}
+
+@keyframes am-blink {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+/* the cassette in its well */
+.retro-am-tapewell {
+  display: grid;
+  place-items: center;
+  height: 150px;
+  border-radius: 10px;
+  background: #1a110b;
+  box-shadow: inset 0 0 0 2px #0e0905, inset 0 6px 14px rgb(0 0 0 / 0.6);
+}
+
+.retro-am-tape {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 230px;
+  height: 104px;
+  border-radius: 8px;
+  background: #efe1c5;
+  box-shadow: 0 0 0 3px #2b1d15;
+}
+
+.retro-am-tape .retro-am-label {
+  color: #a8431b;
+}
+
+.retro-am-reels {
+  display: flex;
+  gap: 46px;
+  padding: 8px 22px;
+  border-radius: 30px;
+  background: #2b1d15;
+}
+
+.retro-am-reels i {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(#efe1c5 0 20deg, #2b1d15 20deg 60deg);
+  animation: retro-spin 2.4s linear infinite paused;
+}
+
+.retro-am-tape[data-run="true"] .retro-am-reels i {
+  animation-play-state: running;
+}
+
+/* speed dial */
+.retro-am-dial {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.retro-am-dial a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #0b0704;
+  box-shadow: inset 0 0 0 1.5px #2a1b0e;
+  color: #f4e6c8;
+  text-decoration: none;
+  transition: box-shadow 0.2s, translate 0.2s;
+}
+
+.retro-am-dial a:hover {
+  translate: 0 -2px;
+  box-shadow: inset 0 0 0 1.5px var(--rx-amber), 0 0 14px rgb(255 180 70 / 0.25);
+}
+
+.retro-am-dial a:focus-visible {
+  outline: 2px solid var(--rx-hot);
+  outline-offset: 3px;
+}
+
+.retro-am-dial a > svg {
+  margin-left: auto;
+  color: var(--rx-amber);
+}
+
+.retro-am-key {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border: 1.5px solid var(--rx-amber);
+  border-radius: 8px;
+  color: var(--rx-glow);
+  font: 700 0.9rem "Barlow Condensed", sans-serif;
+}
+
+.retro-am-who {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.retro-am-who b {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 700 1rem "Fraunces", Georgia, serif;
+}
+
+.retro-am-who span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 500 0.82rem "Fraunces", Georgia, serif;
+  color: #e9d7b4;
+}
+
+/* the faceplate and the chat inside it */
+.retro-am-plate {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding: 16px 18px;
+  border-radius: 8px;
+  background: linear-gradient(#1f150d, #170f09);
+  box-shadow: inset 0 0 0 2px #0e0905;
+}
+
+.retro-am-head {
+  margin: 0;
+}
+
+.retro-am-title {
+  font: 400 1.6rem / 1 "Shrikhand", Georgia, serif;
+  color: var(--rx-glow);
+  text-shadow: 0 0 14px rgb(255 180 70 / 0.4);
+}
+
+[data-theme="retro"] .retro-am .chat {
+  height: 470px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--rx-glass);
+  box-shadow: inset 0 0 0 2px #2a1b0e;
+  color: #f4e6c8;
+}
+
+[data-theme="retro"] .retro-am .chat-head {
+  border-color: rgb(243 181 68 / 0.2);
+}
+
+[data-theme="retro"] .retro-am .chat-title {
+  color: #f4e6c8;
+}
+
+[data-theme="retro"] .retro-am .chat-status {
+  color: var(--rx-dim);
+  letter-spacing: 0.04em;
+}
+
+[data-theme="retro"] .retro-am .chat-bubble.chat-me {
+  border: 1.5px solid rgb(243 181 68 / 0.5);
+  background: none;
+  color: #f4e6c8;
+}
+
+[data-theme="retro"] .retro-am .chat-bubble.chat-you {
+  border: 0;
+  background: linear-gradient(#ffd27a, #e8a91c);
+  color: #2b1d15;
+}
+
+[data-theme="retro"] .retro-am .chat-summary .text-muted {
+  color: var(--rx-dim);
+}
+
+[data-theme="retro"] .retro-am .chat-dot {
+  background: var(--rx-amber);
+}
+
+[data-theme="retro"] .retro-am .chat-foot {
+  border-color: rgb(243 181 68 / 0.2);
+}
+
+[data-theme="retro"] .retro-am .chat-field {
+  border: 0;
+  border-radius: 8px;
+  background: #0b0704;
+  box-shadow: inset 0 0 0 1.5px rgb(243 181 68 / 0.4);
+  color: #f4e6c8;
+}
+
+[data-theme="retro"] .retro-am .chat-field::placeholder {
+  color: rgb(244 230 200 / 0.45);
+}
+
+[data-theme="retro"] .retro-am .chat-field:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 1.5px var(--rx-hot), 0 0 12px rgb(255 190 80 / 0.25);
+}
+
+/* Send is the red record button */
+[data-theme="retro"] .retro-am .chat-send {
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(#ff7a5a, #c8321c);
+  color: #fff4e6;
+  box-shadow: 0 3px 0 #0e0905;
+}
+
+[data-theme="retro"] .retro-am :is(.chat-foot, .chat-summary) .btn {
+  border-radius: 8px;
+}
+
+[data-theme="retro"] .retro-am .chat-restart {
+  color: var(--rx-amber);
+}
+
+[data-theme="retro"] .retro-am .text-muted {
+  color: var(--rx-dim);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .retro-am-reels i,
+  .retro-am-lamp[data-state="rec"]::before {
+    animation: none;
+  }
+}
+
+.retro-am-deck,
+.retro-am-dial a {
+  min-width: 0;
+}
+
+.retro-am-dial {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* ══ Work: the layout switch, and design P6 "Screens first" (components/RetroWork.tsx) ══ */
+.retro-wk-switch {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  margin: -8px 0 18px;
+}
+
+.retro-wk-switch-label {
+  margin-right: 6px;
+  font: 700 0.75rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgb(243 181 68 / 0.7);
+}
+
+.retro-wk-switch button {
+  min-height: 40px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(#efe6d6, #b9a98c);
+  color: #2b1d15;
+  font: 700 0.85rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 0 #1a110b;
+  cursor: pointer;
+  transition: translate 0.1s, box-shadow 0.1s, background 0.2s;
+}
+
+.retro-wk-switch button[aria-pressed="true"] {
+  translate: 0 3px;
+  background: linear-gradient(#ffd27a, #e8a91c);
+  box-shadow: 0 1px 0 #1a110b, 0 0 14px rgb(255 190 80 / 0.5);
+}
+
+.retro-wk-switch button:focus-visible {
+  outline: 2px solid #ffd27a;
+  outline-offset: 3px;
+}
+
+/* P6 */
+.retro-sc {
+  display: grid;
+  gap: 28px;
+  color: #f4e6c8;
+}
+
+@media (min-width: 1024px) {
+  .retro-sc {
+    grid-template-columns: 240px minmax(0, 1fr) 320px;
+    align-items: start;
+  }
+}
+
+/* the track list: a cream card */
+.retro-sc-list {
+  padding: 16px;
+  border-radius: 6px;
+  background: #f1e4c6;
+  color: #3a2314;
+  box-shadow: 0 20px 40px rgb(0 0 0 / 0.45);
+}
+
+.retro-sc-list ol {
+  margin: 0 0 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.retro-sc-side {
+  margin: 6px 0 4px;
+  font: 700 0.75rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #a8431b;
+}
+
+.retro-sc-track {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 42px;
+  padding: 0 8px;
+  border: 0;
+  border-bottom: 2px dotted rgb(58 35 20 / 0.3);
+  border-radius: 0;
+  background: none;
+  color: #3a2314;
+  font: 700 0.95rem "Fraunces", Georgia, serif;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.retro-sc-track:hover {
+  background: rgb(232 169 28 / 0.18);
+}
+
+.retro-sc-track[aria-pressed="true"] {
+  border-radius: 4px;
+  border-bottom-color: transparent;
+  background: #3a2314;
+  color: #f4e6c8;
+}
+
+.retro-sc-no {
+  min-width: 22px;
+  font: 700 0.8rem "Barlow Condensed", sans-serif;
+}
+
+.retro-sc-track[aria-pressed="true"] .retro-sc-no {
+  color: #e8a91c;
+}
+
+.retro-sc-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.retro-sc-status {
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #e8a91c;
+  color: #3a2314;
+  font: 700 0.65rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* the stage: one fixed height whatever the frame, so nothing below moves */
+.retro-sc-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  height: 600px;
+}
+
+.retro-sc-record {
+  position: absolute;
+  right: 0;
+  top: 10px;
+  display: grid;
+  place-items: center;
+  width: 200px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: repeating-radial-gradient(circle, #1a110b 0, #2b1d15 1.6px, #1a110b 3.2px);
+  box-shadow: 0 6px 14px rgb(0 0 0 / 0.5);
+}
+
+.retro-sc-record span {
+  display: grid;
+  place-items: center;
+  width: 36%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 3px rgb(0 0 0 / 0.25);
+}
+
+.retro-sc-record img {
+  width: 58%;
+  height: 58%;
+  object-fit: contain;
+  border-radius: 22%;
+}
+
+[data-theme="retro"][data-music="on"] .retro-sc-record span {
+  animation: retro-spin 1.8s linear infinite;
+}
+
+.retro-sc-fan {
+  position: absolute;
+  top: 70px;
+  width: 160px;
+  border-radius: 20px;
+  opacity: 0.75;
+  box-shadow: 0 12px 24px rgb(0 0 0 / 0.5);
+}
+
+.retro-sc-fan.is-left {
+  left: calc(50% - 230px);
+  rotate: -9deg;
+}
+
+.retro-sc-fan.is-right {
+  left: calc(50% + 70px);
+  rotate: 9deg;
+}
+
+/* the device: a phone, or a wide frame for landscape screens */
+.retro-sc-device {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: 250px;
+  padding: 9px;
+  border: 0;
+  border-radius: 36px;
+  background: #1a110b;
+  box-shadow: 0 0 0 2px #4a3016, 0 24px 44px rgb(0 0 0 / 0.6);
+  cursor: pointer;
+  transition: translate 0.2s;
+}
+
+.retro-sc-device:hover {
+  translate: 0 -4px;
+}
+
+.retro-sc-device img {
+  grid-area: 1 / 1;
+  width: 100%;
+  aspect-ratio: 787 / 1400;
+  object-fit: cover;
+  border-radius: 28px;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.retro-sc-device img[data-on="true"] {
+  opacity: 1;
+}
+
+.retro-sc-stage[data-wide="true"] .retro-sc-device {
+  width: min(100%, 460px);
+  padding: 12px 12px 22px;
+  border-radius: 14px;
+}
+
+.retro-sc-stage[data-wide="true"] .retro-sc-device img {
+  aspect-ratio: 16 / 10;
+  border-radius: 4px;
+}
+
+.retro-sc-stage[data-wide="true"] .retro-sc-record {
+  top: 40px;
+}
+
+.retro-sc-controls {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.retro-sc-arrow {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: #f1e4c6;
+  color: #3a2314;
+  box-shadow: 0 3px 0 #1a110b;
+  cursor: pointer;
+}
+
+.retro-sc-arrow:active {
+  translate: 0 2px;
+  box-shadow: 0 1px 0 #1a110b;
+}
+
+.retro-sc-dots {
+  display: flex;
+  gap: 4px;
+}
+
+.retro-sc-dots button {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.retro-sc-dots button::before {
+  content: "";
+  display: block;
+  width: 8px;
+  height: 8px;
+  margin: auto;
+  border-radius: 4px;
+  background: rgb(244 230 200 / 0.4);
+  transition: width 0.3s, background-color 0.3s;
+}
+
+.retro-sc-dots button[data-on="true"]::before {
+  width: 20px;
+  background: #e8a91c;
+}
+
+/* the notes: every project's, stacked; only the playing one shows */
+.retro-sc-notes {
+  display: grid;
+}
+
+.retro-sc-notes article {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0s 0.2s;
+}
+
+.retro-sc-notes article[data-on="true"] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.25s 0.08s;
+}
+
+.retro-sc-kicker {
+  margin: 0;
+  font: 700 0.8rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #f3c46a;
+}
+
+.retro-sc-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0 0;
+  font: 400 clamp(1.7rem, 2.6vw, 2.1rem) / 1.05 "Shrikhand", Georgia, serif;
+  color: #e8a91c;
+}
+
+.retro-sc-title img {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+}
+
+.retro-sc-client {
+  margin: 6px 0 0;
+  font: 500 0.92rem "Fraunces", Georgia, serif;
+  color: #f1dcb4;
+}
+
+.retro-sc-desc {
+  margin: 14px 0 0;
+  font: 500 0.98rem / 1.5 "Fraunces", Georgia, serif;
+}
+
+.retro-sc-highlights {
+  display: grid;
+  gap: 4px;
+  margin: 12px 0 0;
+  padding-left: 18px;
+  font: 500 0.9rem / 1.4 "Fraunces", Georgia, serif;
+  color: #e9d7b4;
+}
+
+.retro-sc-highlights li::marker {
+  color: #e8a91c;
+}
+
+.retro-sc-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.retro-sc-tech li {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1.5px solid rgb(244 230 200 / 0.45);
+  border-radius: 8px;
+  font-size: 17px;
+  color: #f4e6c8;
+}
+
+.retro-sc-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.retro-sc-open {
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  border: 0;
+  border-radius: 8px;
+  background: #e8a91c;
+  color: #3a2314;
+  font: 700 0.95rem "Fraunces", Georgia, serif;
+  box-shadow: 0 4px 0 #1a110b;
+  cursor: pointer;
+}
+
+.retro-sc-open:active {
+  translate: 0 2px;
+  box-shadow: 0 2px 0 #1a110b;
+}
+
+.retro-sc-actions a {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 1.5px solid rgb(244 230 200 / 0.5);
+  border-radius: 8px;
+  color: #f4e6c8;
+}
+
+.retro-sc-actions a:hover {
+  background: rgb(244 230 200 / 0.1);
+}
+
+.retro-sc :is(.retro-sc-track, .retro-sc-device, .retro-sc-arrow, .retro-sc-dots button, .retro-sc-open, .retro-sc-actions a):focus-visible {
+  outline: 2px solid #ffd27a;
+  outline-offset: 3px;
+}
+
+@media (max-width: 1023px) {
+  .retro-sc-stage {
+    height: 560px;
+  }
+}
+
+@media (max-width: 560px) {
+  .retro-sc-fan,
+  .retro-sc-record {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .retro-sc-device img,
+  .retro-sc-notes article,
+  .retro-sc-notes article[data-on="true"],
+  .retro-sc-dots button::before {
+    transition: none;
+  }
+}
+
+/* ── The hero's controls, in the stereo set's style (the Work and Contact keys): an amber key for the
+   work, an outlined one for contact, the socials as small lit keys after a divider; "About me" is a quiet
+   lit cue at the bottom. ── */
+.retro-gate[data-room] .retro-hero-actions {
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.retro-gate[data-room] .retro-hero-btn {
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(#ffd27a, #e8a91c);
+  color: #2b1d15;
+  font: 700 1rem "Fraunces", Georgia, serif;
+  text-decoration: none;
+  box-shadow: 0 4px 0 #0e0905, 0 0 22px rgb(255 180 70 / 0.25);
+  transition: translate 0.12s, box-shadow 0.12s, background 0.2s;
+}
+
+.retro-gate[data-room] .retro-hero-btn.is-ghost {
+  background: rgb(20 12 8 / 0.55);
+  color: #f4e6c8;
+  box-shadow: inset 0 0 0 1.5px rgb(243 181 68 / 0.6), 0 4px 0 #0e0905;
+}
+
+.retro-gate[data-room] .retro-hero-btn:hover {
+  transform: none;
+  translate: 0 -2px;
+}
+
+.retro-gate[data-room] .retro-hero-btn.is-ghost:hover {
+  background: rgb(243 181 68 / 0.14);
+}
+
+.retro-gate[data-room] .retro-hero-btn:active {
+  translate: 0 3px;
+  box-shadow: 0 1px 0 #0e0905;
+}
+
+.retro-gate[data-room] .retro-hero-socials {
+  gap: 8px;
+  margin-left: 4px;
+  padding-left: 16px;
+  border-left: 1.5px solid rgb(243 181 68 / 0.3);
+}
+
+.retro-gate[data-room] .retro-hero-socials a {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: rgb(20 12 8 / 0.55);
+  color: #ffc861;
+  box-shadow: inset 0 0 0 1.5px rgb(243 181 68 / 0.45);
+  transition: translate 0.15s, box-shadow 0.15s;
+}
+
+.retro-gate[data-room] .retro-hero-socials a:hover {
+  translate: 0 -2px;
+  background: rgb(20 12 8 / 0.7);
+  box-shadow: inset 0 0 0 1.5px #f3b544, 0 0 12px rgb(255 180 70 / 0.35);
+}
+
+.retro-gate[data-room] :is(.retro-hero-btn, .retro-hero-socials a, .retro-hero-next):focus-visible {
+  outline: 2px solid #ffd27a;
+  outline-offset: 3px;
+}
+
+/* "About me": a lit cue at the bottom centre, not a button among the others */
+.retro-gate[data-room] .retro-hero-facts {
+  top: auto;
+  bottom: 28px;
+}
+
+.retro-gate[data-room] .retro-hero-next {
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: rgb(20 12 8 / 0.55);
+  color: #ffc861;
+  box-shadow: inset 0 0 0 1.5px rgb(243 181 68 / 0.35);
+  font: 700 0.8rem/1 "Barlow Condensed", sans-serif;
+  letter-spacing: 0.2em;
+}
+
+.retro-gate[data-room] .retro-hero-next:hover {
+  background: rgb(243 181 68 / 0.16);
+}
+
+.retro-gate[data-room] .retro-hero-next svg {
+  animation: retro-gate-bob 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .retro-gate[data-room] .retro-hero-next svg {
+    animation: none;
+  }
+}
+
+/* "About me" sits clear of the wavy seam at the bottom of the hero (it slid under it while scrolling) */
+.retro-gate[data-room] .retro-hero-facts {
+  bottom: 110px;
+  z-index: 5;
+}
+
+/* ── The opening: the name card centred across the room, the name on one line, the keys under it ── */
+.retro-gate[data-room] .retro-hero-text {
+  left: 16px;
+  right: 16px;
+  top: 13vh;
+  align-items: center;
+  max-width: none;
+  margin: 0 auto;
+  width: fit-content;
+  padding: 26px 48px 30px;
+  text-align: center;
+  background: radial-gradient(ellipse 50% 50% at 50% 50%, rgb(20 12 8 / 0.62), rgb(20 12 8 / 0.3) 70%, transparent);
+}
+
+.retro-gate[data-room] .retro-hero-name {
+  font-size: clamp(3.2rem, 8.4vw, 8.5rem);
+  line-height: 0.95;
+  white-space: nowrap;
+}
+
+.retro-gate[data-room] .retro-hero-name br {
+  display: none;
+}
+
+.retro-gate[data-room] .retro-hero-now {
+  max-width: 560px;
+}
+
+.retro-gate[data-room] .retro-hero-actions {
+  justify-content: center;
+}
+
+@media (max-width: 640px) {
+  .retro-gate[data-room] .retro-hero-name {
+    white-space: normal;
+  }
+
+  .retro-gate[data-room] .retro-hero-name br {
+    display: inline;
+  }
+
+  .retro-gate[data-room] .retro-hero-text {
+    padding: 18px 16px;
+  }
+}
+
+/* centred both ways (no transform: the entrance writes one), on a lighter shade so the room shows through;
+   a soft shadow under the words keeps them readable instead */
+.retro-gate[data-room] .retro-hero-text {
+  top: 0;
+  bottom: 0;
+  height: fit-content;
+  margin: auto;
+  padding: 22px 40px 26px;
+  background: radial-gradient(ellipse 50% 50% at 50% 50%, rgb(20 12 8 / 0.42), rgb(20 12 8 / 0.16) 70%, transparent);
+  text-shadow: 0 2px 14px rgb(12 6 3 / 0.75);
+}
+
+.retro-gate[data-room] .retro-hero-name {
+  font-size: clamp(3rem, 7vw, 7rem);
+}
+
+.retro-gate[data-room] .retro-hero-actions {
+  text-shadow: none;
+}
+
+/* the opening: darker corners, so the lamp-lit middle reads as the only light in the room */
+.retro-room.is-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 75% 70% at 62% 45%, transparent 40%, rgb(10 5 2 / 0.55) 100%);
+}
+
+/* ══ Polish pass: the loading still, About / Journey / footer in the stereo set's look ══ */
+
+/* while the 3D room loads: a still of its first frame (public/textures/room-still.webp, 22 KB), sized to
+   the height like the camera, so the real room fades in over the same picture */
+.retro-room.is-hero {
+  background: #0d0805 url("/textures/room-still.webp") center / auto 100% no-repeat;
+}
+
+/* the opening's kicker sits under my role, off the bright moon */
+.retro-gate[data-room] .retro-hero-name {
+  order: 1;
+}
+
+.retro-gate[data-room] .retro-hero-role {
+  order: 2;
+}
+
+.retro-gate[data-room] .retro-hero-kicker {
+  order: 3;
+  font-size: 1.05rem;
+}
+
+.retro-gate[data-room] .retro-hero-now {
+  order: 4;
+}
+
+.retro-gate[data-room] .retro-hero-actions {
+  order: 5;
+}
+
+/* About: the four facts as one lit readout panel (walnut rim, dark glass, amber labels), like the
+   receiver in Skills; the keys like the hero's */
+[data-theme="retro"] .retro-about-facts {
+  gap: 0;
+  padding: 8px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #4a2812, #6b3c1d 6%, #74421f 50%, #6b3c1d 94%, #4a2812);
+  box-shadow: 0 18px 36px rgb(0 0 0 / 0.45), inset 0 2px 0 rgb(255 220 170 / 0.18);
+}
+
+[data-theme="retro"] .retro-about-facts li,
+[data-theme="retro"] .retro-about-facts li:nth-child(n) {
+  padding: 12px 14px;
+  border-radius: 0;
+  background: #120c07;
+  color: #f4e6c8;
+  rotate: none;
+  font: 600 0.95rem / 1.3 "Fraunces", Georgia, serif;
+  box-shadow: inset -1px 0 0 rgb(243 181 68 / 0.18);
+}
+
+[data-theme="retro"] .retro-about-facts li:first-child {
+  border-radius: 6px 0 0 6px;
+}
+
+[data-theme="retro"] .retro-about-facts li:last-child {
+  border-radius: 0 6px 6px 0;
+  box-shadow: none;
+}
+
+[data-theme="retro"] .retro-about-facts .retro-cond,
+[data-theme="retro"] .retro-about-facts li:nth-child(even) .retro-cond {
+  margin-bottom: 4px;
+  color: #f3b544;
+  text-shadow: 0 0 8px rgb(255 180 70 / 0.45);
+}
+
+@media (max-width: 639px) {
+  [data-theme="retro"] .retro-about-facts li:nth-child(n) {
+    border-radius: 0;
+    box-shadow: inset 0 -1px 0 rgb(243 181 68 / 0.18);
+  }
+
+  [data-theme="retro"] .retro-about-facts li:first-child {
+    border-radius: 6px 0 0 0;
+  }
+
+  [data-theme="retro"] .retro-about-facts li:nth-child(2) {
+    border-radius: 0 6px 0 0;
+  }
+
+  [data-theme="retro"] .retro-about-facts li:nth-child(3) {
+    border-radius: 0 0 0 6px;
+  }
+
+  [data-theme="retro"] .retro-about-facts li:last-child {
+    border-radius: 0 0 6px 0;
+  }
+}
+
+/* (the cells sit in one panel now: they rise in without the fanned turn) */
+html[data-rfx][data-theme="retro"] .retro-about-facts > li:nth-child(n) {
+  --fan-r: 0deg;
+}
+
+[data-theme="retro"] .retro-about-keys .btn {
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(#ffd27a, #e8a91c);
+  color: #2b1d15;
+  font: 700 1rem "Fraunces", Georgia, serif;
+  box-shadow: 0 4px 0 #0e0905, 0 0 22px rgb(255 180 70 / 0.22);
+  transition: translate 0.12s, box-shadow 0.12s, background 0.2s;
+}
+
+[data-theme="retro"] .retro-about-keys .btn:not(.btn-primary) {
+  border: 0;
+  background: rgb(20 12 8 / 0.55);
+  color: #f4e6c8;
+  box-shadow: inset 0 0 0 1.5px rgb(243 181 68 / 0.6), 0 4px 0 #0e0905;
+}
+
+[data-theme="retro"] .retro-about-keys .btn:hover {
+  transform: none;
+  translate: 0 -2px;
+}
+
+[data-theme="retro"] .retro-about-keys .btn:not(.btn-primary):hover {
+  background: rgb(243 181 68 / 0.14);
+}
+
+[data-theme="retro"] .retro-about-keys .btn:active {
+  translate: 0 3px;
+  box-shadow: 0 1px 0 #0e0905;
+}
+
+[data-theme="retro"] .retro-about-keys kbd {
+  border-color: rgb(243 181 68 / 0.6);
+  color: #ffc861;
+}
+
+[data-theme="retro"] .retro-about-keys .btn:focus-visible {
+  outline: 2px solid #ffd27a;
+  outline-offset: 3px;
+}
+
+/* Journey (and the other small keys): the cream stereo key becomes the set's amber key */
+[data-theme="retro"] .journey-skip {
+  border: 0;
+  background: linear-gradient(#ffd27a, #e8a91c);
+  color: #2b1d15;
+  box-shadow: 0 4px 0 #0e0905, 0 0 14px rgb(255 180 70 / 0.25);
+}
+
+[data-theme="retro"] .journey-skip:hover,
+[data-theme="retro"] .journey-skip:focus-visible {
+  border: 0;
+  background: linear-gradient(#ffe3a6, #f0b83a);
+  color: #2b1d15;
+}
+
+[data-theme="retro"] .journey-skip:active {
+  box-shadow: 0 1px 0 #0e0905;
+}
+
+/* the footer: a walnut strip with an amber edge, the links as lit labels, "Back to top" as the amber key */
+[data-theme="retro"] .site-foot {
+  border-top: 0;
+  background: linear-gradient(90deg, #3a1f0e, #5a321a 8%, #61371c 50%, #5a321a 92%, #3a1f0e);
+  box-shadow: inset 0 3px 0 #e8a91c, inset 0 5px 0 rgb(0 0 0 / 0.35);
+}
+
+[data-theme="retro"] .site-foot-name {
+  color: #ffd27a;
+}
+
+[data-theme="retro"] .site-foot-year {
+  color: rgb(244 230 200 / 0.6);
+}
+
+[data-theme="retro"] .site-foot-link {
+  color: #f1dcb4;
+  font: 700 0.85rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+[data-theme="retro"] .site-foot-link:hover {
+  color: #ffc861;
+  text-shadow: 0 0 10px rgb(255 180 70 / 0.6);
+}
+
+[data-theme="retro"] .site-foot-top {
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(#ffd27a, #e8a91c);
+  color: #2b1d15;
+  box-shadow: 0 4px 0 #0e0905;
+}
+
+[data-theme="retro"] .site-foot-top:active {
+  translate: 0 3px;
+  box-shadow: 0 1px 0 #0e0905;
+}
+
+/* phones: both keys side by side, the socials centred under them (no divider) */
+@media (max-width: 640px) {
+  .retro-gate[data-room] .retro-hero-text {
+    left: 12px;
+    right: 12px;
+    padding: 18px 10px;
+  }
+
+  .retro-gate[data-room] .retro-hero-actions {
+    gap: 10px;
+  }
+
+  .retro-gate[data-room] .retro-hero-btn {
+    min-height: 46px;
+    padding: 0 16px;
+    font-size: 0.95rem;
+  }
+
+  .retro-gate[data-room] .retro-hero-socials {
+    flex-basis: 100%;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
 }

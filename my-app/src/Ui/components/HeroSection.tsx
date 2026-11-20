@@ -11,6 +11,8 @@ import { P5Clouds, WeatherIcon } from "./Weather";
 import { Ransom } from "./Ransom";
 import { MetroHero } from "./MetroDecor";
 import { RetroGateway } from "./RetroGateway";
+import { RetroRoomHero } from "./RetroRoomHero";
+import { RETRO_ROOM } from "../retroRoomBus";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const TZ = "Asia/Phnom_Penh";
@@ -103,8 +105,9 @@ function HeroSection() {
     };
   }, [go]);
 
-  // Retro: the hero is a record that turns into a sunset as you scroll (a tall, pinned section of its own)
-  if (retro) return <RetroGateway />;
+  // Retro: the hero is a record that turns into a sunset as you scroll (a tall, pinned section of its own);
+  // with ?room, the parked 3D listening room's opening instead
+  if (retro) return RETRO_ROOM ? <RetroRoomHero /> : <RetroGateway />;
 
   return (
     <section

@@ -815,8 +815,9 @@
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 853 / 1280; /* the whole photo, head to shoes */
+  aspect-ratio: 853 / 1140; /* cut just above the shoes */
   object-fit: cover;
+  object-position: 50% 0;
 }
 
 @media (max-width: 1023px) {

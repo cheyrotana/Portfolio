@@ -1,7 +1,6 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useThemeAttr } from "../hooks/interactive";
 import { MetroSkillMap } from "./MetroMap";
-import { RetroTapes } from "./RetroTapes";
 import { ArrowUpRight } from "lucide-react";
 import { useRef, useState, type KeyboardEvent } from "react";
 import { track } from "../achievements";
@@ -13,6 +12,8 @@ import { P5Slab } from "./PersonaDecor";
 import { P5Clouds } from "./Weather";
 import { Ransom } from "./Ransom";
 import { Reveal, SectionHeader } from "./Reveal";
+import { RetroTapes } from "./RetroTapes";
+import { RETRO_ROOM } from "../retroRoomBus";
 
 // Where each tool was actually used, straight from the project data (no made-up skill levels).
 const usedIn = (skill: Skill) => projects.filter((p) => p.tech.includes(skill.name));
@@ -215,10 +216,11 @@ function SkillsSection() {
           intro="From the phone in an officer's hand to the database behind it — these are the tools I reach for."
         />
 
-        <Reveal>{metro ? <MetroSkillMap /> : themeAttr === "retro" ? <RetroTapes /> : <SkillMenu />}</Reveal>
+        <Reveal>{metro ? <MetroSkillMap /> : themeAttr === "retro" && !RETRO_ROOM ? <RetroTapes /> : <SkillMenu />}</Reveal>
       </div>
 
-      {/* Scrolling strip of every tool */}
+      {/* Scrolling strip of every tool (Retro has its own, in the receiver) */}
+      {!(themeAttr === "retro" && !RETRO_ROOM) && (
       <div className="skills-strip mt-16 border-y border-line py-5 overflow-hidden [[data-theme=pop]_&]:bg-accent-2 [[data-theme=pop]_&]:border-y-[2.5px] [[data-theme=pop]_&]:-rotate-1 [[data-theme=persona]_&]:bg-accent [[data-theme=persona]_&]:border-y-[3px] [[data-theme=persona]_&]:-rotate-2 [[data-theme=persona]_&]:scale-105">
         <div className="animate-marquee">
           {[0, 1].map((copy) => (
@@ -237,6 +239,7 @@ function SkillsSection() {
           ))}
         </div>
       </div>
+      )}
     </section>
   );
 }

@@ -45,6 +45,25 @@ export function CarSprite({ spin }: { spin?: MotionValue<number> }) {
   );
 }
 
+/** Retro: a 70s camper van (canvas J1): cream top, orange skirt with a V on the nose, roof rack. */
+export function VanSprite({ spin }: { spin?: MotionValue<number> }) {
+  return (
+    <svg viewBox="0 0 190 110" className="w-[150px] h-[87px] sm:w-[190px] sm:h-[110px] overflow-visible" aria-hidden="true">
+      <rect x="40" y="2" width="110" height="10" rx="4" fill="#9a4a2a" stroke="#2b1d15" strokeWidth="3" />
+      <rect x="6" y="10" width="176" height="74" rx="22" fill="#efe1c5" stroke="#2b1d15" strokeWidth="4" />
+      <path d="M8 52 H180 V64 C180 76 172 84 160 84 H28 C16 84 8 76 8 64 Z" fill="#c97a3e" stroke="#2b1d15" strokeWidth="4" />
+      <rect x="24" y="22" width="34" height="22" rx="5" fill="#9bb7c4" stroke="#2b1d15" strokeWidth="3" />
+      <rect x="66" y="22" width="34" height="22" rx="5" fill="#9bb7c4" stroke="#2b1d15" strokeWidth="3" />
+      <rect x="108" y="22" width="34" height="22" rx="5" fill="#9bb7c4" stroke="#2b1d15" strokeWidth="3" />
+      <path d="M150 22 H164 C170 22 174 28 174 34 V44 H150 Z" fill="#9bb7c4" stroke="#2b1d15" strokeWidth="3" />
+      <circle cx="176" cy="62" r="5" fill="#e6c47a" stroke="#2b1d15" strokeWidth="2" />
+      <path d="M60 52 L94 52 L77 64 Z" fill="#efe1c5" stroke="#2b1d15" strokeWidth="3" />
+      <Wheel cx={46} cy={88} r={16} spin={spin} />
+      <Wheel cx={146} cy={88} r={16} spin={spin} />
+    </svg>
+  );
+}
+
 /** A metro car with a rounded nose, drawn like the car: wheels touch the rails at (0, 0). */
 export function TrainSprite({ spin }: { spin?: MotionValue<number> }) {
   return (

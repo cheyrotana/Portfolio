@@ -7,8 +7,13 @@ import { P5Clouds } from "./Weather";
 import { Ransom } from "./Ransom";
 import { Reveal, SectionHeader } from "./Reveal";
 import { RetroEq } from "./RetroDecor";
+import { RetroAnswering } from "./RetroAnswering";
+import { useThemeAttr } from "../hooks/interactive";
+import { RETRO_ROOM } from "../retroRoomBus";
 
 function ContactSection() {
+  // Retro: the answering machine, the third piece of the stereo set (components/RetroAnswering.tsx)
+  const machine = useThemeAttr() === "retro" && !RETRO_ROOM;
   return (
     <footer id="contact" className="relative overflow-hidden">
       <div className="bg-decor absolute inset-0 pointer-events-none rotate-180 not-persona-block" aria-hidden="true" />
@@ -31,6 +36,9 @@ function ContactSection() {
           }
         />
 
+        {machine ? (
+          <RetroAnswering />
+        ) : (
         <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-16 items-start">
           <Reveal className="min-w-0">
             <p className="text-lg text-muted leading-relaxed">
@@ -97,6 +105,7 @@ function ContactSection() {
             <ContactForm />
           </Reveal>
         </div>
+        )}
       </div>
 
       {/* Bottom strip: name, section links, back to top */}

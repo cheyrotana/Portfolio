@@ -12,7 +12,14 @@ const SERVICE_ID = "service_n31f1lt";
 const TEMPLATE_ID = "template_jh510rc";
 const PUBLIC_KEY = "zuC8j77Q0CqjMRaNQ";
 
-type Step = "name" | "email" | "message" | "confirm" | "sending" | "sent" | "failed";
+export type Step = "name" | "email" | "message" | "confirm" | "sending" | "sent" | "failed";
+
+/** What the chat is doing, for a theme that shows it (Retro's answering machine) */
+export interface ChatActivity {
+  yours: number; // lines the visitor has written
+  typing: boolean; // Rotana is typing a reply
+  step: Step;
+}
 
 interface Bubble {
   id: number;
@@ -46,8 +53,15 @@ function parseName(raw: string): string | null {
     .join(" ");
 }
 
+// Bubbles pop in from their own side with a soft spring; the rows above slide up to make room (layout),
+// and the typing dots leave the flow at once (popLayout) so the reply takes their place without a jump.
+const BUBBLE_IN = { opacity: 0, y: 14, scale: 0.94 };
+const BUBBLE_SHOWN = { opacity: 1, y: 0, scale: 1 };
+const SPRING = { type: "spring", stiffness: 520, damping: 36, mass: 0.7 } as const;
+const FADE_ONLY = { opacity: 0 };
+
 // A contact form that feels like a chat: one question at a time.
-function ContactForm() {
+function ContactForm({ onActivity }: { onActivity?: (a: ChatActivity) => void } = {}) {
   const rootRef = useRef<HTMLDivElement>(null);
   const inView = useInView(rootRef, { once: true, amount: 0.4 });
   const reduceMotion = useReducedMotion();
@@ -63,6 +77,11 @@ function ContactForm() {
   const [input, setInput] = useState("");
   const [data, setData] = useState({ name: "", email: "", message: "" });
   const [ticket, setTicket] = useState<PrintedTicket | null>(null); // Metro: the ticket the machine prints
+
+  const yours = bubbles.filter((b) => b.from === "you").length;
+  useEffect(() => {
+    onActivity?.({ yours, typing, step });
+  }, [onActivity, yours, typing, step]);
 
   const add = (from: Bubble["from"], text: string) =>
     setBubbles((b) => [...b, { id: ++counter.current, from, text }]);
@@ -90,12 +109,13 @@ function ContactForm() {
     say(["Hi! I'm Rotana.", "What's your name?"]);
   }, [inView, say]);
 
+  // keep the newest message in view (one scroll per change, after the new row is laid out)
   useEffect(() => {
-    const id = requestAnimationFrame(() =>
-      scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: reduceMotion ? "auto" : "smooth" }),
-    );
+    const el = scrollRef.current;
+    if (!el) return;
+    const id = requestAnimationFrame(() => el.scrollTo({ top: el.scrollHeight, behavior: reduceMotion ? "auto" : "smooth" }));
     return () => cancelAnimationFrame(id);
-  }, [bubbles, typing, reduceMotion]);
+  }, [bubbles, typing, step, reduceMotion]);
 
   useEffect(() => {
     const pending = timers.current;
@@ -142,7 +162,11 @@ function ContactForm() {
       play("send");
       unlock("penpal");
       say([`Sent! Thanks, ${payload.name}. I'll reply to ${payload.email} soon.`]);
-    } catch {
+    } catch (err) {
+      // EmailJS rejects with { status, text }, e.g. 412 "Gmail_API: Invalid grant" when the Gmail link
+      // in the EmailJS dashboard needs reconnecting, or 426 when the monthly quota is used up
+      const e = err as { status?: number; text?: string };
+      console.error("[contact] EmailJS send failed:", e?.status, e?.text ?? err);
       setTyping(false);
       setStep("failed");
       say(["Hmm, that didn't go through. Want to try again?"]);
@@ -218,15 +242,22 @@ function ContactForm() {
         </div>
   
         {/* Conversation */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 space-y-2.5" aria-live="polite">
-          <AnimatePresence initial={false}>
+        <motion.div
+          ref={scrollRef}
+          layoutScroll
+          className="relative flex-1 overflow-y-auto px-4 sm:px-5 py-4 flex flex-col gap-2.5"
+          aria-live="polite"
+        >
+          <AnimatePresence initial={false} mode="popLayout">
             {bubbles.map((b, i) => (
               <motion.div
                 key={b.id}
+                layout={reduceMotion ? false : "position"}
                 className={`chat-row flex items-start gap-2 ${b.from === "you" ? "justify-end is-you" : "justify-start is-me"}`}
-                initial={reduceMotion ? { opacity: 0 } : { opacity: 0, x: b.from === "you" ? 28 : -28 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                style={{ transformOrigin: b.from === "you" ? "100% 100%" : "0% 100%" }}
+                initial={reduceMotion ? FADE_ONLY : BUBBLE_IN}
+                animate={BUBBLE_SHOWN}
+                transition={reduceMotion ? { duration: 0.2 } : SPRING}
               >
                 {/* my face beside the first of my messages in a row (shown in Persona) */}
                 {b.from === "me" && (
@@ -241,7 +272,16 @@ function ContactForm() {
             ))}
   
             {step === "confirm" && !typing && (
-              <motion.div key="summary" className="flex justify-start" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+              <motion.div
+                key="summary"
+                layout={reduceMotion ? false : "position"}
+                className="flex justify-start"
+                style={{ transformOrigin: "0% 100%" }}
+                initial={reduceMotion ? FADE_ONLY : BUBBLE_IN}
+                animate={BUBBLE_SHOWN}
+                exit={{ opacity: 0, transition: { duration: 0.12 } }}
+                transition={reduceMotion ? { duration: 0.2 } : SPRING}
+              >
                 <div className="chat-summary chat-bubble chat-me w-full max-w-[90%] space-y-1">
                   <p className="text-xs text-muted">From</p>
                   <p className="font-semibold">
@@ -264,30 +304,29 @@ function ContactForm() {
             {typing && (
               <motion.div
                 key="typing"
+                layout={reduceMotion ? false : "position"}
                 className="chat-row is-me flex items-start gap-2 justify-start"
-                initial={reduceMotion ? false : { opacity: 0, x: -16 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.18 }}
+                style={{ transformOrigin: "0% 100%" }}
+                initial={reduceMotion ? FADE_ONLY : BUBBLE_IN}
+                animate={BUBBLE_SHOWN}
+                exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.12 } }}
+                transition={reduceMotion ? { duration: 0.2 } : SPRING}
               >
                 <span className={`chat-pic chat-face ${bubbles[bubbles.length - 1]?.from === "me" ? "is-hidden" : ""}`}>
                   <img src={avatar} alt="" />
                 </span>
                 <span className="chat-shape">
                   <span className="chat-bubble chat-me flex items-center gap-1 !py-3" aria-label="Typing">
-                    {[0, 1, 2].map((i) => (
-                      <motion.span
-                        key={i}
-                        className="chat-dot w-1.5 h-1.5 rounded-full bg-muted"
-                        animate={reduceMotion ? undefined : { y: [0, -4, 0] }}
-                        transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.12 }}
-                      />
-                    ))}
+                    {/* bob in CSS (index.css .chat-dot), not three JS animations */}
+                    <span className="chat-dot w-1.5 h-1.5 rounded-full bg-muted" />
+                    <span className="chat-dot w-1.5 h-1.5 rounded-full bg-muted" />
+                    <span className="chat-dot w-1.5 h-1.5 rounded-full bg-muted" />
                   </span>
                 </span>
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
+        </motion.div>
   
         {/* Input */}
         <div className="chat-foot border-t border-line p-3">
