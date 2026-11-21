@@ -1,0 +1,378 @@
+/* Retro theme, About: the polaroid, the story and the fact labels (RetroAbout.tsx, RetroPolaroid.tsx). */
+
+.retro-cond {
+  font-family: "Bebas Neue", "Arial Narrow", sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+}
+
+.retro-deck-now .retro-cond {
+  font-size: 0.85rem;
+  color: var(--r-mustard);
+}
+
+/* ── A1 About: dark wood panelling ── */
+
+[data-theme="retro"] #about {
+  --bg-alt: #3a2314;
+  --fg: #efe1c5;
+  --muted: #e2cfa6;
+  --surface: #4a2e1b;
+  --surface-2: #5a3822;
+  --line: #efe1c5;
+  --accent: #d4a03a;
+  --sun-ray: rgb(212 160 58 / 0.35);
+}
+
+[data-theme="retro"] #about .card {
+  --card-shadow: 8px 8px 0 var(--r-rust);
+  --card-shadow-hover: 12px 12px 0 var(--r-orange);
+}
+
+[data-theme="retro"] #about p.heading {
+  color: var(--r-cream);
+  text-shadow: 0.05em 0.05em 0 var(--r-rust);
+}
+
+/* About, design A3: the polaroid pinned to the wood, a short story beside it (src/themes/retro/RetroAbout.tsx) */
+.retro-about {
+  display: grid;
+  gap: 8px;
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .retro-about {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: 64px;
+  }
+}
+
+.retro-about .section-header {
+  margin-bottom: 1.5rem;
+}
+
+.retro-about-photo .retro-swing {
+  margin: 0;
+}
+
+@media (min-width: 1024px) {
+  .retro-about-photo .retro-swing-card img {
+    width: min(330px, 30vw);
+  }
+}
+
+.retro-about-lead {
+  font: 700 clamp(1.35rem, 2.4vw, 1.75rem) / 1.3 "Fraunces", Georgia, serif;
+  color: #f5eddf;
+}
+
+.retro-about-body {
+  margin-top: 1rem;
+  max-width: 38rem;
+  font-family: "Fraunces", Georgia, serif;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.retro-about-facts {
+  margin-top: 1.75rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+@media (min-width: 640px) {
+  .retro-about-facts {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.retro-about-facts li {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--r-cream);
+  color: var(--r-brown);
+  font: 700 0.9rem/1.3 "Fraunces", Georgia, serif;
+  rotate: -1deg;
+}
+
+.retro-about-facts li:nth-child(2) {
+  background: var(--r-mustard);
+  rotate: 1deg;
+}
+
+.retro-about-facts li:nth-child(3) {
+  rotate: -0.5deg;
+}
+
+.retro-about-facts li:nth-child(4) {
+  background: var(--r-orange);
+  rotate: 1.5deg;
+}
+
+.retro-about-facts .retro-cond {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--r-olive);
+}
+
+.retro-about-facts li:nth-child(even) .retro-cond {
+  color: var(--r-brown);
+}
+
+.retro-about-keys {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.retro-about-keys .btn:not(.btn-primary) {
+  border-color: var(--r-night);
+  background: var(--r-cream);
+  color: var(--r-brown);
+}
+
+.retro-about-keys kbd {
+  padding: 1px 6px;
+  border: 2px solid currentColor;
+  border-radius: 5px;
+  font: 700 0.75rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.08em;
+}
+
+/* ── About: my photo as a polaroid hanging from a pin (src/themes/retro/RetroPolaroid.tsx) ── */
+
+.retro-swing {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0 34px;
+}
+
+.retro-swing-btn {
+  position: relative;
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: grab;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.retro-swing-btn:active {
+  cursor: grabbing;
+}
+
+.retro-swing-btn:focus-visible {
+  outline: none;
+}
+
+.retro-swing-btn:focus-visible .retro-swing-card {
+  outline: 3px solid var(--r-brown);
+  outline-offset: 4px;
+}
+
+/* it turns around the pin, near the top edge */
+.retro-swing-card {
+  display: block;
+  padding: 12px 12px 0;
+  border-radius: 3px;
+  background: #fbf7ee;
+  box-shadow: 0 2px 0 rgb(0 0 0 / 0.08), 0 22px 40px rgb(43 29 21 / 0.35);
+  transform-origin: 50% 8px;
+  will-change: transform;
+}
+
+.retro-swing-card img {
+  display: block;
+  width: min(260px, 64vw);
+  max-width: none;
+  height: auto;
+  aspect-ratio: 853 / 1140; /* cut just above the shoes */
+  object-fit: cover;
+  object-position: 50% 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* the blank strip at the bottom of a polaroid */
+.retro-swing-strip {
+  display: block;
+  height: min(46px, 11vw);
+}
+
+/* a red pushpin through the top edge */
+.retro-swing-pin {
+  position: absolute;
+  left: 50%;
+  top: -2px;
+  width: 18px;
+  height: 18px;
+  margin-left: -9px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #f08a64 0 18%, #c8401c 40%, #8e2a10 100%);
+  box-shadow: 1px 3px 4px rgb(0 0 0 / 0.35);
+  pointer-events: none;
+}
+
+@keyframes rfx-fan {
+  from {
+    opacity: 0;
+    translate: -80px -60px;
+    rotate: var(--fan-r, -14deg);
+    scale: 0.6;
+  }
+}
+
+html[data-rfx][data-theme="retro"] [data-in]:is(.retro-about-photo, .retro-about-lead, .retro-about-body, .retro-about-facts > *, .retro-about-keys > *) {
+  animation: rfx-fan 0.8s cubic-bezier(0.2, 0.9, 0.3, 1.1) backwards;
+  animation-delay: calc(0.3s + var(--rfx-i, 0) * 80ms);
+}
+
+html[data-rfx][data-theme="retro"] :is(.retro-about-facts > *:nth-child(even), .retro-about-keys > *:nth-child(even), .retro-about-body) {
+  --fan-r: 12deg;
+}
+
+/* walnut, like the console */
+[data-theme="retro"] #about {
+  background-color: #5a3119;
+  background-image: radial-gradient(ellipse 60% 70% at 15% 15%, rgb(255 190 110 / 0.16), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 50%, rgb(20 8 2 / 0.45)),
+    linear-gradient(180deg, #6a3c22, #4a2714);
+  background-size: auto;
+}
+
+/* ── Same quiet treatment as Work (dark, a pattern just showing, the lamp), but each section its own
+   pattern from the room: About the wall planks, Skills the speaker grille, Work the console slats,
+   Contact the floorboards. ── */
+[data-theme="retro"] #about {
+
+/* About: the walnut wall by the lamp */
+  background: radial-gradient(ellipse 55% 60% at 15% 0%, rgb(255 180 100 / 0.22), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(10 4 1 / 0.55)),
+    linear-gradient(rgb(46 26 14 / 0.84), rgb(46 26 14 / 0.84)), url("/textures/oak-wall.webp") 0 0 / 512px 512px, #2e1a0e;
+}
+
+/* About: the four facts as one lit readout panel (walnut rim, dark glass, amber labels), like the
+   receiver in Skills; the keys like the hero's */
+[data-theme="retro"] .retro-about-facts {
+  gap: 0;
+  padding: 8px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #4a2812, #6b3c1d 6%, #74421f 50%, #6b3c1d 94%, #4a2812);
+  box-shadow: 0 18px 36px rgb(0 0 0 / 0.45), inset 0 2px 0 rgb(255 220 170 / 0.18);
+}
+
+[data-theme="retro"] .retro-about-facts li,
+[data-theme="retro"] .retro-about-facts li:nth-child(n) {
+  padding: 12px 14px;
+  border-radius: 0;
+  background: #120c07;
+  color: #f4e6c8;
+  rotate: none;
+  font: 600 0.95rem / 1.3 "Fraunces", Georgia, serif;
+  box-shadow: inset -1px 0 0 rgb(243 181 68 / 0.18);
+}
+
+[data-theme="retro"] .retro-about-facts li:first-child {
+  border-radius: 6px 0 0 6px;
+}
+
+[data-theme="retro"] .retro-about-facts li:last-child {
+  border-radius: 0 6px 6px 0;
+  box-shadow: none;
+}
+
+[data-theme="retro"] .retro-about-facts .retro-cond,
+[data-theme="retro"] .retro-about-facts li:nth-child(even) .retro-cond {
+  margin-bottom: 4px;
+  color: #f3b544;
+  text-shadow: 0 0 8px rgb(255 180 70 / 0.45);
+}
+
+@media (max-width: 639px) {
+  [data-theme="retro"] .retro-about-facts li:nth-child(n) {
+    border-radius: 0;
+    box-shadow: inset 0 -1px 0 rgb(243 181 68 / 0.18);
+  }
+
+  [data-theme="retro"] .retro-about-facts li:first-child {
+    border-radius: 6px 0 0 0;
+  }
+
+  [data-theme="retro"] .retro-about-facts li:nth-child(2) {
+    border-radius: 0 6px 0 0;
+  }
+
+  [data-theme="retro"] .retro-about-facts li:nth-child(3) {
+    border-radius: 0 0 0 6px;
+  }
+
+  [data-theme="retro"] .retro-about-facts li:last-child {
+    border-radius: 0 0 6px 0;
+  }
+}
+
+/* (the cells sit in one panel now: they rise in without the fanned turn) */
+html[data-rfx][data-theme="retro"] .retro-about-facts > li:nth-child(n) {
+  --fan-r: 0deg;
+}
+
+[data-theme="retro"] .retro-about-keys .btn {
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(#ffd27a, #e8a91c);
+  color: #2b1d15;
+  font: 700 1rem "Fraunces", Georgia, serif;
+  box-shadow: 0 4px 0 #0e0905, 0 0 22px rgb(255 180 70 / 0.22);
+  transition: translate 0.12s, box-shadow 0.12s, background 0.2s;
+}
+
+[data-theme="retro"] .retro-about-keys .btn:not(.btn-primary) {
+  border: 0;
+  background: rgb(20 12 8 / 0.55);
+  color: #f4e6c8;
+  box-shadow: inset 0 0 0 1.5px rgb(243 181 68 / 0.6), 0 4px 0 #0e0905;
+}
+
+[data-theme="retro"] .retro-about-keys .btn:hover {
+  transform: none;
+  translate: 0 -2px;
+}
+
+[data-theme="retro"] .retro-about-keys .btn:not(.btn-primary):hover {
+  background: rgb(243 181 68 / 0.14);
+}
+
+[data-theme="retro"] .retro-about-keys .btn:active {
+  translate: 0 3px;
+  box-shadow: 0 1px 0 #0e0905;
+}
+
+[data-theme="retro"] .retro-about-keys kbd {
+  border-color: rgb(243 181 68 / 0.6);
+  color: #ffc861;
+}
+
+[data-theme="retro"] .retro-about-keys .btn:focus-visible {
+  outline: 2px solid #ffd27a;
+  outline-offset: 3px;
+}
+
+/* About facts: the place, then its dates on their own line */
+.retro-about-when {
+  display: block;
+  margin-top: 2px;
+  font: 600 0.72rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.06em;
+  color: rgb(243 181 68 / 0.75);
+  white-space: nowrap;
+}

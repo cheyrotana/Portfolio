@@ -1,0 +1,529 @@
+/* Retro theme, Contact: the answering machine and the chat (RetroAnswering.tsx). */
+
+[data-theme="retro"] .accent-text {
+  color: var(--r-olive);
+}
+
+[data-theme="retro"] .field {
+  border: 0;
+  border-bottom: 2px solid var(--r-brown);
+  border-radius: 0;
+  background: transparent;
+  font-family: "Fraunces", Georgia, serif;
+}
+
+[data-theme="retro"] .field:focus {
+  border-bottom-color: var(--r-rust);
+  box-shadow: 0 2px 0 var(--r-rust);
+}
+
+/* ── Contact: the request line ─────────────────────────────────────────────── */
+
+.retro-request-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--r-brown);
+  color: var(--r-cream);
+}
+
+.retro-request-code {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 50%;
+  background: var(--r-mustard);
+  box-shadow: inset 0 0 0 4px var(--r-rust);
+  color: var(--r-brown);
+  font: 400 1.1rem/1 "Bebas Neue", sans-serif;
+}
+
+.retro-request-title {
+  display: flex;
+  flex-direction: column;
+  font: 400 1.3rem/1.1 "Shrikhand", Georgia, serif;
+}
+
+.retro-request-title small {
+  font: 400 0.85rem/1 "Bebas Neue", sans-serif;
+  letter-spacing: 0.08em;
+  color: var(--r-mustard);
+}
+
+/* while the music plays, each player bobs to the beat, a little out of step with the others */
+
+/* ── B2 Contact: a rust sunset, the chat inside a jukebox ── */
+
+[data-theme="retro"] #contact {
+  --fg: #efe1c5;
+  --surface: #3a2314;
+  --surface-2: #4a2e1b;
+  --line: #efe1c5;
+  --accent: #d4a03a;
+  --sun-ray: rgb(212 160 58 / 0.5);
+}
+
+[data-theme="retro"] #contact .bg-decor {
+  background: repeating-conic-gradient(from 0deg at 50% 100%, rgb(212 160 58 / 0.18) 0 4deg, transparent 4deg 8deg);
+}
+
+[data-theme="retro"] #contact .heading .accent-text {
+  color: var(--r-cream);
+}
+
+[data-theme="retro"] #contact .card {
+  --card-shadow: 7px 7px 0 #2b1208;
+}
+
+.retro-jukebox-top {
+  position: relative;
+  display: block;
+}
+
+.retro-jukebox-arch {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 92px;
+  margin: 0 18px -6px;
+  padding-bottom: 14px;
+  border-radius: 999px 999px 0 0;
+  background: radial-gradient(circle at 50% 100%, var(--r-night) 0 46%, transparent 46.5%),
+    repeating-radial-gradient(circle at 50% 100%, var(--r-mustard) 0 4%, var(--r-orange) 4% 8%, var(--r-rust) 8% 12%, var(--r-olive) 12% 16%);
+  box-shadow: 0 0 0 4px var(--r-brown);
+}
+
+.retro-jukebox-eq {
+  height: 38px;
+}
+
+[data-theme="retro"] .calling-card .chat {
+  border: 0;
+  box-shadow: 0 0 0 4px var(--r-brown), 9px 9px 0 #2b1208;
+}
+
+@keyframes rfx-uncover {
+  from {
+    clip-path: inset(100% -24px -24px -24px);
+    translate: 0 40px;
+  }
+  to {
+    clip-path: inset(-24px -24px -24px -24px);
+    translate: 0 0;
+  }
+}
+
+/* Skills and Contact (big type sweep): the content is uncovered from the bottom up, one after another */
+html[data-rfx][data-theme="retro"] #contact [data-in].card {
+  animation: rfx-uncover 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  animation-delay: calc(0.25s + var(--rfx-i, 0) * 100ms);
+}
+
+/* Contact: by the window, deep rust velvet in soft folds like the curtains, the lamp low behind the chat */
+[data-theme="retro"] #contact {
+
+/* ── Every section like Work: a dark brown with the console's fine slats just showing, lit by the lamp.
+   Only the brown and where the lamp sits change. ── */
+
+/* Contact: by the window at night, moonlight across it and the lamp low behind the chat */
+
+/* dark chocolate, the lamp low behind the chat */
+
+/* Work stays cream paper, but as a page under a lamp: bright in the middle, dim at the edges */
+  background: radial-gradient(ellipse 55% 55% at 70% 100%, rgb(255 170 90 / 0.24), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(8 3 1 / 0.6)),
+    repeating-linear-gradient(90deg, rgb(0 0 0 / 0.3) 0, rgb(255 190 140 / 0.06) 46px, rgb(0 0 0 / 0.3) 92px), #3e1a10;
+}
+
+/* ══ Contact, design C7: the answering machine (src/themes/retro/RetroAnswering.tsx), the third piece of the
+   stereo set: the receiver's walnut case and dark faceplate. The chat is ContactForm, restyled here. ══ */
+.retro-am {
+  --rx-amber: #f3b544;
+  --rx-glow: #ffc861;
+  --rx-hot: #ffd27a;
+  --rx-dim: rgb(243 181 68 / 0.6);
+  --rx-glass: #120c07;
+  color: #f4e6c8;
+}
+
+.retro-am-intro {
+  max-width: 560px;
+  margin: 0 0 28px;
+  font: 500 1.05rem / 1.55 "Fraunces", Georgia, serif;
+  color: #f1dcb4;
+}
+
+.retro-am-case {
+  display: grid;
+  gap: 18px;
+  padding: 18px;
+  border-radius: 16px;
+  background: linear-gradient(90deg, #4a2812, #6b3c1d 4%, #74421f 50%, #6b3c1d 96%, #4a2812);
+  box-shadow: 0 30px 60px rgb(0 0 0 / 0.5), inset 0 2px 0 rgb(255 220 170 / 0.18);
+}
+
+@media (min-width: 960px) {
+  .retro-am-case {
+    grid-template-columns: 330px minmax(0, 1fr);
+  }
+}
+
+.retro-am-label {
+  margin: 0;
+  font: 700 0.75rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rx-dim);
+}
+
+/* the deck */
+.retro-am-deck {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px;
+  border-radius: 8px;
+  background: linear-gradient(#5e3418, #4a2812);
+  box-shadow: inset 0 0 0 2px #2b170a;
+}
+
+.retro-am-counter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: 4px;
+  background: #0b0704;
+  box-shadow: inset 0 0 0 1.5px #2a1b0e, inset 0 4px 10px rgb(0 0 0 / 0.6);
+}
+
+.retro-am-counter b {
+  font: 700 2rem/1 "Barlow Condensed", sans-serif;
+  font-variant-numeric: tabular-nums;
+  color: #ff5a3a;
+  text-shadow: 0 0 10px rgb(255 90 58 / 0.8);
+}
+
+.retro-am-lamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 64px;
+  font: 700 0.75rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rx-dim);
+}
+
+.retro-am-lamp::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #8fd14f;
+  box-shadow: 0 0 8px rgb(143 209 79 / 0.8);
+}
+
+.retro-am-lamp[data-state="rec"] {
+  color: #ff5a3a;
+}
+
+.retro-am-lamp[data-state="rec"]::before {
+  background: #ff5a3a;
+  box-shadow: 0 0 8px #ff5a3a;
+  animation: am-blink 1.2s steps(1) infinite;
+}
+
+.retro-am-lamp[data-state="sent"] {
+  color: #8fd14f;
+}
+
+@keyframes am-blink {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+/* the cassette in its well */
+.retro-am-tapewell {
+  display: grid;
+  place-items: center;
+  height: 150px;
+  border-radius: 10px;
+  background: #1a110b;
+  box-shadow: inset 0 0 0 2px #0e0905, inset 0 6px 14px rgb(0 0 0 / 0.6);
+}
+
+.retro-am-tape {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 230px;
+  height: 104px;
+  border-radius: 8px;
+  background: #efe1c5;
+  box-shadow: 0 0 0 3px #2b1d15;
+}
+
+.retro-am-tape .retro-am-label {
+  color: #a8431b;
+}
+
+.retro-am-reels {
+  display: flex;
+  gap: 46px;
+  padding: 8px 22px;
+  border-radius: 30px;
+  background: #2b1d15;
+}
+
+.retro-am-reels i {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(#efe1c5 0 20deg, #2b1d15 20deg 60deg);
+  animation: retro-spin 2.4s linear infinite paused;
+}
+
+.retro-am-tape[data-run="true"] .retro-am-reels i {
+  animation-play-state: running;
+}
+
+/* speed dial */
+.retro-am-dial {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+}
+
+.retro-am-dial a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #0b0704;
+  box-shadow: inset 0 0 0 1.5px #2a1b0e;
+  color: #f4e6c8;
+  text-decoration: none;
+  transition: box-shadow 0.2s, translate 0.2s;
+}
+
+.retro-am-dial a:hover {
+  translate: 0 -2px;
+  box-shadow: inset 0 0 0 1.5px var(--rx-amber), 0 0 14px rgb(255 180 70 / 0.25);
+}
+
+.retro-am-dial a:focus-visible {
+  outline: 2px solid var(--rx-hot);
+  outline-offset: 3px;
+}
+
+.retro-am-dial a > svg {
+  margin-left: auto;
+  color: var(--rx-amber);
+}
+
+.retro-am-key {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border: 1.5px solid var(--rx-amber);
+  border-radius: 8px;
+  color: var(--rx-glow);
+  font: 700 0.9rem "Barlow Condensed", sans-serif;
+}
+
+.retro-am-who {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.retro-am-who b {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 700 1rem "Fraunces", Georgia, serif;
+}
+
+.retro-am-who span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 500 0.82rem "Fraunces", Georgia, serif;
+  color: #e9d7b4;
+}
+
+/* the faceplate and the chat inside it */
+.retro-am-plate {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding: 16px 18px;
+  border-radius: 8px;
+  background: linear-gradient(#1f150d, #170f09);
+  box-shadow: inset 0 0 0 2px #0e0905;
+}
+
+.retro-am-head {
+  margin: 0;
+}
+
+.retro-am-title {
+  font: 400 1.6rem / 1 "Shrikhand", Georgia, serif;
+  color: var(--rx-glow);
+  text-shadow: 0 0 14px rgb(255 180 70 / 0.4);
+}
+
+[data-theme="retro"] .retro-am .chat {
+  height: 470px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--rx-glass);
+  box-shadow: inset 0 0 0 2px #2a1b0e;
+  color: #f4e6c8;
+}
+
+[data-theme="retro"] .retro-am .chat-head {
+  border-color: rgb(243 181 68 / 0.2);
+}
+
+[data-theme="retro"] .retro-am .chat-title {
+  color: #f4e6c8;
+}
+
+[data-theme="retro"] .retro-am .chat-status {
+  color: var(--rx-dim);
+  letter-spacing: 0.04em;
+}
+
+[data-theme="retro"] .retro-am .chat-bubble.chat-me {
+  border: 1.5px solid rgb(243 181 68 / 0.5);
+  background: none;
+  color: #f4e6c8;
+}
+
+[data-theme="retro"] .retro-am .chat-bubble.chat-you {
+  border: 0;
+  background: linear-gradient(#ffd27a, #e8a91c);
+  color: #2b1d15;
+}
+
+[data-theme="retro"] .retro-am .chat-summary .text-muted {
+  color: var(--rx-dim);
+}
+
+[data-theme="retro"] .retro-am .chat-dot {
+  background: var(--rx-amber);
+}
+
+[data-theme="retro"] .retro-am .chat-foot {
+  border-color: rgb(243 181 68 / 0.2);
+}
+
+[data-theme="retro"] .retro-am .chat-field {
+  border: 0;
+  border-radius: 8px;
+  background: #0b0704;
+  box-shadow: inset 0 0 0 1.5px rgb(243 181 68 / 0.4);
+  color: #f4e6c8;
+}
+
+[data-theme="retro"] .retro-am .chat-field::placeholder {
+  color: rgb(244 230 200 / 0.45);
+}
+
+[data-theme="retro"] .retro-am .chat-field:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 1.5px var(--rx-hot), 0 0 12px rgb(255 190 80 / 0.25);
+}
+
+/* Send is the red record button */
+[data-theme="retro"] .retro-am .chat-send {
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(#ff7a5a, #c8321c);
+  color: #fff4e6;
+  box-shadow: 0 3px 0 #0e0905;
+}
+
+[data-theme="retro"] .retro-am :is(.chat-foot, .chat-summary) .btn {
+  border-radius: 8px;
+}
+
+[data-theme="retro"] .retro-am .chat-restart {
+  color: var(--rx-amber);
+}
+
+[data-theme="retro"] .retro-am .text-muted {
+  color: var(--rx-dim);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .retro-am-reels i,
+  .retro-am-lamp[data-state="rec"]::before {
+    animation: none;
+  }
+}
+
+.retro-am-deck,
+.retro-am-dial a {
+  min-width: 0;
+}
+
+.retro-am-dial {
+  list-style: none;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* the footer: a walnut strip with an amber edge, the links as lit labels, "Back to top" as the amber key */
+[data-theme="retro"] .site-foot {
+  border-top: 0;
+  background: linear-gradient(90deg, #3a1f0e, #5a321a 8%, #61371c 50%, #5a321a 92%, #3a1f0e);
+  box-shadow: inset 0 3px 0 #e8a91c, inset 0 5px 0 rgb(0 0 0 / 0.35);
+}
+
+[data-theme="retro"] .site-foot-name {
+  color: #ffd27a;
+}
+
+[data-theme="retro"] .site-foot-year {
+  color: rgb(244 230 200 / 0.6);
+}
+
+[data-theme="retro"] .site-foot-link {
+  color: #f1dcb4;
+  font: 700 0.85rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+[data-theme="retro"] .site-foot-link:hover {
+  color: #ffc861;
+  text-shadow: 0 0 10px rgb(255 180 70 / 0.6);
+}
+
+[data-theme="retro"] .site-foot-top {
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(#ffd27a, #e8a91c);
+  color: #2b1d15;
+  box-shadow: 0 4px 0 #0e0905;
+}
+
+[data-theme="retro"] .site-foot-top:active {
+  translate: 0 3px;
+  box-shadow: 0 1px 0 #0e0905;
+}

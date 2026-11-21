@@ -1,0 +1,20 @@
+/* ── Retro theme ──────────────────────────────────────────────────────────────
+   The portfolio as one evening in a 70s listening room: cream paper, rust / orange / mustard / olive,
+   Shrikhand display type, Fraunces body, Bebas Neue labels. Tokens live in src/styles/index.css
+   ([data-theme="retro"]). This file loads after index.css, outside Tailwind's layers, so it wins over
+   utilities. One file per part of the page, in this order (later files win ties):
+     base     the shell: navbar, corner record player, headings, buttons, cards, reveals, footer
+     opening  the 3D room, the title card and its keys, the needle drop
+     about    the polaroid and the fact labels
+     journey  the road trip
+     skills   the stereo receiver
+     work     the screens, track list, notes and the case study
+     contact  the answering machine and the chat */
+
+@import "./styles/base.css";
+@import "./styles/opening.css";
+@import "./styles/about.css";
+@import "./styles/journey.css";
+@import "./styles/skills.css";
+@import "./styles/work.css";
+@import "./styles/contact.css";

@@ -1,0 +1,851 @@
+/* Retro theme, Skills: the stereo receiver and its tapes (RetroTapes.tsx). */
+
+/* ── A3 Skills: olive 70s wallpaper ── */
+
+[data-theme="retro"] #skills {
+  --fg: #efe1c5;
+  --line: #3a2314;
+  --sun-ray: rgb(212 160 58 / 0.45);
+}
+
+[data-theme="retro"] #skills .skills-strip {
+  --muted: #3a2314;
+  border-width: 4px 0;
+  border-color: var(--r-brown);
+  background: var(--r-mustard);
+  rotate: -1.5deg;
+  scale: 1.04;
+}
+
+/* tobacco */
+[data-theme="retro"] #skills {
+  background-color: #4e3a1e;
+  background-image: radial-gradient(ellipse 60% 60% at 85% 10%, rgb(255 190 110 / 0.15), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 50%, rgb(20 8 2 / 0.45)),
+    linear-gradient(180deg, #5c4524, #3a2a14);
+  background-size: auto;
+  background-position: 0 0;
+}
+
+/* Skills: darker oak boards, lit from the right */
+[data-theme="retro"] #skills {
+
+/* Skills: by the speaker, a deep tobacco brown */
+  background: radial-gradient(ellipse 55% 60% at 85% 0%, rgb(255 180 100 / 0.2), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(10 4 1 / 0.55)),
+    linear-gradient(rgb(38 24 12 / 0.8), rgb(38 24 12 / 0.8)), url("/textures/oak-dark.webp") 0 0 / 360px 360px, #26180c;
+}
+
+/* ══ Skills, design S4: one 70s hi-fi receiver (src/themes/retro/RetroTapes.tsx). Walnut case, dark faceplate,
+   amber dial with a red needle (the group picker), the screen (the tools), the display strip (every logo). ══ */
+.retro-rx {
+  --rx-amber: #f3b544;
+  --rx-glow: #ffc861;
+  --rx-hot: #ffd27a;
+  --rx-dim: rgb(243 181 68 / 0.55);
+  --rx-glass: #120c07;
+  padding: 18px;
+  border-radius: 16px;
+  background: linear-gradient(90deg, #4a2812, #6b3c1d 4%, #74421f 50%, #6b3c1d 96%, #4a2812);
+  box-shadow: 0 30px 60px rgb(0 0 0 / 0.5), inset 0 2px 0 rgb(255 220 170 / 0.18);
+  color: #f4e6c8;
+}
+
+.retro-rx-face {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 8px;
+  background: linear-gradient(#1f150d, #170f09);
+  box-shadow: inset 0 0 0 2px #0e0905;
+}
+
+.retro-rx-label {
+  margin: 0;
+  font: 700 0.8rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rx-dim);
+}
+
+/* the dial */
+.retro-rx-dial {
+  position: relative;
+  padding: 44px 24px 10px;
+  border-radius: 6px;
+  background: radial-gradient(ellipse 70% 120% at 50% 100%, rgb(255 176 64 / 0.32), transparent 70%),
+    linear-gradient(#3a230f, #2a180a);
+  box-shadow: inset 0 0 0 2px #4a3016, inset 0 8px 18px rgb(0 0 0 / 0.5);
+  overflow: hidden;
+}
+
+.retro-rx-scale {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  height: 22px;
+  background: linear-gradient(rgb(243 181 68 / 0.45), rgb(243 181 68 / 0.45)) 0 100% / 100% 2px no-repeat,
+    repeating-linear-gradient(90deg, rgb(243 181 68 / 0.55) 0 2px, transparent 2px 18px) 0 0 / 100% 14px no-repeat;
+}
+
+.retro-rx-stations {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.retro-rx-station {
+  height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--rx-dim);
+  font: 700 0.95rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.25s, text-shadow 0.25s;
+}
+
+.retro-rx-station:hover {
+  color: var(--rx-amber);
+}
+
+.retro-rx-station[aria-selected="true"] {
+  color: var(--rx-hot);
+  text-shadow: 0 0 12px rgb(255 190 80 / 0.85);
+}
+
+.retro-rx-needle {
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: calc(24px + (100% - 48px) * var(--at, 0.5));
+  width: 3px;
+  margin-left: -1px;
+  border-radius: 2px;
+  background: #e8462a;
+  box-shadow: 0 0 10px rgb(232 70 42 / 0.9);
+}
+
+/* the info panel and the screen */
+.retro-rx-main {
+  display: grid;
+  gap: 14px;
+}
+
+@media (min-width: 900px) {
+  .retro-rx-main {
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: 18px;
+  }
+}
+
+.retro-rx-info,
+.retro-rx-screen {
+  padding: 20px;
+  border-radius: 6px;
+  background: var(--rx-glass);
+  box-shadow: inset 0 0 0 2px #2a1b0e;
+}
+
+.retro-rx-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.retro-rx-title {
+  margin: 8px 0 0;
+  font: 400 clamp(1.6rem, 2.6vw, 2rem) / 1.05 "Shrikhand", Georgia, serif;
+  color: var(--rx-glow);
+  text-shadow: 0 0 18px rgb(255 180 70 / 0.45);
+}
+
+.retro-rx-blurb {
+  margin: 10px 0 0;
+  font: 500 0.95rem / 1.45 "Fraunces", Georgia, serif;
+  color: #e9d7b4;
+}
+
+.retro-rx-count {
+  margin: 14px 0 0;
+  font: 700 0.9rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--rx-amber);
+}
+
+.retro-rx-tuning {
+  display: flex;
+  gap: 12px;
+}
+
+.retro-rx-knob {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 2px solid #5a3a1c;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #8a6a44, #3a2614);
+  color: #f4e6c8;
+  box-shadow: 0 3px 0 #0e0905;
+  cursor: pointer;
+  transition: translate 0.1s, box-shadow 0.1s;
+}
+
+.retro-rx-knob:active {
+  translate: 0 2px;
+  box-shadow: 0 1px 0 #0e0905;
+}
+
+.retro-rx-screen {
+  padding: 14px 22px;
+}
+
+/* a tool's logo, lit amber like the dial */
+.retro-rx-logo {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border: 1.5px solid rgb(243 181 68 / 0.7);
+  border-radius: 8px;
+  color: var(--rx-glow);
+  font-size: 18px;
+  filter: drop-shadow(0 0 6px rgb(255 180 70 / 0.35));
+}
+
+.retro-rx-logo.is-small {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.retro-rx-cols,
+.retro-rx-tools li {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  align-items: center;
+}
+
+.retro-rx-cols {
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgb(243 181 68 / 0.25);
+}
+
+.retro-rx-tools,
+.retro-rx-all {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.retro-rx-tools li {
+  gap: 6px 0;
+  border-bottom: 1px dashed rgb(243 181 68 / 0.18);
+}
+
+.retro-rx-tools li:last-child,
+.retro-rx-all li:last-child {
+  border-bottom: 0;
+}
+
+.retro-rx-tool {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font: 700 1.1rem "Fraunces", Georgia, serif;
+}
+
+.retro-rx-used {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.retro-rx-used button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border: 1.5px solid rgb(243 181 68 / 0.5);
+  border-radius: 999px;
+  background: none;
+  color: #f4e6c8;
+  font: 600 0.82rem "Fraunces", Georgia, serif;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.retro-rx-used button:hover {
+  border-color: var(--rx-amber);
+  background: rgb(243 181 68 / 0.16);
+}
+
+.retro-rx-none {
+  color: rgb(244 230 200 / 0.4);
+}
+
+/* "All tools" */
+.retro-rx-all li {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px 12px;
+  padding: 10px 0;
+  border-bottom: 1px dashed rgb(243 181 68 / 0.18);
+}
+
+.retro-rx-all .retro-rx-label {
+  color: var(--rx-amber);
+}
+
+.retro-rx-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.retro-rx-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px 4px 4px;
+  border-radius: 8px;
+  background: rgb(243 181 68 / 0.08);
+  font: 600 0.88rem "Fraunces", Georgia, serif;
+}
+
+/* the display strip */
+.retro-rx-strip {
+  height: 60px;
+  border-radius: 6px;
+  background: #0b0704;
+  box-shadow: inset 0 0 0 2px #2a1b0e;
+  overflow: hidden;
+}
+
+.retro-rx-marquee {
+  display: flex;
+  width: max-content;
+  height: 100%;
+  animation: marquee 50s linear infinite;
+}
+
+.retro-rx-run {
+  display: flex;
+  align-items: center;
+  gap: 34px;
+  padding-right: 34px;
+}
+
+.retro-rx-strip .retro-rx-logo {
+  box-shadow: 0 0 12px rgb(255 180 70 / 0.25);
+}
+
+.retro-rx-station:focus-visible,
+.retro-rx-knob:focus-visible,
+.retro-rx-used button:focus-visible {
+  outline: 2px solid var(--rx-hot);
+  outline-offset: 3px;
+}
+
+/* phones: the dial is two rows of three, no needle; the lit station shows the pick */
+@media (max-width: 767px) {
+  .retro-rx {
+    padding: 10px;
+  }
+
+  .retro-rx-face {
+    padding: 12px;
+  }
+
+  .retro-rx-dial {
+    padding: 10px 8px;
+  }
+
+  .retro-rx-scale,
+  .retro-rx-needle {
+    display: none;
+  }
+
+  .retro-rx-stations {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .retro-rx-cols {
+    display: none;
+  }
+
+  .retro-rx-tools li,
+  .retro-rx-all li {
+    grid-template-columns: 1fr;
+  }
+
+  .retro-rx-screen {
+    min-height: 0;
+    padding: 10px 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .retro-rx-marquee {
+    animation: none;
+  }
+
+  .retro-rx-needle {
+    transition: none;
+  }
+}
+
+/* Skills receiver: "Used in" is the projects' app icons, each with its name under it */
+.retro-rx-used {
+  gap: 10px 14px;
+}
+
+.retro-rx-tools li {
+  min-height: 54px;
+  padding: 10px 0;
+}
+
+.retro-rx-used button.retro-rx-app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  width: 78px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+
+.retro-rx-used button.retro-rx-app:hover {
+  background: none;
+}
+
+.retro-rx-app-icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #2a1b0e;
+  box-shadow: 0 0 0 1.5px rgb(243 181 68 / 0.45), 0 3px 8px rgb(0 0 0 / 0.5);
+  color: var(--rx-glow);
+  font: 700 1rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.06em;
+  transition: translate 0.2s, box-shadow 0.2s;
+}
+
+.retro-rx-app-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.retro-rx-app:hover .retro-rx-app-icon,
+.retro-rx-app:focus-visible .retro-rx-app-icon {
+  translate: 0 -3px;
+  box-shadow: 0 0 0 2px var(--rx-amber), 0 0 14px rgb(255 180 70 / 0.45);
+}
+
+.retro-rx-app-name {
+  max-width: 100%;
+  font: 600 0.72rem / 1.2 "Fraunces", Georgia, serif;
+  color: #e9d7b4;
+  text-align: center;
+}
+
+/* Skills receiver: every group's info and screen are always there, stacked; only the tuned one shows. So
+   the receiver keeps one height (the tallest) and the page never jumps when you change station. */
+.retro-rx-stack {
+  display: grid;
+}
+
+.retro-rx-layer {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0s 0.2s;
+}
+
+.retro-rx-layer[data-on="true"] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.25s 0.08s;
+}
+
+.retro-rx-screen {
+  min-height: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .retro-rx-layer,
+  .retro-rx-layer[data-on="true"] {
+    transition: none;
+  }
+}
+
+/* Skills receiver: a tool used on every project shows all the app icons, overlapped, over "Every project" */
+.retro-rx-every {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+.retro-rx-every-icons {
+  display: flex;
+  padding-left: 12px;
+}
+
+.retro-rx-every-icons .retro-rx-app-icon {
+  width: 38px;
+  height: 38px;
+  margin-left: -12px;
+  border-radius: 10px;
+  box-shadow: 0 0 0 2px var(--rx-glass), 0 0 0 3.5px rgb(243 181 68 / 0.45);
+}
+
+.retro-rx-every .retro-rx-app-name {
+  color: var(--rx-amber);
+  font-weight: 700;
+}
+
+/* ── Skills receiver: more of a real radio. Frequency numbers on the dial; on the left panel, indicator
+   lamps, a frequency readout, a signal meter and a big tuning knob that turns with the station. ── */
+.retro-rx-dial {
+  padding-top: 52px;
+}
+
+.retro-rx-mhz {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  top: 6px;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  text-align: center;
+  font: 700 0.7rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.1em;
+  color: rgb(243 181 68 / 0.6);
+}
+
+.retro-rx-scale {
+  top: 22px;
+}
+
+.retro-rx-info {
+  gap: 0;
+}
+
+.retro-rx-lamps {
+  display: flex;
+  margin-bottom: 12px;
+}
+
+.retro-rx-lamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 700 0.7rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgb(243 181 68 / 0.45);
+}
+
+.retro-rx-lamp::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #3a2614;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.5);
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.retro-rx-lamp.is-tuned {
+  color: var(--rx-amber);
+}
+
+.retro-rx-lamp.is-tuned::before {
+  background: #8fd14f;
+  box-shadow: 0 0 8px rgb(143 209 79 / 0.8);
+}
+
+[data-theme="retro"][data-music="on"] .retro-rx-lamp.is-stereo {
+  color: var(--rx-amber);
+}
+
+[data-theme="retro"][data-music="on"] .retro-rx-lamp.is-stereo::before {
+  background: #ff5a3a;
+  box-shadow: 0 0 8px rgb(255 90 58 / 0.85);
+}
+
+/* the frequency readout */
+.retro-rx-freq {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0 0 14px;
+  border-radius: 4px;
+  background: #0b0704;
+  box-shadow: inset 0 0 0 1.5px #2a1b0e, inset 0 4px 10px rgb(0 0 0 / 0.6);
+}
+
+.retro-rx-freq small {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: var(--rx-dim);
+  text-shadow: none;
+}
+
+/* the signal meter: a little lit gauge, its needle up by how full the station is; it bounces with the music */
+.retro-rx-meter {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.retro-rx-meter-face {
+  position: relative;
+  box-shadow: inset 0 0 0 2px #2a1b0e, 0 0 16px rgb(255 180 70 / 0.25);
+}
+
+.retro-rx-meter-face::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 34%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgb(200 60 30 / 0.28));
+}
+
+.retro-rx-meter-needle {
+  position: absolute;
+  border-radius: 2px;
+  transform-origin: 50% 100%;
+  rotate: calc(-55deg + var(--sig, 0.5) * 110deg);
+  transition: rotate 0.7s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+
+[data-theme="retro"][data-music="on"] .retro-rx-meter-needle {
+  animation: rx-vu 0.9s ease-in-out infinite alternate;
+}
+
+@keyframes rx-vu {
+  0% {
+    translate: 0 0;
+    transform: rotate(-6deg);
+  }
+
+  45% {
+    transform: rotate(4deg);
+  }
+
+  100% {
+    transform: rotate(-2deg);
+  }
+}
+
+/* the tuning knob: big, ridged, turns with the station */
+
+.retro-rx-dialknob {
+  display: block;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, #5b3f24 0 44%, transparent 45%),
+    repeating-conic-gradient(#8a6a44 0 6deg, #4a3018 6deg 12deg);
+  box-shadow: 0 0 0 2px #2a1b0e, 0 4px 8px rgb(0 0 0 / 0.6), inset 0 0 0 1px rgb(255 220 170 / 0.15);
+}
+
+.retro-rx-dialknob span {
+  position: absolute;
+  left: 50%;
+  top: 9px;
+  width: 4px;
+  height: 14px;
+  margin-left: -2px;
+  border-radius: 2px;
+  background: var(--rx-hot);
+  box-shadow: 0 0 6px rgb(255 190 80 / 0.8);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="retro"][data-music="on"] .retro-rx-meter-needle {
+    animation: none;
+  }
+
+  .retro-rx-dialknob,
+  .retro-rx-meter-needle {
+    transition: none;
+  }
+}
+
+/* signal meter: ticks only in a band along the arc; a clear red needle */
+.retro-rx-meter-face {
+  background: linear-gradient(#f6dca0, #e9b85a);
+}
+
+.retro-rx-meter-needle {
+  width: 3px;
+  margin-left: -1.5px;
+}
+
+.retro-rx-meter-face > .retro-rx-meter-needle::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  border-radius: 50%;
+  background: #2b1d15;
+}
+
+/* the left panel's controls on one centre line: readout, meter and knobs the same width, labels under them */
+
+.retro-rx-freq {
+  padding: 8px 12px;
+  font: 700 2rem/1 "Barlow Condensed", sans-serif;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+  color: var(--rx-hot);
+  text-shadow: 0 0 10px rgb(255 190 80 / 0.7);
+  justify-content: center;
+}
+
+.retro-rx-meter,
+.retro-rx-tuning {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+}
+
+.retro-rx-meter {
+  margin-top: auto;
+  padding-top: 18px;
+}
+
+.retro-rx-meter-face {
+  overflow: hidden;
+  width: 100%;
+  max-width: 200px;
+  height: 84px;
+  border-radius: 100px 100px 6px 6px;
+}
+
+.retro-rx-meter-face::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-conic-gradient(from -60deg at 50% 100%, #3a2314 0 1.4deg, transparent 1.4deg 12deg);
+  -webkit-mask: radial-gradient(circle at 50% 100%, transparent 0 62px, #000 62px 76px, transparent 76px);
+  mask: radial-gradient(circle at 50% 100%, transparent 0 62px, #000 62px 76px, transparent 76px);
+}
+
+.retro-rx-meter-needle {
+  left: 50%;
+  bottom: -2px;
+  z-index: 1;
+  background: #c8321c;
+  height: 74px;
+}
+
+.retro-rx-tuning {
+  grid-template-areas: "prev knob next" "label label label";
+  align-items: center;
+  justify-content: center;
+  column-gap: 18px;
+  padding-top: 0;
+}
+
+.retro-rx-tuning > .retro-rx-knob:first-child {
+  grid-area: prev;
+}
+
+.retro-rx-tuning > .retro-rx-dialknob {
+  grid-area: knob;
+}
+
+.retro-rx-tuning > .retro-rx-knob:nth-child(3) {
+  grid-area: next;
+}
+
+.retro-rx-tuning > .retro-rx-label {
+  grid-area: label;
+}
+
+/* the left panel reads down one centre line, text included */
+.retro-rx-info {
+  text-align: center;
+}
+
+.retro-rx-lamps {
+  justify-content: center;
+  gap: 22px;
+}
+
+/* the faceplate */
+
+/* the screen: every project's notes stacked in one cell; only the playing one shows */
+
+/* the needle and the tuning knob move together, the same time and ease, no overshoot past the station;
+   six marks round the knob, one per station, the tuned one lit, so the knob's pointer reads true */
+.retro-rx-needle {
+  pointer-events: none;
+  transition: left 0.5s cubic-bezier(0.25, 0.8, 0.3, 1);
+}
+
+.retro-rx-dialknob {
+  position: relative;
+  flex: none;
+  rotate: var(--turn, 0deg);
+  transition: rotate 0.5s cubic-bezier(0.25, 0.8, 0.3, 1);
+}
+
+.retro-rx-knobwrap {
+  position: relative;
+  grid-area: knob;
+  display: grid;
+  place-items: center;
+  width: 86px;
+  height: 86px;
+}
+
+.retro-rx-tuning {
+  margin-top: 16px;
+  grid-template-columns: 46px 86px 46px;
+}
+
+.retro-rx-tick {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4px;
+  height: 7px;
+  margin: -3.5px 0 0 -2px;
+  border-radius: 2px;
+  background: rgb(243 181 68 / 0.3);
+  transform: rotate(var(--a)) translateY(-39px);
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.retro-rx-tick[data-on="true"] {
+  background: var(--rx-hot);
+  box-shadow: 0 0 8px rgb(255 190 80 / 0.9);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .retro-rx-tick {
+    transition: none;
+  }
+}

@@ -1,0 +1,742 @@
+/* Retro theme, Work: the screens, track list and notes, and the case study (RetroWork.tsx, ProjectModal.tsx). */
+
+@keyframes rfx-spring {
+  0% {
+    opacity: 0;
+    translate: 0 120px;
+    rotate: var(--spring-r, -4deg);
+    scale: 0.9;
+  }
+  65% {
+    opacity: 1;
+    translate: 0 -10px;
+    rotate: 0deg;
+    scale: 1.02;
+  }
+}
+
+html[data-rfx][data-theme="retro"] #work [data-in]:is(.retro-hf, .retro-sc > *) {
+  animation: rfx-spring 0.9s cubic-bezier(0.2, 0.9, 0.3, 1) backwards;
+  animation-delay: calc(0.9s + var(--rfx-i, 0) * 100ms);
+}
+
+/* mahogany */
+[data-theme="retro"] #work {
+  background-color: #4e2216;
+  background-image: radial-gradient(ellipse 70% 60% at 50% 25%, rgb(255 180 110 / 0.14), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 50%, rgb(20 6 2 / 0.45)),
+    linear-gradient(180deg, #5e2a1a, #3a170d);
+}
+
+/* Work on mahogany: its title in lamplight colours, like the other sections */
+[data-theme="retro"] #work .heading {
+  color: var(--r-mustard);
+  text-shadow: 0.05em 0.05em 0 var(--r-rust);
+}
+
+/* ── The room as the inspiration, not the wallpaper: each section is a dark corner of the listening room,
+   warm brown, a pool of lamplight on one side and a cool touch of moonlight from the other. The room's
+   wood is only a whisper under a wash of the section's own colour (tiles in public/textures). ── */
+
+/* Work: at the console, deep mahogany, the lamp right over the records */
+[data-theme="retro"] #work {
+
+/* ── B1 Work: a big mustard sun behind the station ── */
+  background: radial-gradient(ellipse 60% 55% at 55% 0%, rgb(255 180 100 / 0.22), transparent 70%),
+    radial-gradient(ellipse 40% 60% at 0% 40%, rgb(130 160 255 / 0.06), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 45%, rgb(10 4 1 / 0.55)),
+    linear-gradient(rgb(44 20 12 / 0.88), rgb(44 20 12 / 0.88)), url("/textures/slats.webp") 0 0 / 280px 1024px, #2c140c;
+}
+
+/* P6 */
+.retro-sc {
+  display: grid;
+  gap: 28px;
+  color: #f4e6c8;
+}
+
+@media (min-width: 1024px) {
+  .retro-sc {
+    align-items: start;
+  }
+}
+
+/* the track list: a cream card */
+.retro-sc-list {
+  padding: 16px;
+  border-radius: 6px;
+  background: #f1e4c6;
+  color: #3a2314;
+  box-shadow: 0 20px 40px rgb(0 0 0 / 0.45);
+}
+
+.retro-sc-list ol {
+  margin: 0 0 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.retro-sc-side {
+  margin: 6px 0 4px;
+  font: 700 0.75rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #a8431b;
+}
+
+.retro-sc-track {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 42px;
+  padding: 0 8px;
+  border-bottom: 2px dotted rgb(58 35 20 / 0.3);
+  color: #3a2314;
+  font: 700 0.95rem "Fraunces", Georgia, serif;
+  text-align: left;
+  cursor: pointer;
+}
+
+.retro-sc-track[aria-pressed="true"] {
+  color: #f4e6c8;
+}
+
+.retro-sc-no {
+  min-width: 22px;
+  font: 700 0.8rem "Barlow Condensed", sans-serif;
+}
+
+.retro-sc-track[aria-pressed="true"] .retro-sc-no {
+  color: #e8a91c;
+}
+
+.retro-sc-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.retro-sc-status {
+  border-radius: 999px;
+  background: #e8a91c;
+  color: #3a2314;
+  font: 700 0.65rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* the stage: one fixed height whatever the frame, so nothing below moves */
+.retro-sc-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  height: 600px;
+}
+
+.retro-sc-record {
+  position: absolute;
+  right: 0;
+  top: 10px;
+  display: grid;
+  place-items: center;
+  width: 200px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: repeating-radial-gradient(circle, #1a110b 0, #2b1d15 1.6px, #1a110b 3.2px);
+  box-shadow: 0 6px 14px rgb(0 0 0 / 0.5);
+}
+
+.retro-sc-record span {
+  display: grid;
+  place-items: center;
+  width: 36%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 3px rgb(0 0 0 / 0.25);
+}
+
+.retro-sc-record img {
+  width: 58%;
+  height: 58%;
+  object-fit: contain;
+  border-radius: 22%;
+}
+
+[data-theme="retro"][data-music="on"] .retro-sc-record span {
+  animation: retro-spin 1.8s linear infinite;
+}
+
+.retro-sc-fan {
+  position: absolute;
+  top: 70px;
+  width: 160px;
+  border-radius: 20px;
+  opacity: 0.75;
+  box-shadow: 0 12px 24px rgb(0 0 0 / 0.5);
+}
+
+.retro-sc-fan.is-left {
+  left: calc(50% - 230px);
+  rotate: -9deg;
+}
+
+.retro-sc-fan.is-right {
+  left: calc(50% + 70px);
+  rotate: 9deg;
+}
+
+/* the device: a phone, or a wide frame for landscape screens */
+.retro-sc-device {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: 250px;
+  padding: 9px;
+  border: 0;
+  border-radius: 36px;
+  background: #1a110b;
+  box-shadow: 0 0 0 2px #4a3016, 0 24px 44px rgb(0 0 0 / 0.6);
+  cursor: pointer;
+  transition: translate 0.2s;
+}
+
+.retro-sc-device:hover {
+  translate: 0 -4px;
+}
+
+.retro-sc-device img {
+  grid-area: 1 / 1;
+  width: 100%;
+  aspect-ratio: 787 / 1400;
+  object-fit: cover;
+  border-radius: 28px;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.retro-sc-device img[data-on="true"] {
+  opacity: 1;
+}
+
+.retro-sc-stage[data-wide="true"] .retro-sc-record {
+  top: 40px;
+}
+
+.retro-sc-controls {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.retro-sc-arrow {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: #f1e4c6;
+  color: #3a2314;
+  box-shadow: 0 3px 0 #1a110b;
+  cursor: pointer;
+}
+
+.retro-sc-arrow:active {
+  translate: 0 2px;
+  box-shadow: 0 1px 0 #1a110b;
+}
+
+.retro-sc-dots {
+  display: flex;
+  gap: 4px;
+}
+
+.retro-sc-dots button {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.retro-sc-dots button::before {
+  content: "";
+  display: block;
+  width: 8px;
+  height: 8px;
+  margin: auto;
+  border-radius: 4px;
+  background: rgb(244 230 200 / 0.4);
+  transition: width 0.3s, background-color 0.3s;
+}
+
+.retro-sc-dots button[data-on="true"]::before {
+  width: 20px;
+  background: #e8a91c;
+}
+
+/* the notes: every project's, stacked; only the playing one shows */
+.retro-sc-notes {
+  display: grid;
+}
+
+.retro-sc-notes article {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0s 0.2s;
+}
+
+.retro-sc-notes article[data-on="true"] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.25s 0.08s;
+}
+
+.retro-sc-kicker {
+  margin: 0;
+  font: 700 0.8rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #f3c46a;
+}
+
+.retro-sc-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0 0;
+  font: 400 clamp(1.7rem, 2.6vw, 2.1rem) / 1.05 "Shrikhand", Georgia, serif;
+  color: #e8a91c;
+}
+
+.retro-sc-title img {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+}
+
+.retro-sc-client {
+  margin: 6px 0 0;
+  font: 500 0.92rem "Fraunces", Georgia, serif;
+  color: #f1dcb4;
+}
+
+.retro-sc-desc {
+  margin: 14px 0 0;
+  font: 500 0.98rem / 1.5 "Fraunces", Georgia, serif;
+}
+
+.retro-sc-highlights {
+  display: grid;
+  margin: 12px 0 0;
+  font: 500 0.9rem / 1.4 "Fraunces", Georgia, serif;
+  color: #e9d7b4;
+}
+
+.retro-sc-highlights li::marker {
+  color: #e8a91c;
+}
+
+.retro-sc-tech {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* centred over the "See the full project" key */
+  gap: 8px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.retro-sc-tech li {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1.5px solid rgb(244 230 200 / 0.45);
+  border-radius: 8px;
+  font-size: 17px;
+  color: #f4e6c8;
+}
+
+.retro-sc-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.retro-sc-open {
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  border: 0;
+  border-radius: 8px;
+  background: #e8a91c;
+  color: #3a2314;
+  font: 700 0.95rem "Fraunces", Georgia, serif;
+  box-shadow: 0 4px 0 #1a110b;
+  cursor: pointer;
+}
+
+.retro-sc-open:active {
+  translate: 0 2px;
+  box-shadow: 0 2px 0 #1a110b;
+}
+
+.retro-sc-actions a {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 1.5px solid rgb(244 230 200 / 0.5);
+  border-radius: 8px;
+  color: #f4e6c8;
+}
+
+.retro-sc-actions a:hover {
+  background: rgb(244 230 200 / 0.1);
+}
+
+.retro-sc :is(.retro-sc-track, .retro-sc-device, .retro-sc-arrow, .retro-sc-dots button, .retro-sc-open, .retro-sc-actions a):focus-visible {
+  outline: 2px solid #ffd27a;
+  outline-offset: 3px;
+}
+
+@media (max-width: 1023px) {
+  .retro-sc-stage {
+    height: 560px;
+  }
+}
+
+@media (max-width: 560px) {
+  .retro-sc-fan,
+  .retro-sc-record {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .retro-sc-device img,
+  .retro-sc-notes article,
+  .retro-sc-notes article[data-on="true"],
+  .retro-sc-dots button::before {
+    transition: none;
+  }
+}
+
+/* Work: the highlights as real bullets (the reset strips list markers), each an amber dot */
+.retro-sc-highlights {
+  gap: 8px;
+  padding-left: 0;
+  list-style: none;
+}
+
+.retro-sc-highlights li {
+  position: relative;
+  padding-left: 20px;
+}
+
+.retro-sc-highlights li::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 0.5em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #e8a91c;
+  box-shadow: 0 0 6px rgb(232 169 28 / 0.6);
+}
+
+/* Work: the track list reads as buttons. A hint on top, each track a raised cream key with a play icon,
+   the one playing pressed in, dark, with a little equaliser dancing */
+.retro-sc-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+  font: 600 0.8rem "Fraunces", Georgia, serif;
+  font-style: italic;
+  color: rgb(58 35 20 / 0.7);
+}
+
+.retro-sc-hint::before {
+  content: "\2193";
+  font-style: normal;
+  color: #a8431b;
+}
+
+.retro-sc-list li + li {
+  margin-top: 6px;
+}
+
+.retro-sc-track {
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.15s, translate 0.15s;
+}
+
+.retro-sc-track:hover {
+  border-color: #e8a91c;
+  background: #fff6e2;
+  translate: 0 -1px;
+  box-shadow: 0 4px 0 rgb(58 35 20 / 0.25);
+}
+
+.retro-sc-track:active {
+  translate: 0 2px;
+  box-shadow: 0 1px 0 rgb(58 35 20 / 0.25);
+}
+
+.retro-sc-track[aria-pressed="true"] {
+  border-color: #3a2314;
+  border-bottom-color: #3a2314;
+  border-radius: 6px;
+  background: #3a2314;
+  translate: 0 2px;
+  box-shadow: inset 0 2px 6px rgb(0 0 0 / 0.4);
+}
+
+.retro-sc-play {
+  flex: none;
+  color: #a8431b;
+  opacity: 0.45;
+  transition: opacity 0.2s, translate 0.2s;
+}
+
+.retro-sc-track:hover .retro-sc-play {
+  opacity: 1;
+  translate: 2px 0;
+}
+
+.retro-sc-eq {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+}
+
+.retro-sc-eq span {
+  width: 3px;
+  height: 100%;
+  border-radius: 1px;
+  background: #e8a91c;
+  transform-origin: bottom;
+  animation: retro-sc-eq 0.9s ease-in-out infinite alternate;
+}
+
+.retro-sc-eq span:nth-child(2) {
+  animation-delay: -0.3s;
+}
+
+.retro-sc-eq span:nth-child(3) {
+  animation-delay: -0.6s;
+}
+
+@keyframes retro-sc-eq {
+  from {
+    transform: scaleY(0.3);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .retro-sc-eq span {
+    animation: none;
+  }
+}
+
+/* room for the keys: a wider list, so names and the "in dev" tag sit side by side */
+@media (min-width: 1024px) {
+  .retro-sc {
+    grid-template-columns: 270px minmax(0, 1fr) 320px;
+  }
+}
+
+.retro-sc-track {
+  border: 2px solid rgb(58 35 20 / 0.16);
+  border-radius: 6px;
+  background: #f8efdc;
+  box-shadow: 0 3px 0 rgb(58 35 20 / 0.22);
+  gap: 8px;
+}
+
+.retro-sc-status {
+  flex: none;
+  padding: 1px 6px;
+  font-size: 0.6rem;
+}
+
+/* Work, wide projects (web, games): a clean window. A title bar with three lamps and the name, the screens
+   all cropped alike from the top, a cover first, and no record peeking out behind */
+.retro-sc-screen {
+  display: grid;
+}
+
+.retro-sc-stage[data-wide="true"] .retro-sc-record {
+  display: none;
+}
+
+.retro-sc-stage[data-wide="true"] .retro-sc-device {
+  width: 100%;
+  max-width: 520px;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #1a110b;
+}
+
+.retro-sc-stage[data-wide="true"] .retro-sc-device img {
+  aspect-ratio: 16 / 10;
+  border-radius: 0;
+  object-position: top;
+}
+
+.retro-sc-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 12px;
+  background: linear-gradient(#2e1d11, #24170d);
+  box-shadow: inset 0 -1px 0 rgb(0 0 0 / 0.4);
+}
+
+.retro-sc-bar i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #e8462a;
+}
+
+.retro-sc-bar i:nth-child(2) {
+  background: #e8a91c;
+}
+
+.retro-sc-bar i:nth-child(3) {
+  background: #8a9a4a;
+}
+
+.retro-sc-bar b {
+  flex: 1;
+  margin-right: 33px; /* centred over the window, past the lamps */
+  font: 700 0.75rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: center;
+  color: rgb(243 181 68 / 0.7);
+}
+
+.retro-sc-cover {
+  grid-area: 1 / 1;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 8px;
+  aspect-ratio: 16 / 10;
+  padding: 24px;
+  text-align: center;
+  color: #f4e6c8;
+  background-image: radial-gradient(ellipse at 50% 30%, rgb(255 255 255 / 0.14), transparent 65%) !important;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.retro-sc-cover[data-on="true"] {
+  opacity: 1;
+}
+
+.retro-sc-cover[data-light] {
+  color: #1f2a44;
+  background-image: radial-gradient(ellipse at 50% 30%, rgb(0 0 0 / 0.04), transparent 65%) !important;
+}
+
+.retro-sc-stage[data-wide="true"] .retro-sc-device .retro-sc-cover img {
+  width: 76px;
+  height: 76px;
+  aspect-ratio: auto;
+  object-fit: contain;
+  border-radius: 18px;
+  opacity: 1;
+}
+
+.retro-sc-cover strong {
+  margin-top: 6px;
+  font: italic 800 1.7rem / 1 "Fraunces", Georgia, serif;
+}
+
+.retro-sc-cover small {
+  max-width: 30ch;
+  font: 500 0.85rem / 1.4 "Fraunces", Georgia, serif;
+  opacity: 0.8;
+}
+
+/* Work: the three columns line up along the top (the list, the screen's top edge, the notes). The stage keeps
+   its fixed height, so switching between a phone and a wide window still moves nothing below */
+.retro-sc-stage {
+  justify-content: flex-start;
+}
+
+/* Retro: the case study is a walnut-and-dark-glass panel like the Work notes (it was a cream card holding the
+   section's cream text). Its own colours, so it reads the same whichever section opened it */
+[data-theme="retro"] .project-modal {
+  --fg: #efe1c5;
+  --muted: #cdb78f;
+  --surface: #1d130c;
+  --surface-2: #26180e;
+  --line: #4a3016;
+  --accent: #e8a91c;
+  --accent-fg: #2b1d15;
+  border: 2px solid #4a3016 !important;
+  background: #1d130c !important;
+  color: var(--fg);
+  box-shadow: 0 30px 80px rgb(0 0 0 / 0.7) !important;
+}
+
+[data-theme="retro"] .project-modal .heading {
+  color: #e8a91c;
+}
+
+[data-theme="retro"] .project-modal .chip {
+  border: 1.5px solid rgb(232 169 28 / 0.45);
+  background: rgb(232 169 28 / 0.08);
+  color: #efe1c5;
+  box-shadow: none;
+}
+
+[data-theme="retro"] .project-modal .card {
+  border: 1.5px solid #4a3016 !important;
+  background: linear-gradient(#2a1b10, #1f140c) !important;
+  box-shadow: inset 0 1px 0 rgb(255 220 170 / 0.06) !important;
+}
+
+[data-theme="retro"] .project-modal .icon-btn,
+[data-theme="retro"] .project-modal .btn-ghost {
+  border-color: rgb(232 169 28 / 0.45);
+  background: transparent;
+  color: #efe1c5;
+  box-shadow: none;
+}
+
+[data-theme="retro"] .project-modal .icon-btn:hover,
+[data-theme="retro"] .project-modal .btn-ghost:hover {
+  background: rgb(232 169 28 / 0.12);
+}
+
+[data-theme="retro"] .project-modal .case-stage {
+  background: radial-gradient(ellipse 80% 90% at 50% 0%, #3a2414, #120b07 75%);
+}
+
+[data-theme="retro"] .project-modal .case-strip {
+  background: #160e08;
+}

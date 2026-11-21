@@ -1,0 +1,1375 @@
+/* Retro theme, the shell around every section: palette, page, navbar, corner record player, buttons, cards, footer and shared bits. */
+
+/* ── Basics ──────────────────────────────────────────────────────────────── */
+
+[data-theme="retro"] .bg-alt {
+  background-color: color-mix(in srgb, var(--bg-alt) 85%, transparent);
+}
+
+[data-theme="retro"] .heading {
+  color: var(--r-rust);
+  text-shadow: 0.05em 0.05em 0 var(--r-mustard);
+  line-height: 1.05;
+}
+
+/* Eyebrows become record labels: a brown tab with the track code in mustard */
+[data-theme="retro"] .eyebrow {
+  gap: 0.6rem;
+  padding: 0.35rem 1rem 0.3rem 0.4rem;
+  border-radius: 999px;
+  background: var(--r-brown);
+  color: var(--r-cream);
+  font: 400 1.05rem/1 "Bebas Neue", sans-serif;
+  letter-spacing: 0.08em;
+}
+
+/* buttons are chunky and physical: a thick brown edge and a hard shadow that they lift off on hover
+   and press into on click, like the keys in the opening */
+[data-theme="retro"] .btn {
+  border: 3px solid var(--r-brown);
+  border-radius: 999px;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 800;
+  font-size: 0.95rem;
+  box-shadow: 4px 4px 0 var(--r-brown);
+  transition: transform 0.15s, box-shadow 0.15s, background-color 0.2s;
+}
+
+/* a calm hover: just a small lift (no leaning towards the cursor; the inline translate comes from
+   useInteractiveSurfaces) */
+[data-theme="retro"] :is(.btn, .icon-btn) {
+  translate: none !important;
+}
+
+[data-theme="retro"] .btn:hover {
+  filter: none;
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 var(--r-brown);
+}
+
+[data-theme="retro"] .btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0 var(--r-brown);
+}
+
+[data-theme="retro"] .btn-primary {
+  background: var(--r-rust);
+  color: #f3e8d2;
+}
+
+[data-theme="retro"] .btn-primary:hover {
+  background: #a8532e;
+}
+
+[data-theme="retro"] .btn-ghost {
+  background: var(--r-cream);
+  color: var(--r-brown);
+}
+
+[data-theme="retro"] .btn-ghost:hover {
+  background: var(--r-mustard);
+}
+
+[data-theme="retro"] .chip {
+  border: 2px solid var(--r-brown);
+  background: var(--r-cream);
+  color: var(--r-brown);
+  font-weight: 600;
+}
+
+[data-theme="retro"] .icon-btn {
+  border: 2px solid var(--r-brown);
+  background: var(--r-cream);
+  color: var(--r-brown);
+  box-shadow: 0 3px 0 var(--r-brown);
+  transition: transform 0.12s, box-shadow 0.12s, background-color 0.2s;
+}
+
+[data-theme="retro"] .icon-btn:hover {
+  background: var(--r-mustard);
+}
+
+[data-theme="retro"] .icon-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--r-brown);
+}
+
+[data-theme="retro"] .bg-decor {
+  background: radial-gradient(ellipse 60% 50% at 80% 0%, rgb(212 160 58 / 0.22), transparent 70%);
+}
+
+.retro-logo {
+  font: 400 1.35rem/1 "Shrikhand", Georgia, serif;
+  color: var(--r-rust);
+  text-shadow: 2px 2px 0 var(--r-mustard);
+  white-space: nowrap;
+}
+
+/* the section links sit on a radio dial: a dark window with tick marks, and the orange needle (the
+   shared nav-pill, so it slides from station to station) stands on the section you're reading */
+[data-theme="retro"] .nav-links {
+  flex: 1;
+  justify-content: space-around;
+  gap: 0;
+  margin: 0 1.25rem;
+  padding: 2px 10px 12px;
+  border-radius: 10px;
+  background: #2b1d15;
+  box-shadow: inset 0 3px 8px rgb(0 0 0 / 0.5);
+}
+
+[data-theme="retro"] .nav-links::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 5px;
+  height: 8px;
+  background: repeating-linear-gradient(90deg, rgb(251 241 220 / 0.45) 0 2px, transparent 2px 12px);
+  pointer-events: none;
+}
+
+[data-theme="retro"] .nav-link {
+  padding: 0.4rem 0.75rem 0.25rem;
+  border-radius: 0;
+  font: 700 0.95rem/1 "Barlow Condensed", sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--r-cream);
+}
+
+[data-theme="retro"] .nav-link:hover {
+  color: #f6ead2;
+}
+
+[data-theme="retro"] .nav-link.text-accent {
+  color: var(--r-mustard);
+}
+
+[data-theme="retro"] .nav-pill {
+  display: none;
+}
+
+/* the needle glides with the page (RetroNeedle); hovering a station tunes it there */
+.retro-needle {
+  position: absolute;
+  left: -1.5px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: 2px;
+  background: #ff6a2a;
+  box-shadow: 0 0 10px 2px rgb(255 106 42 / 0.7);
+  pointer-events: none;
+  transition: transform 0.12s linear;
+}
+
+.nav-links.is-tuning .retro-needle {
+  transition: transform 0.35s cubic-bezier(0.3, 1.4, 0.4, 1);
+}
+
+/* the settings button is the tuning knob */
+[data-theme="retro"] .nav-settings {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 3px solid var(--r-brown);
+  background: radial-gradient(circle at 35% 30%, #8a5a3c, #4a2c1c 70%);
+  box-shadow: 2px 3px 0 var(--r-brown);
+  rotate: calc(var(--dial, 0) * 300deg);
+  transition: rotate 0.4s cubic-bezier(0.3, 0.7, 0.3, 1);
+}
+
+[data-theme="retro"] .nav-settings > * {
+  display: none;
+}
+
+[data-theme="retro"] .nav-settings::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 4px;
+  width: 4px;
+  height: 12px;
+  margin-left: -2px;
+  border-radius: 2px;
+  background: var(--r-cream);
+}
+
+[data-theme="retro"] .nav-settings:hover {
+  rotate: calc(var(--dial, 0) * 300deg + 40deg);
+}
+
+[data-theme="retro"] .nav-menu {
+  background: var(--r-cream);
+}
+
+/* ── Between sections: a wavy ribbon over the seam (RetroStripes in src/themes/retro/RetroDecor.tsx) ── */
+
+/* takes no room: the ribbon hangs over the end of one section and the start of the next */
+.retro-stripes {
+  position: relative;
+  z-index: 4;
+  height: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.retro-wave {
+  position: absolute;
+  left: 0;
+  top: -52px;
+  width: 200%;
+  height: 104px;
+  overflow: visible;
+  filter: drop-shadow(0 6px 0 rgb(43 29 21 / 0.25));
+}
+
+.retro-wave-edge {
+  fill: none;
+  stroke: var(--r-night);
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+}
+
+@media (max-width: 640px) {
+  .retro-wave {
+    top: -40px;
+    height: 80px;
+    width: 340%;
+  }
+}
+
+/* scrolling past a seam drifts its waves sideways by one wave; each section's content rises in as it
+   comes up, tied to the scroll so it moves exactly as fast as you do */
+@supports (animation-timeline: view()) {
+  .retro-wave {
+    animation: retro-wave-drift linear both;
+    animation-timeline: view();
+    animation-range: cover;
+  }
+}
+
+@keyframes retro-wave-drift {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: -25% 0; /* one wave: the ribbon is four waves wide */
+  }
+}
+
+/* ── Jumping to a section from the navbar: the record change (SectionMotion.tsx) ──
+   Sunset rings grow out of the click, the last one a black record that covers the screen; its label names
+   the section while the page jumps underneath; then the rings shrink back, the record first. */
+
+.retro-change {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.retro-change-ring {
+  position: absolute;
+  left: calc(var(--x) - var(--r));
+  top: calc(var(--y) - var(--r));
+  width: calc(var(--r) * 2);
+  height: calc(var(--r) * 2);
+  border-radius: 50%;
+  background: var(--r-mustard);
+  scale: 0;
+  will-change: scale;
+}
+
+.retro-change-ring:nth-child(2) {
+  background: var(--r-orange);
+}
+
+.retro-change-ring:nth-child(3) {
+  background: var(--r-rust);
+}
+
+/* the record grows from the middle of the screen, so its label sits at its centre */
+.retro-change-vinyl {
+  left: calc(50% - var(--r));
+  top: calc(50% - var(--r));
+  background: repeating-radial-gradient(circle, var(--r-night) 0 3px, #1a110b 3px 7px);
+}
+
+.retro-change.is-in .retro-change-ring {
+  animation: retro-ring-grow 0.4s cubic-bezier(0.55, 0, 0.35, 1) forwards;
+}
+
+.retro-change.is-in .retro-change-ring:nth-child(2) {
+  animation-delay: 0.07s;
+}
+
+.retro-change.is-in .retro-change-ring:nth-child(3) {
+  animation-delay: 0.14s;
+}
+
+.retro-change.is-in .retro-change-ring:nth-child(4) {
+  animation-delay: 0.21s;
+}
+
+.retro-change.is-out .retro-change-ring {
+  scale: 1;
+  animation: retro-ring-shrink 0.38s cubic-bezier(0.55, 0, 0.35, 1) forwards;
+}
+
+.retro-change.is-out .retro-change-ring:nth-child(4) {
+  animation-delay: 0.12s;
+}
+
+.retro-change.is-out .retro-change-ring:nth-child(3) {
+  animation-delay: 0.18s;
+}
+
+.retro-change.is-out .retro-change-ring:nth-child(2) {
+  animation-delay: 0.24s;
+}
+
+.retro-change.is-out .retro-change-ring:nth-child(1) {
+  animation-delay: 0.3s;
+}
+
+@keyframes retro-ring-grow {
+  to {
+    scale: 1;
+  }
+}
+
+@keyframes retro-ring-shrink {
+  to {
+    scale: 0;
+  }
+}
+
+/* the record's label, in the middle of the screen */
+.retro-change-label {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 4px;
+  width: min(300px, 70vw);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: var(--r-mustard);
+  box-shadow: inset 0 0 0 10px var(--r-rust), inset 0 0 0 14px var(--r-mustard), 0 0 0 6px #1a110b;
+  color: var(--r-brown);
+  text-align: center;
+  opacity: 0;
+  scale: 0.6;
+  rotate: -120deg;
+}
+
+.retro-change.is-in .retro-change-label {
+  animation: retro-label-in 0.32s cubic-bezier(0.2, 1.3, 0.4, 1) 0.36s forwards;
+}
+
+.retro-change.is-out .retro-change-label {
+  opacity: 1;
+  scale: 1;
+  rotate: 0deg;
+  animation: retro-label-out 0.24s ease-in forwards;
+}
+
+@keyframes retro-label-in {
+  to {
+    opacity: 1;
+    scale: 1;
+    rotate: 0deg;
+  }
+}
+
+@keyframes retro-label-out {
+  to {
+    opacity: 0;
+    scale: 0.7;
+    rotate: 90deg;
+  }
+}
+
+.retro-change-side {
+  font: 700 0.85rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--r-rust);
+}
+
+.retro-change-name {
+  max-width: 80%;
+  font: clamp(1.8rem, 6vw, 2.6rem) / 1 "Shrikhand", Georgia, serif;
+}
+
+.retro-change-hole {
+  width: 14px;
+  height: 14px;
+  margin-top: 8px;
+  border-radius: 50%;
+  background: #1a110b;
+}
+
+/* ── The record player (nav) ─────────────────────────────────────────────── */
+
+.retro-deck {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  width: 236px;
+  border-radius: 20px;
+  background: var(--r-night);
+  box-shadow: 0 0 0 3px var(--r-brown), 6px 6px 0 var(--r-rust), 0 18px 40px rgb(0 0 0 / 0.35);
+  color: var(--r-cream);
+  font-family: "Fraunces", Georgia, serif;
+}
+
+.retro-deck-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.retro-deck-wood {
+  fill: var(--r-wood);
+}
+
+.retro-deck-vinyl {
+  fill: #191412;
+}
+
+/* the record is its own <svg> laid exactly over the wood (its box: x 10–190, y 10–190 of 240 × 200), so the
+   spin animates a whole element the GPU can turn */
+.retro-deck-record {
+  position: absolute;
+  left: calc(100% * 10 / 240);
+  top: calc(100% * 10 / 200);
+  width: calc(100% * 180 / 240);
+  height: calc(100% * 180 / 200);
+  overflow: visible;
+  transform-origin: 50% 50%;
+  animation: retro-spin 1.8s linear infinite;
+  animation-play-state: paused;
+}
+
+.retro-deck-top {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+@keyframes retro-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.retro-groove {
+  fill: none;
+  stroke: #241d19;
+  cursor: pointer;
+  transition: stroke 0.25s;
+}
+
+.retro-groove:hover,
+a:focus-visible > .retro-groove {
+  stroke: #5a3a22;
+}
+
+.retro-groove.is-current {
+  stroke: #6b4413;
+}
+
+.retro-deck-shine {
+  fill: none;
+  stroke: rgb(239 225 197 / 0.18);
+  stroke-width: 6;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+
+.retro-deck-label {
+  fill: var(--r-mustard);
+  stroke: var(--r-rust);
+  stroke-width: 4;
+}
+
+.retro-deck-label-name,
+.retro-deck-label-side {
+  fill: var(--r-brown);
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.retro-deck-label-name {
+  font: 400 9.5px "Shrikhand", Georgia, serif;
+}
+
+.retro-deck-label-side {
+  font: 400 8.5px "Bebas Neue", sans-serif;
+  letter-spacing: 0.06em;
+}
+
+.retro-deck-hole {
+  fill: var(--r-night);
+}
+
+.retro-deck-pivot {
+  fill: #b8b1a6;
+  stroke: #1b120c;
+  stroke-width: 4;
+}
+
+.retro-deck-arm {
+  pointer-events: none;
+  transition: transform 0.2s;
+}
+
+.retro-deck-arm-bar {
+  fill: #e6dfd3;
+  stroke: #8f887d;
+  stroke-width: 1;
+}
+
+.retro-deck-head {
+  fill: #1b120c;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.4s;
+}
+
+.retro-deck-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px 12px;
+}
+
+.retro-deck-now {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.retro-deck-now b {
+  font-size: 0.95rem;
+}
+
+.retro-deck-btn {
+  min-height: 40px;
+  border-radius: 999px;
+  background: var(--r-rust);
+  color: var(--accent-fg);
+  font: 800 0.9rem "Fraunces", Georgia, serif;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 #000;
+  transition: transform 0.15s, background 0.2s;
+}
+
+.retro-deck-btn:hover {
+  background: #a8532e;
+}
+
+.retro-deck-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 #000;
+}
+
+.retro-deck-fold {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--r-brown);
+  border-radius: 50%;
+  background: var(--r-mustard);
+  color: var(--r-brown);
+  cursor: pointer;
+}
+
+/* folded: a mini deck in the corner; the record still spins and the arm still follows the page */
+.retro-deck.is-collapsed {
+  width: 112px;
+  border-radius: 12px;
+  box-shadow: 0 0 0 3px var(--r-brown), 4px 4px 0 var(--r-rust);
+}
+
+.retro-deck {
+  z-index: 35;
+  transition: transform 0.35s cubic-bezier(0.3, 0.7, 0.3, 1);
+}
+
+.retro-deck.is-tucked {
+  transform: translateY(calc(100% + 28px));
+}
+
+.retro-deck:focus-within {
+  transform: none;
+}
+
+.retro-deck.is-collapsed .retro-deck-bar {
+  display: none;
+}
+
+.retro-deck.is-collapsed .retro-deck-fold {
+  top: -10px;
+  right: -10px;
+  width: 28px;
+  height: 28px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .retro-deck-record {
+    animation: none;
+  }
+}
+
+/* Starburst stickers */
+.retro-sticker {
+  position: absolute;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  background: var(--r-mustard);
+  clip-path: polygon(50% 0%, 57% 13%, 69% 4%, 72% 18%, 86% 14%, 82% 28%, 96% 31%, 87% 43%, 100% 50%, 87% 57%, 96% 69%, 82% 72%, 86% 86%, 72% 82%, 69% 96%, 57% 87%, 50% 100%, 43% 87%, 31% 96%, 28% 82%, 14% 86%, 18% 72%, 4% 69%, 13% 57%, 0% 50%, 13% 43%, 4% 31%, 18% 28%, 14% 14%, 28% 18%, 31% 4%, 43% 13%);
+  color: var(--r-brown);
+  font: 400 1rem/1 "Shrikhand", Georgia, serif;
+  text-align: center;
+  rotate: 12deg;
+  animation: retro-sticker-wobble 4s ease-in-out infinite;
+}
+
+.retro-sticker > span {
+  max-width: 70%;
+}
+
+@keyframes retro-sticker-wobble {
+  50% {
+    rotate: 4deg;
+    scale: 1.06;
+  }
+}
+
+/* The equaliser: six bars that follow the music's bands */
+.retro-eq {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 44px;
+}
+
+.retro-eq i {
+  width: 9px;
+  height: 100%;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(to top, var(--r-olive) 0 40%, var(--r-mustard) 40% 75%, var(--r-rust) 75%);
+  transform-origin: 50% 100%;
+  transform: scaleY(0.1);
+  transition: transform 0.08s linear;
+}
+
+.retro-eq i:nth-child(1) { transform: scaleY(calc(0.1 + var(--eq1, 0) * 0.9)); }
+.retro-eq i:nth-child(2) { transform: scaleY(calc(0.1 + var(--eq2, 0) * 0.9)); }
+.retro-eq i:nth-child(3) { transform: scaleY(calc(0.1 + var(--eq3, 0) * 0.9)); }
+.retro-eq i:nth-child(4) { transform: scaleY(calc(0.1 + var(--eq4, 0) * 0.9)); }
+.retro-eq i:nth-child(5) { transform: scaleY(calc(0.1 + var(--eq5, 0) * 0.9)); }
+.retro-eq i:nth-child(6) { transform: scaleY(calc(0.1 + var(--eq6, 0) * 0.9)); }
+
+/* VU meters on the record player */
+.retro-vu-slot {
+  fill: #1b120c;
+}
+
+.retro-vu-bar {
+  fill: var(--r-mustard);
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition: transform 0.08s linear;
+}
+
+.retro-vu-l {
+  transform: scaleY(calc(0.04 + var(--vu-l, 0) * 0.96));
+}
+
+.retro-vu-r {
+  fill: var(--r-orange);
+  transform: scaleY(calc(0.04 + var(--vu-r, 0) * 0.96));
+}
+
+.retro-deck.is-collapsed .retro-vu {
+  display: none;
+}
+
+[data-theme="retro"] #about .heading,
+[data-theme="retro"] #skills .heading,
+[data-theme="retro"] #contact .heading {
+  color: var(--r-mustard);
+  text-shadow: 0.05em 0.05em 0 var(--r-rust);
+}
+
+html[data-gate] .retro-stripes {
+  opacity: 0;
+}
+
+.retro-stripes {
+  transition: opacity 0.6s ease;
+}
+
+html[data-gate] .retro-deck.is-tucked {
+  transform: none;
+}
+
+.retro-deck-label,
+.retro-deck-label-name,
+.retro-deck-label-side {
+  opacity: var(--gate-dock, 1);
+}
+
+/* ── Retro: entrances as things come into view (src/themes/retro/retroReveal.ts marks [data-in]) ──
+   "Big type sweep" (canvas W3): the section's name sweeps across the screen and stays behind the title as a
+   faint backdrop, the 70s stripes slash through, the section number rolls like an odometer, a rule draws
+   out and the title rises from behind it; then the content is uncovered from the bottom up, one after
+   another. Transform / opacity / clip-path only. */
+
+@keyframes rfx-left {
+  from {
+    opacity: 0;
+    translate: -70px 0;
+  }
+}
+
+@keyframes rfx-rise {
+  from {
+    opacity: 0;
+    translate: 0 40px;
+  }
+}
+
+@keyframes rfx-sweep {
+  0% {
+    opacity: 0.85;
+    translate: 110vw 0;
+  }
+  62% {
+    opacity: 0.85;
+    translate: -4% 0;
+  }
+}
+
+@keyframes rfx-slash {
+  0% {
+    opacity: 1;
+    translate: -170vw 0;
+  }
+  100% {
+    opacity: 1;
+    translate: 170vw 0;
+  }
+}
+
+@keyframes rfx-roll {
+  from {
+    translate: 0 0;
+  }
+}
+
+@keyframes rfx-rule {
+  from {
+    scale: 0 1;
+  }
+}
+
+@keyframes rfx-lift {
+  from {
+    translate: 0 110%;
+  }
+}
+
+/* the pieces (outside Retro they're display: none with their .only-retro wrapper) */
+[data-theme="retro"] .section-header {
+  isolation: isolate;
+}
+
+.retro-sweep {
+  position: absolute;
+  left: -0.04em;
+  top: -0.32em;
+  z-index: -1;
+  font: 400 clamp(150px, 24vw, 380px) / 0.8 "Bebas Neue", "Arial Narrow", sans-serif;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: currentColor;
+  opacity: 0.13;
+  pointer-events: none;
+}
+
+.retro-slash {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  z-index: 2;
+  width: 140vw;
+  margin-left: -70vw;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  rotate: -9deg;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.retro-slash > span {
+  height: 16px;
+}
+
+.retro-slash > span:nth-child(1) {
+  background: var(--r-rust);
+}
+
+.retro-slash > span:nth-child(2) {
+  background: var(--r-orange);
+}
+
+.retro-slash > span:nth-child(3) {
+  background: var(--r-mustard);
+}
+
+.retro-slash > span:nth-child(4) {
+  background: var(--r-olive);
+}
+
+.retro-odo {
+  position: absolute;
+  right: 0;
+  top: -0.5em;
+  display: none;
+  font: 400 104px / 1 "Bebas Neue", "Arial Narrow", sans-serif;
+  color: var(--r-mustard);
+  text-shadow: 3px 3px 0 var(--r-brown);
+  pointer-events: none;
+}
+
+@media (min-width: 1024px) {
+  .retro-odo {
+    display: flex;
+  }
+}
+
+.retro-odo-win {
+  display: block;
+  height: 1em;
+  overflow: hidden;
+}
+
+.retro-odo-reel {
+  display: flex;
+  flex-direction: column;
+  translate: 0 calc(var(--odo, 0) * -1em);
+}
+
+.retro-odo-reel > span {
+  height: 1em;
+}
+
+.retro-rule {
+  display: block;
+  width: min(420px, 70%);
+  height: 4px;
+  margin-top: 0.75rem;
+  border-radius: 2px;
+  background: currentColor;
+  opacity: 0.85;
+  transform-origin: 0 50%;
+}
+
+[data-theme="retro"] .title-mask {
+  display: block;
+  overflow: hidden;
+  /* room for the drop shadow and descenders, taken back with the negative margin */
+  padding: 0 0.14em 0.16em 0;
+  margin-bottom: -0.16em;
+}
+
+[data-theme="retro"] .title-lift {
+  display: block;
+}
+
+/* waiting to come in */
+html[data-rfx][data-theme="retro"] .section-header:not([data-in]) :is(.retro-sweep, .retro-odo, .eyebrow),
+html[data-rfx][data-theme="retro"] :is(.retro-about-photo, .retro-about-lead, .retro-about-body, .retro-about-facts > *, .retro-about-keys > *):not([data-in]),
+html[data-rfx][data-theme="retro"] :is(.retro-hf, .retro-sc > *):not([data-in]),
+html[data-rfx][data-theme="retro"] #contact .card:not([data-in]) {
+  opacity: 0;
+}
+
+html[data-rfx][data-theme="retro"] .section-header:not([data-in]) .retro-rule {
+  scale: 0 1;
+}
+
+html[data-rfx][data-theme="retro"] .section-header:not([data-in]) .title-lift {
+  translate: 0 110%;
+}
+
+/* the header, in order */
+html[data-rfx][data-theme="retro"] .section-header[data-in] .retro-sweep {
+  animation: rfx-sweep 1.3s cubic-bezier(0.6, 0, 0.2, 1) backwards;
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] .retro-slash {
+  animation: rfx-slash 0.9s cubic-bezier(0.7, 0, 0.3, 1) 0.15s;
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] .retro-odo {
+  animation: rfx-rise 0.4s ease-out 0.3s backwards;
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] .retro-odo-reel {
+  animation: rfx-roll 1.1s cubic-bezier(0.5, 0, 0.2, 1.12) 0.35s backwards;
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] .eyebrow {
+  animation: rfx-left 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.35s backwards;
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] .retro-rule {
+  animation: rfx-rule 0.7s cubic-bezier(0.6, 0, 0.2, 1) 0.45s backwards;
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] [data-entrance="sweep"] .title-lift {
+  animation: rfx-lift 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.7s backwards;
+}
+
+[data-theme="retro"] .not-retro {
+  display: none;
+}
+
+/* ── Work: needle drop. A tonearm swings over the title and drops; the header gives a small jolt, a ripple
+   runs out from the needle, the title's letters fall in and bounce, then the pieces spring up. ── */
+
+@keyframes rfx-arm {
+  0% {
+    opacity: 0;
+    rotate: -40deg;
+  }
+  12% {
+    opacity: 1;
+  }
+  40% {
+    rotate: 0deg;
+  }
+  44% {
+    rotate: 1.5deg;
+  }
+  48%,
+  70% {
+    opacity: 1;
+    rotate: 0deg;
+  }
+  100% {
+    opacity: 0;
+    rotate: -40deg;
+  }
+}
+
+@keyframes rfx-ring {
+  0% {
+    opacity: 0.9;
+    scale: 0.2;
+  }
+  100% {
+    opacity: 0;
+    scale: 14;
+  }
+}
+
+@keyframes rfx-jolt {
+  30% {
+    translate: 0 6px;
+  }
+  60% {
+    translate: 0 -3px;
+  }
+}
+
+@keyframes rfx-drop {
+  0% {
+    opacity: 0;
+    translate: 0 -1.6em;
+    rotate: -14deg;
+  }
+  55% {
+    opacity: 1;
+    translate: 0 0.12em;
+    rotate: 3deg;
+  }
+  75% {
+    translate: 0 -0.05em;
+    rotate: 0deg;
+  }
+  100% {
+    opacity: 1;
+    translate: 0 0;
+    rotate: 0deg;
+  }
+}
+
+.drop-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.drop-letter {
+  display: inline-block;
+}
+
+[data-entrance="needle"] {
+  --drop-at: 0.72s;
+}
+
+.retro-drop {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: none;
+  pointer-events: none;
+}
+
+@media (min-width: 1024px) {
+  .retro-drop {
+    display: block;
+  }
+}
+
+@media (max-width: 1023px) {
+  [data-entrance="needle"] {
+    --drop-at: 0.15s;
+  }
+}
+
+/* the pivot; the bar hangs from it at 150° so the needle lands 343px left of and 198px below it, on the title */
+.retro-drop-arm {
+  position: absolute;
+  left: 560px;
+  top: -110px;
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+.retro-drop-arm::before {
+  content: "";
+  position: absolute;
+  left: -26px;
+  top: -26px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #d9d0bf;
+  border: 4px solid var(--r-brown);
+}
+
+.retro-drop-bar {
+  position: absolute;
+  left: 0;
+  top: -5px;
+  width: 380px;
+  height: 10px;
+  border-radius: 5px;
+  background: #d9d0bf;
+  border: 3px solid var(--r-brown);
+  transform-origin: 0 50%;
+  rotate: 150deg;
+}
+
+.retro-drop-bar::after {
+  content: "";
+  position: absolute;
+  right: -18px;
+  top: -11px;
+  width: 34px;
+  height: 26px;
+  border-radius: 4px;
+  background: var(--r-brown);
+}
+
+.retro-drop-ring {
+  position: absolute;
+  left: 177px;
+  top: 48px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid var(--r-mustard);
+  opacity: 0;
+}
+
+.retro-drop-ring.is-late {
+  border-color: var(--r-rust);
+}
+
+html[data-rfx][data-theme="retro"] .section-header:not([data-in]) .drop-letter {
+  opacity: 0;
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] .retro-drop-arm {
+  animation: rfx-arm 1.8s cubic-bezier(0.5, 0, 0.3, 1);
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] .retro-drop-ring {
+  animation: rfx-ring 1s cubic-bezier(0.1, 0.6, 0.3, 1) var(--drop-at);
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] .retro-drop-ring.is-late {
+  animation-delay: calc(var(--drop-at) + 0.18s);
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] [data-entrance="needle"] {
+  animation: rfx-jolt 0.3s linear var(--drop-at);
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] .drop-letter {
+  animation: rfx-drop 0.7s cubic-bezier(0.3, 0.8, 0.3, 1) backwards;
+  animation-delay: calc(var(--drop-at) + var(--li, 0) * 35ms);
+}
+
+/* ── About: pulled from the sleeve. A sleeve slides in, the record is pulled out spinning and rolls into
+   the section's label, the title pops in, then the pieces fan out like a hand of cards. ── */
+
+@keyframes rfx-sleeve {
+  0% {
+    opacity: 1;
+    translate: -60vw 0;
+    rotate: -8deg;
+  }
+  22%,
+  50% {
+    opacity: 1;
+    translate: 0 0;
+    rotate: 0deg;
+  }
+  72%,
+  100% {
+    opacity: 0;
+    translate: 0 70px;
+    rotate: 6deg;
+  }
+}
+
+@keyframes rfx-record-out {
+  0%,
+  22% {
+    opacity: 1;
+    translate: 0 0;
+    rotate: 0deg;
+    scale: 1;
+  }
+  60% {
+    opacity: 1;
+    translate: 260px 0;
+    rotate: 540deg;
+    scale: 1;
+  }
+  100% {
+    opacity: 0;
+    translate: -59px -29px;
+    rotate: 900deg;
+    scale: 0.18;
+  }
+}
+
+@keyframes rfx-pop {
+  0% {
+    opacity: 0;
+    scale: 1.5;
+  }
+  60% {
+    opacity: 1;
+    scale: 0.97;
+  }
+}
+
+.retro-pull {
+  position: absolute;
+  left: 0;
+  top: -30px;
+  z-index: 3;
+  width: 150px;
+  height: 150px;
+  pointer-events: none;
+}
+
+.retro-pull-sleeve {
+  position: absolute;
+  inset: 0;
+  padding: 14px;
+  border: 4px solid var(--r-brown);
+  border-radius: 6px;
+  background: linear-gradient(transparent 0 56%, var(--r-rust) 56% 66%, var(--r-orange) 66% 76%, var(--r-mustard) 76% 86%, var(--r-olive) 86%),
+    var(--r-cream);
+  box-shadow: 6px 6px 0 rgb(0 0 0 / 0.35);
+  font: 400 26px / 1 "Shrikhand", Georgia, serif;
+  color: var(--r-brown);
+  opacity: 0;
+}
+
+.retro-pull-record {
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #1f1915 0 3%, var(--r-mustard) 3.5% 18%, #1f1915 18.5% 20%, transparent 20%),
+    repeating-radial-gradient(circle, #1f1915 0 2px, #2c2420 2px 4px);
+  opacity: 0;
+}
+
+[data-theme="retro"] [data-entrance="sleeve"] .title-mask {
+  overflow: visible;
+}
+
+[data-theme="retro"] [data-entrance="sleeve"] .title-lift {
+  transform-origin: 0 60%;
+}
+
+html[data-rfx][data-theme="retro"] .section-header:not([data-in]) [data-entrance="sleeve"] .title-lift {
+  opacity: 0;
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] .retro-pull-sleeve {
+  animation: rfx-sleeve 1.6s cubic-bezier(0.6, 0, 0.3, 1);
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] .retro-pull-record {
+  animation: rfx-record-out 1.6s cubic-bezier(0.45, 0, 0.25, 1);
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] [data-entrance="sleeve"] .eyebrow {
+  animation-delay: 1.15s;
+}
+
+html[data-rfx][data-theme="retro"] .section-header[data-in] [data-entrance="sleeve"] .title-lift {
+  animation: rfx-pop 0.7s cubic-bezier(0.2, 0.8, 0.3, 1) 1.2s backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .retro-drop,
+  .retro-pull {
+    display: none;
+  }
+}
+
+/* the page: dark warm wood with a lamp's glow from the top corner */
+[data-theme="retro"] body {
+  background-color: #1f130b;
+  background-image: radial-gradient(ellipse 70% 50% at 85% 0%, rgb(255 190 110 / 0.1), transparent 70%),
+    radial-gradient(rgb(0 0 0 / 0.18) 1px, transparent 1.4px);
+  background-size: auto, 6px 6px;
+}
+
+[data-theme="retro"] body::after {
+
+/* Paper grain and a warm vignette over everything */
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  pointer-events: none;
+  opacity: 0.16;
+  transform: translateZ(0);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .23  0 0 0 0 .14  0 0 0 0 .08  0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  box-shadow: inset 0 0 220px rgb(10 5 2 / 0.75);
+}
+
+/* the big word that sweeps in behind each title stays readable once it settles (it vanished on the dark rooms) */
+[data-theme="retro"] .retro-sweep {
+  opacity: 0.3;
+  color: var(--r-mustard);
+  text-shadow: 0.03em 0.03em 0 rgb(0 0 0 / 0.35);
+}
+
+/* the title entrances: no slash running across the screen */
+[data-theme="retro"] .retro-slash {
+  display: none;
+}
+
+/* ══ Walnut: the listening room's palette (its console wood, its lamplight) across the page. No wood
+   texture: each section is its own shade from the same family, lit from a different side; Journey keeps
+   its dusk drive, in walnut browns. ══ */
+
+[data-theme="retro"] :is(#about, #skills, #work, #contact) {
+  --fg: #efe1c5;
+  --muted: #e2cfa6;
+}
+
+/* the old per-section wallpapers' decor layers stay off */
+[data-theme="retro"] :is(#about, #skills, #work, #contact) .bg-decor {
+  display: none;
+}
+
+/* ══ Work, design P5: the second piece of the stereo (components/RetroListening.tsx). The Skills receiver's
+   walnut case and dark faceplate; a turntable on the left, the track list and the notes lit on the right. ══ */
+.retro-hf {
+  --rx-amber: #f3b544;
+  --rx-glow: #ffc861;
+  --rx-hot: #ffd27a;
+  --rx-dim: rgb(243 181 68 / 0.6);
+  --rx-glass: #120c07;
+  display: grid;
+  gap: 18px;
+  padding: 18px;
+  border-radius: 16px;
+  background: linear-gradient(90deg, #4a2812, #6b3c1d 4%, #74421f 50%, #6b3c1d 96%, #4a2812);
+  box-shadow: 0 30px 60px rgb(0 0 0 / 0.5), inset 0 2px 0 rgb(255 220 170 / 0.18);
+  color: #f4e6c8;
+}
+
+@media (min-width: 960px) {
+  .retro-hf {
+    grid-template-columns: 360px minmax(0, 1fr);
+  }
+}
+
+/* Work extras: the screens take turns (stacked, cross-fading), dots under them; level bars in the readout */
+
+@keyframes hf-vu {
+  from {
+    scale: 1 0.25;
+  }
+
+  to {
+    scale: 1 1;
+  }
+}
+
+/* Skills: the receiver has no entrance. It's most of the section, so waiting for it to come in left an
+   empty gap on screen (the title still sweeps in) */
+
+/* the line under the section label (it read as a stray brown bar over the title): gone */
+[data-theme="retro"] .retro-rule {
+  display: none;
+}
+
+/* small screens: no corner record player (the opening's keys and the settings menu still play the music) */
+@media (max-width: 640px) {
+  .retro-deck {
+    display: none;
+  }
+}
