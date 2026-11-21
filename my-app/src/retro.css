@@ -5838,7 +5838,7 @@ html[data-rfx][data-theme="retro"] .rt-strip[data-in] {
 
 /* ══ Polish pass: the loading still, About / Journey / footer in the stereo set's look ══ */
 
-/* while the 3D room loads: a still of its first frame (public/textures/room-still.webp, 22 KB), sized to
+/* while the 3D room loads: a still of its first frame (public/textures/room-still.webp, 39 KB), sized to
    the height like the camera, so the real room fades in over the same picture */
 .retro-room.is-hero {
   background: #0d0805 url("/textures/room-still.webp") center / auto 100% no-repeat;
@@ -6823,4 +6823,58 @@ html[data-rfx][data-theme="retro"] .retro-about-facts > li:nth-child(n) {
    its fixed height, so switching between a phone and a wide window still moves nothing below */
 .retro-sc-stage {
   justify-content: flex-start;
+}
+
+/* Retro: the case study is a walnut-and-dark-glass panel like the Work notes (it was a cream card holding the
+   section's cream text). Its own colours, so it reads the same whichever section opened it */
+[data-theme="retro"] .project-modal {
+  --fg: #efe1c5;
+  --muted: #cdb78f;
+  --surface: #1d130c;
+  --surface-2: #26180e;
+  --line: #4a3016;
+  --accent: #e8a91c;
+  --accent-fg: #2b1d15;
+  border: 2px solid #4a3016 !important;
+  background: #1d130c !important;
+  color: var(--fg);
+  box-shadow: 0 30px 80px rgb(0 0 0 / 0.7) !important;
+}
+
+[data-theme="retro"] .project-modal .heading {
+  color: #e8a91c;
+}
+
+[data-theme="retro"] .project-modal .chip {
+  border: 1.5px solid rgb(232 169 28 / 0.45);
+  background: rgb(232 169 28 / 0.08);
+  color: #efe1c5;
+  box-shadow: none;
+}
+
+[data-theme="retro"] .project-modal .card {
+  border: 1.5px solid #4a3016 !important;
+  background: linear-gradient(#2a1b10, #1f140c) !important;
+  box-shadow: inset 0 1px 0 rgb(255 220 170 / 0.06) !important;
+}
+
+[data-theme="retro"] .project-modal .icon-btn,
+[data-theme="retro"] .project-modal .btn-ghost {
+  border-color: rgb(232 169 28 / 0.45);
+  background: transparent;
+  color: #efe1c5;
+  box-shadow: none;
+}
+
+[data-theme="retro"] .project-modal .icon-btn:hover,
+[data-theme="retro"] .project-modal .btn-ghost:hover {
+  background: rgb(232 169 28 / 0.12);
+}
+
+[data-theme="retro"] .project-modal .case-stage {
+  background: radial-gradient(ellipse 80% 90% at 50% 0%, #3a2414, #120b07 75%);
+}
+
+[data-theme="retro"] .project-modal .case-strip {
+  background: #160e08;
 }

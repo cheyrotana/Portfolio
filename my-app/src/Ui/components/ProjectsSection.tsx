@@ -145,14 +145,14 @@ function ProjectsSection() {
                     const running = APPS.find((a) => a.id === appId)?.project;
                     if (running && c.id !== "all" && !running.categories.includes(c.id)) setAppId(null);
                   }}
-                  className={`relative px-4 py-2 rounded-full text-sm font-semibold transition-colors border border-line [[data-theme=pop]_&]:border-2 [[data-theme=persona]_&]:rounded-none [[data-theme=persona]_&]:-skew-x-12 ${
+                  className={`relative px-4 py-2 rounded-full text-sm font-semibold transition-colors border border-line [[data-theme=persona]_&]:rounded-none [[data-theme=persona]_&]:-skew-x-12 ${
                     selected ? "text-accent-fg" : "text-muted hover:text-fg bg-surface"
                   }`}
                 >
                   {selected && (
                     <motion.span
                       layoutId="filter-pill"
-                      className="absolute inset-0 rounded-full bg-accent [[data-theme=pop]_&]:shadow-[3px_3px_0_var(--line)] [[data-theme=persona]_&]:rounded-none [[data-theme=persona]_&]:shadow-[3px_3px_0_#fff]"
+                      className="absolute inset-0 rounded-full bg-accent [[data-theme=persona]_&]:rounded-none [[data-theme=persona]_&]:shadow-[3px_3px_0_#fff]"
                       transition={{ type: "spring", stiffness: 420, damping: 34 }}
                     />
                   )}

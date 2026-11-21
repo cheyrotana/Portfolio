@@ -6,7 +6,7 @@ import { ArrowRight, Briefcase, Code2, FastForward, Flag, Rewind, GraduationCap,
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { journey, type JourneyStop } from "../data/profile";
 import { unlock } from "../achievements";
-import { SET_VEHICLE_EVENT, showProject } from "../events";
+import { openProject, SET_VEHICLE_EVENT } from "../events";
 import { play } from "../sound";
 import { ScrambleText } from "./Reveal";
 import { P5Skyline, P5Slab } from "./PersonaDecor";
@@ -312,7 +312,6 @@ function RouteJourney() {
             <span className="only-retro">
               <span className="retro-eyebrow-code" aria-hidden="true">02</span>
             </span>
-            <span className="only-pop">#02</span>
             <span className="only-persona">▶ 02</span>
             <span>Journey</span>
           </span>
@@ -428,11 +427,11 @@ function RouteJourney() {
                           tabIndex: 0,
                           "aria-label": `${stop.title} — see this project`,
                           "data-cursor": "View",
-                          onClick: () => showProject(stop.projectId!),
+                          onClick: () => openProject(stop.projectId!),
                           onKeyDown: (e: React.KeyboardEvent) => {
                             if (e.key === "Enter" || e.key === " ") {
                               e.preventDefault();
-                              showProject(stop.projectId!);
+                              openProject(stop.projectId!);
                             }
                           },
                         })}
@@ -441,7 +440,11 @@ function RouteJourney() {
                           <span className="font-mono text-xs text-accent">
                             {stop.range ?? stop.date}
                           </span>
-                          <Icon size={16} className={reached ? "text-accent" : "text-muted"} />
+                          {stop.logo ? (
+                            <img src={stop.logo} alt="" className="journey-card-logo" />
+                          ) : (
+                            <Icon size={16} className={reached ? "text-accent" : "text-muted"} />
+                          )}
                         </div>
                         <h3 className="heading mt-1.5 text-xl sm:text-2xl text-fg">{stop.title}</h3>
                         <p className="text-xs sm:text-sm font-semibold text-muted">{stop.org}</p>

@@ -1,15 +1,15 @@
 // Retro theme, About (design A3): the polaroid pinned to the wood on the left; beside it a short story,
 // four facts as labels and two chunky keys (journey, terminal). Styles: .retro-about* in src/retro.css.
 import { ArrowRight, SquareTerminal } from "lucide-react";
-import { profile } from "../data/profile";
+import { places, profile } from "../data/profile";
 import { openTerminalWindow } from "../events";
 import { Reveal, SectionHeader } from "./Reveal";
 import { RetroPolaroid } from "./RetroPolaroid";
 
 const facts = [
-  { k: "Studying", v: "CADT", d: "Feb 2024 – Present" },
-  { k: "Working", v: "CamCyber", d: "Jul 2026 – Present" },
-  { k: "Interned", v: "MLMUPC", d: "Apr – Jun 2026" },
+  { k: "Studying", v: places.study.place, d: places.study.when },
+  { k: "Working", v: places.work.place, d: places.work.when },
+  { k: "Interned", v: places.intern.place, d: places.intern.when },
   { k: "Based in", v: profile.location.split(",")[0], d: "Cambodia" },
 ];
 

@@ -3,7 +3,8 @@ import { ArrowLeft, ArrowRight, CalendarDays, ExternalLink, Images, UserRound, X
 import { useEffect, useState } from "react";
 import { FaGithub, FaYoutube } from "react-icons/fa";
 import type { Project } from "../data/projects";
-import { ImageSlideshow, PhotoViewer } from "./Gallery";
+import { CaseGallery, PhotoViewer } from "./Gallery";
+import { TechLabel } from "./TechChip";
 
 interface ProjectModalProps {
   project: Project;
@@ -55,7 +56,7 @@ export function ProjectModal({ project, position, onClose, onPrev, onNext }: Pro
 
       <motion.article
         key={project.id}
-        className="card relative w-full max-w-5xl max-h-[92vh] sm:max-h-[88vh] overflow-y-auto !rounded-b-none sm:!rounded-b-[var(--radius)]"
+        className="project-modal card relative w-full max-w-5xl max-h-[92vh] sm:max-h-[88vh] overflow-y-auto !rounded-b-none sm:!rounded-b-[var(--radius)]"
         initial={{ opacity: 0, y: 40, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 40, scale: 0.98 }}
@@ -78,8 +79,8 @@ export function ProjectModal({ project, position, onClose, onPrev, onNext }: Pro
         </div>
 
         {/* Gallery */}
-        <div className="aspect-[16/10] sm:aspect-[16/8] border-b border-line [[data-theme=pop]_&]:border-b-[2.5px]" data-cursor="Zoom">
-          <ImageSlideshow images={project.images} alt={project.title} onImageClick={(i) => setViewerIndex(i)} />
+        <div className="border-b border-line" data-cursor="Zoom">
+          <CaseGallery images={project.images} alt={project.title} onOpen={(i) => setViewerIndex(i)} />
         </div>
 
         <div className="grid md:grid-cols-[1.5fr_1fr] gap-8 md:gap-10 p-5 sm:p-8">
@@ -133,7 +134,11 @@ export function ProjectModal({ project, position, onClose, onPrev, onNext }: Pro
             <div>
               <p className="text-xs uppercase tracking-wider text-muted mb-2">Built with</p>
               <div className="flex flex-wrap gap-2">
-                {project.tech.map((t) => <span key={t} className="chip">{t}</span>)}
+                {project.tech.map((t) => (
+                  <span key={t} className="chip tech-chip">
+                    <TechLabel name={t} />
+                  </span>
+                ))}
               </div>
             </div>
 

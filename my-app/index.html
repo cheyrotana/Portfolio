@@ -77,9 +77,9 @@
           theme = localStorage.getItem("portfolio-theme");
         } catch (e) {}
         if (theme === "editorial") theme = "metro"; // Editorial was replaced by Metro
-        if (["persona", "metro", "retro", "pop"].indexOf(theme) === -1) theme = "retro";
+        if (["persona", "metro", "retro"].indexOf(theme) === -1) theme = "retro"; // Pop was removed: its fans get Retro
         document.documentElement.setAttribute("data-theme", theme);
-        var icons = { persona: ["/favicon-32.png", "image/png", "#e60012"], metro: ["/favicon-metro.svg", "image/svg+xml", "#f06a1f"], retro: ["/favicon-retro.svg", "image/svg+xml", "#a8431b"], pop: ["/favicon-pop.svg", "image/svg+xml", "#ff5a36"] };
+        var icons = { persona: ["/favicon-32.png", "image/png", "#e60012"], metro: ["/favicon-metro.svg", "image/svg+xml", "#f06a1f"], retro: ["/favicon-retro.svg", "image/svg+xml", "#a8431b"] };
         var icon = document.getElementById("theme-icon");
         icon.href = icons[theme][0];
         icon.type = icons[theme][1];

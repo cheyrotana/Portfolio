@@ -4,6 +4,7 @@ import { useEffect, useState, type UIEvent } from "react";
 import { unlock } from "../achievements";
 import { APPS, type PhoneApp } from "../data/apps";
 import type { Project } from "../data/projects";
+import { TechLabel } from "./TechChip";
 
 // The Projects section's browser: every project is an app on a phone. Tapping one launches it like
 // a real app (a splash with its logo), then shows its store-style page inside the phone: logo,
@@ -123,7 +124,9 @@ function AppPage({ app, onBack, onOpen }: { app: PhoneApp; onBack: () => void; o
         <h4>Built with</h4>
         <div className="ph-page-tags">
           {project.tech.map((t) => (
-            <span key={t}>{t}</span>
+            <span key={t} className="tech-chip">
+              <TechLabel name={t} />
+            </span>
           ))}
         </div>
       </section>

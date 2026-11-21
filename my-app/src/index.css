@@ -119,32 +119,6 @@
   --heading-tracking: 0;
 }
 
-[data-theme="pop"] {
-  color-scheme: light;
-  --bg: #fff4dc;
-  --bg-alt: #ffe8b8;
-  --surface: #ffffff;
-  --surface-2: #fff8ea;
-  --fg: #141414;
-  --muted: #4a4640;
-  --line: #141414;
-  --accent: #ff5a36;
-  --accent-fg: #ffffff;
-  --accent-2: #6c4dff;
-  --accent-3: #18c29c;
-  --radius: 22px;
-  --radius-sm: 14px;
-  --t-font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
-  --t-font-body: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
-  --t-font-mono: "JetBrains Mono", ui-monospace, monospace;
-  --card-border: 2.5px solid var(--line);
-  --card-shadow: 6px 6px 0 var(--line);
-  --card-shadow-hover: 10px 10px 0 var(--line);
-  --btn-shadow: 4px 4px 0 var(--line);
-  --heading-weight: 800;
-  --heading-tracking: -0.045em;
-}
-
 /* ── Base ─────────────────────────────────────────────────────────────────── */
 
 html {
@@ -311,7 +285,6 @@ body {
   /* Text that should only appear in one theme */
   .only-metro,
   .only-retro,
-  .only-pop,
   .only-persona {
     display: none;
   }
@@ -319,79 +292,8 @@ body {
 
 [data-theme="metro"] .only-metro,
 [data-theme="retro"] .only-retro,
-[data-theme="pop"] .only-pop,
 [data-theme="persona"] .only-persona {
   display: contents;
-}
-
-/* ── Pop extras: thick outlines, hard shadows, a little wobble ────────────── */
-
-[data-theme="pop"] .eyebrow {
-  padding: 0.3rem 0.8rem;
-  border: 2px solid var(--line);
-  border-radius: 999px;
-  background: var(--accent-3);
-  color: var(--fg);
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  box-shadow: 3px 3px 0 var(--line);
-  transform: rotate(-2deg);
-}
-
-[data-theme="pop"] .accent-text {
-  color: var(--accent);
-  -webkit-text-stroke: 0;
-}
-
-[data-theme="pop"] .card-hover:hover {
-  transform: translate(-4px, -4px) rotate(-0.4deg);
-}
-
-[data-theme="pop"] .btn {
-  border: 2.5px solid var(--line);
-}
-
-[data-theme="pop"] .btn:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 var(--line);
-  filter: none;
-}
-
-[data-theme="pop"] .btn:active {
-  transform: translate(3px, 3px);
-  box-shadow: 0 0 0 var(--line);
-}
-
-[data-theme="pop"] .btn-ghost {
-  background: var(--surface);
-  box-shadow: var(--btn-shadow);
-}
-
-[data-theme="pop"] .chip {
-  border: 2px solid var(--line);
-  background: var(--surface);
-  color: var(--fg);
-  font-weight: 600;
-}
-
-[data-theme="pop"] .icon-btn {
-  border: 2.5px solid var(--line);
-  box-shadow: 3px 3px 0 var(--line);
-}
-
-[data-theme="pop"] .field {
-  border: 2.5px solid var(--line);
-  background: var(--surface);
-}
-
-[data-theme="pop"] .field:focus {
-  box-shadow: 4px 4px 0 var(--accent);
-}
-
-[data-theme="pop"] .bg-decor {
-  background-image: radial-gradient(color-mix(in srgb, var(--line) 22%, transparent) 1.5px, transparent 1.5px);
-  background-size: 22px 22px;
-  mask-image: linear-gradient(to bottom, #000 40%, transparent);
 }
 
 /* ── Persona extras: red/black/white, sharp angles, ransom-note lettering ── */
@@ -551,16 +453,6 @@ body {
   transform: rotate(45deg);
 }
 
-[data-theme="pop"] .cursor-ring {
-  border: 2.5px solid var(--line);
-  background: color-mix(in srgb, var(--accent-3) 45%, transparent);
-  color: var(--fg);
-}
-
-[data-theme="pop"] .cursor-ring:has(.cursor-label) {
-  background: var(--accent-3);
-}
-
 .burst-bit {
   width: 7px;
   height: 7px;
@@ -584,10 +476,6 @@ body {
   background: #fff;
 }
 
-[data-theme="pop"] .burst-bit:nth-child(3n + 1) {
-  background: var(--accent-3);
-}
-
 /* Cards that tilt towards the cursor, with a glow that follows it */
 .tilt {
   position: relative;
@@ -599,7 +487,6 @@ body {
   transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(-4px);
 }
 
-[data-theme="pop"] .tilt.card-hover:hover,
 [data-theme="persona"] .tilt.card-hover:hover {
   transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translate(-4px, -4px);
 }
@@ -646,7 +533,6 @@ body {
   stroke-linecap: round;
 }
 
-
 .journey-road-line {
   display: none;
 }
@@ -658,14 +544,12 @@ body {
   filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent) 50%, transparent));
 }
 
-
 /* Road vehicles: the routes become roads with a dashed centre line */
 [data-mode="road"] .journey-route {
   stroke: color-mix(in srgb, var(--fg) 16%, var(--bg));
   stroke-width: 18;
   stroke-dasharray: none;
 }
-
 
 [data-mode="road"] .journey-road-line {
   display: inline;
@@ -725,12 +609,10 @@ body {
   stroke-linejoin: round;
 }
 
-
 .veh-spoke {
   stroke: var(--surface);
   stroke-width: 1.5;
 }
-
 
 .paper-top {
   fill: var(--surface);
@@ -907,32 +789,6 @@ body {
 }
 
 /* Pop: chunky outlines */
-[data-theme="pop"] .veh-outline {
-  stroke-width: 3;
-}
-
-[data-theme="pop"] .veh-main {
-  fill: var(--accent-2);
-}
-
-
-[data-theme="pop"] .journey-flown {
-  filter: none;
-  stroke-width: 5;
-}
-
-
-[data-theme="pop"] .journey-marker {
-  border: 2.5px solid var(--line);
-}
-
-[data-theme="pop"] .journey-vehicle {
-  filter: drop-shadow(4px 4px 0 var(--line));
-}
-
-[data-theme="pop"] .vehicle-option.is-selected {
-  box-shadow: 3px 3px 0 var(--line);
-}
 
 /* ── Terminal ─────────────────────────────────────────────────────────────── */
 
@@ -975,11 +831,6 @@ body {
   border: 2px solid #fff;
   border-radius: 0;
   box-shadow: 10px 10px 0 var(--accent);
-}
-
-[data-theme="pop"] .terminal {
-  border: 2.5px solid var(--line);
-  box-shadow: 8px 8px 0 var(--line);
 }
 
 /* ── Chat-style contact ──────────────────────────────────────────────────── */
@@ -1050,14 +901,6 @@ body {
   background: var(--accent);
   color: var(--accent-fg);
   border-bottom-right-radius: 6px;
-}
-
-[data-theme="pop"] .chat-bubble {
-  border: 2px solid var(--line);
-}
-
-[data-theme="pop"] .chat-you {
-  box-shadow: 3px 3px 0 var(--line);
 }
 
 /* The face beside my messages, and the bubble wrapper, only matter in Persona */
@@ -1897,11 +1740,6 @@ body {
   display: none;
 }
 
-[data-theme="pop"] .nav-settings {
-  border-width: 2px;
-  box-shadow: 3px 3px 0 var(--line);
-}
-
 /* Persona: a white gear on a black jagged burst with a red shadow; the burst spins on hover */
 [data-theme="persona"] .nav-settings {
   width: 2.9rem;
@@ -1968,10 +1806,6 @@ body {
 .site-foot {
   border-top: 1px solid var(--line);
   overflow: hidden;
-}
-
-[data-theme="pop"] .site-foot {
-  border-top-width: 2.5px;
 }
 
 .site-foot-slab {
@@ -2047,11 +1881,6 @@ body {
 .site-foot-top:hover,
 .site-foot-top:focus-visible {
   translate: 0 -3px;
-}
-
-[data-theme="pop"] .site-foot-top {
-  border: 2px solid var(--line);
-  box-shadow: 3px 3px 0 var(--line);
 }
 
 /* Persona: black strip, white top edge, a red slab with halftone behind "back to top" */
@@ -2431,11 +2260,6 @@ body {
   border-color: var(--accent);
 }
 
-[data-theme="pop"] .journey-skip {
-  border-width: 2px;
-  box-shadow: 2px 2px 0 var(--line);
-}
-
 [data-theme="persona"] .journey-skip {
   padding: 0.35rem 0.9rem 0.3rem;
   font: 400 0.95rem/1 "Anton", Impact, sans-serif;
@@ -2598,25 +2422,6 @@ body {
 
 .hero-scroll:hover {
   color: var(--accent);
-}
-
-[data-theme="pop"] .hero-photo::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  transform: translate(14px, 14px) rotate(3deg);
-  background: var(--accent-2);
-  border: 2.5px solid var(--line);
-  border-radius: var(--radius);
-}
-
-[data-theme="pop"] .hero-photo-img {
-  border: 2.5px solid var(--line);
-  box-shadow: 6px 6px 0 var(--line);
-}
-
-[data-theme="pop"] .status-panel {
-  box-shadow: var(--card-shadow);
 }
 
 /* ── Persona: hero ───────────────────────────────────────────────────────── */
@@ -2970,7 +2775,6 @@ body {
   pointer-events: none;
   user-select: none;
 }
-
 
 /* A spinning burst behind each big section number (same shape as behind the hero photo) */
 .p5-index::before,
@@ -3615,10 +3419,6 @@ html[data-theme="persona"][data-sky="day"] {
   box-shadow: 8px 8px 0 var(--accent), inset 0 0 0 2px #fff;
 }
 
-[data-theme="pop"] .ph-phone {
-  box-shadow: 6px 6px 0 var(--line), inset 0 0 0 2px #2a2c30;
-}
-
 .ph-screen {
   position: relative;
   height: 100%;
@@ -3730,11 +3530,6 @@ img.app-logo {
   border-radius: 4px;
   border: 2px solid #fff;
   box-shadow: 3px 3px 0 #0b0b0b;
-}
-
-[data-theme="pop"] .app-logo {
-  border: 2px solid var(--line);
-  box-shadow: 3px 3px 0 var(--line);
 }
 
 [data-theme="persona"] .ph-grid .app-logo {
@@ -4257,10 +4052,6 @@ img.app-logo {
   border-radius: var(--radius-sm);
 }
 
-[data-theme="pop"] .skill-all-tool {
-  border-width: 2px;
-}
-
 [data-theme="persona"] .skill-all-group {
   font-family: "Anton", Impact, sans-serif;
   font-weight: 400;
@@ -4339,15 +4130,6 @@ img.app-logo {
 
 .skill-used.chip:hover {
   color: var(--accent);
-}
-
-[data-theme="pop"] .skill-menu-item,
-[data-theme="pop"] .skill-tile {
-  border-width: 2.5px;
-}
-
-[data-theme="pop"] .skill-menu-item.is-active {
-  box-shadow: 4px 4px 0 var(--line);
 }
 
 /* Persona: a game menu. Big tilted entries; the selected one sits on a white jagged slab with a
@@ -4564,4 +4346,188 @@ html.lenis.lenis-smooth [data-lenis-prevent] {
 
 html.lenis.lenis-stopped {
   overflow: clip;
+}
+
+/* ── Case-study gallery (Gallery.tsx, CaseGallery): a calm stage and a strip of thumbnails ── */
+.case-stage {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: radial-gradient(ellipse 80% 90% at 50% 0%, #2e2b29, #121110 75%);
+}
+
+@media (min-width: 640px) {
+  .case-stage {
+    aspect-ratio: 16 / 8.5;
+  }
+}
+
+.case-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3%;
+  padding: 5% 8%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
+}
+
+.case-slide[data-on="true"] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.case-shot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+}
+
+.case-shot:not([data-portrait]) {
+  flex: 1;
+}
+
+.case-shot img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 18px 40px rgb(0 0 0 / 0.5), 0 0 0 1px rgb(255 255 255 / 0.06);
+  transition: translate 0.25s ease;
+}
+
+.case-shot[data-portrait] img {
+  height: 100%;
+  width: auto;
+  border-radius: 18px;
+}
+
+.case-shot:hover img {
+  translate: 0 -4px;
+}
+
+.case-arrow {
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(0 0 0 / 0.45);
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.case-arrow:hover {
+  background: rgb(0 0 0 / 0.7);
+}
+
+.case-arrow svg {
+  width: 18px;
+  height: 18px;
+}
+
+.case-arrow.is-prev {
+  left: 12px;
+}
+
+.case-arrow.is-next {
+  right: 12px;
+}
+
+.case-count {
+  position: absolute;
+  left: 14px;
+  bottom: 12px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.45);
+  color: rgb(255 255 255 / 0.85);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.case-strip {
+  display: flex;
+  gap: 8px;
+  padding: 10px 16px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  background: var(--surface-2);
+}
+
+.case-thumb {
+  flex: none;
+  width: 58px;
+  height: 58px;
+  padding: 0;
+  overflow: hidden;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background: #121110;
+  opacity: 0.55;
+  cursor: pointer;
+  transition: opacity 0.2s, border-color 0.2s;
+}
+
+.case-thumb:hover {
+  opacity: 0.85;
+}
+
+.case-thumb[aria-selected="true"] {
+  border-color: var(--accent);
+  opacity: 1;
+}
+
+.case-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .case-slide,
+  .case-shot img {
+    transition: none;
+  }
+}
+
+/* A tech's logo in front of its name (TechChip.tsx), in the case study and on the phone */
+.tech-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tech-icon {
+  flex: none;
+  width: 1.05em;
+  height: 1.05em;
+}
+
+/* Journey cards: the organisation's own logo (CADT, MLMUPC, CamCyber), on a small white tile */
+.journey-card-logo {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  padding: 3px;
+  border-radius: 8px;
+  background: #fff;
+  object-fit: contain;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.2);
 }

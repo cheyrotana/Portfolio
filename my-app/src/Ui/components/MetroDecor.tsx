@@ -1,6 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { profile } from "../data/profile";
+import { places, profile } from "../data/profile";
 import { projects, type Project } from "../data/projects";
 import { openControls, showProject } from "../events";
 import { useThemeAttr, useWeather } from "../hooks/interactive";
@@ -113,7 +113,8 @@ function LineBadges({ project }: { project: Project }) {
 
 const BOARD = [
   { time: "Now", dest: profile.currently, platform: "4", status: "On time", tone: "go" },
-  { time: "Yr 4", dest: profile.education, platform: "2", status: "Boarding", tone: "wait" },
+  { time: "2026", dest: `Interned · ${places.intern.place}`, platform: "3", status: "Arrived", tone: "plain" },
+  { time: "2024", dest: `Studying · ${places.study.place}`, platform: "2", status: "Boarding", tone: "wait" },
   { time: "Base", dest: profile.location, platform: "—", status: "Home", tone: "plain" },
 ];
 
@@ -218,8 +219,8 @@ export function MetroHero({ go, portrait }: { go: boolean; portrait: string }) {
             </span>
           </div>
           <p className="metro-platform-intro">
-            I build Flutter apps, Angular dashboards and the NestJS APIs behind them — right now for the government HR
-            platform at MLMUPC.
+            I build Flutter apps, Angular dashboards and the NestJS APIs behind them — right now on the CamCyber
+            Digital Tech Team, for government platforms like HRM.
           </p>
         </aside>
       </div>

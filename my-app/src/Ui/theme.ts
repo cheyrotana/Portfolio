@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-export type ThemeId = "persona" | "metro" | "retro" | "pop";
+export type ThemeId = "persona" | "metro" | "retro";
 
 export interface ThemeOption {
   id: ThemeId;
@@ -28,12 +28,6 @@ export const THEMES: ThemeOption[] = [
     description: "70s jazz on vinyl",
     swatches: ["#f4e6c8", "#3a2314", "#a8431b"],
   },
-  {
-    id: "pop",
-    name: "Pop",
-    description: "Bold & playful",
-    swatches: ["#fff4dc", "#141414", "#ff5a36"],
-  },
 ];
 
 const STORAGE_KEY = "portfolio-theme";
@@ -51,7 +45,6 @@ const ICONS: Record<ThemeId, { href: string; type: string }> = {
   persona: { href: "/favicon-32.png", type: "image/png" },
   metro: { href: "/favicon-metro.svg", type: "image/svg+xml" },
   retro: { href: "/favicon-retro.svg", type: "image/svg+xml" },
-  pop: { href: "/favicon-pop.svg", type: "image/svg+xml" },
 };
 
 function applyBrowserChrome(theme: ThemeId) {

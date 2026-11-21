@@ -1,6 +1,6 @@
-import { ArrowRight, Briefcase, GraduationCap, MapPin, Plane, Sparkles, SquareTerminal } from "lucide-react";
+import { ArrowRight, Briefcase, GraduationCap, MapPin, Plane, SquareTerminal, Users } from "lucide-react";
 import { useEffect, useState } from "react";
-import { journey, profile } from "../data/profile";
+import { journey, places, profile } from "../data/profile";
 import { openTerminalWindow } from "../events";
 import { P5Burst, P5Skyline, P5Slab } from "./PersonaDecor";
 import { P5Clouds } from "./Weather";
@@ -15,10 +15,10 @@ function greetingFor(hour: number) {
 }
 
 const facts = [
+  { icon: GraduationCap, label: "Studying", value: `${places.study.place} · ${places.study.when}` },
+  { icon: Briefcase, label: "Working", value: `${places.work.place} · ${places.work.when}` },
+  { icon: Users, label: "Interned", value: `${places.intern.place} · ${places.intern.when}` },
   { icon: MapPin, label: "Based in", value: profile.location },
-  { icon: GraduationCap, label: "Studying", value: `${profile.education} · ${profile.studying}` },
-  { icon: Briefcase, label: "Currently", value: profile.currently },
-  { icon: Sparkles, label: "Focus", value: "Mobile apps, dashboards and the APIs behind them" },
 ];
 
 function AboutSection() {

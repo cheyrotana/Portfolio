@@ -4,7 +4,7 @@ import { INTRO_DONE_EVENT, introWillPlay } from "../intro";
 import { ArrowDown, ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import portrait from "../../assets/me/ta-prohm.jpg";
-import { profile, socials } from "../data/profile";
+import { places, profile, socials } from "../data/profile";
 import { useThemeAttr, useWeather } from "../hooks/interactive";
 import { P5Sky, P5Skyline, P5Slab } from "./PersonaDecor";
 import { P5Clouds, WeatherIcon } from "./Weather";
@@ -81,7 +81,7 @@ function DateWidget() {
 }
 
 const status = [
-  { persona: "LV.4", plain: "Studying", value: profile.education },
+  { persona: "Study", plain: "Studying", value: `${places.study.place} · ${places.study.when}` },
   { persona: "Now", plain: "Now", value: profile.currently },
   { persona: "Base", plain: "Based in", value: profile.location },
 ];
@@ -191,8 +191,8 @@ function HeroSection() {
               animate={go ? { opacity: 1, y: 0 } : undefined}
               transition={{ delay: 0.42, duration: 0.6, ease }}
             >
-              I build Flutter apps, Angular dashboards and the NestJS APIs behind them — right now for the government HR
-              platform at MLMUPC.
+              I build Flutter apps, Angular dashboards and the NestJS APIs behind them — right now on the CamCyber
+              Digital Tech Team, for government platforms like HRM.
             </motion.p>
 
             <motion.dl

@@ -20,6 +20,13 @@ export const profile = {
   internship: "Interned with the Digital Revolution team at MLMUPC, Apr – Jun 2026",
 };
 
+// Where I study, work and interned, with the dates: every theme's About, hero and board read these
+export const places = {
+  study: { place: "CADT", detail: "B.Sc. Computer Science", when: "Feb 2024 – Present" },
+  work: { place: "CamCyber", detail: "Mobile & Backend Developer", when: "Jul 2026 – Present" },
+  intern: { place: "MLMUPC", detail: "Digital Revolution team", when: "Apr – Jun 2026" },
+};
+
 export interface SocialLink {
   name: string;
   url: string;
@@ -136,7 +143,7 @@ export const journey: JourneyStop[] = [
     range: "Jul 2026 – Present",
     title: "CamCyber",
     org: "Mobile & Backend Developer · Digital Tech Team",
-    text: "Joined the CamCyber digital team: HRM's Flutter app and NestJS backend for the National Institute of Statistics, the Face Scan Connector that turns Raspberry Pi face scans into attendance records, and the PhumiYerng app for LASED III communities.",
+    text: "HRM for the National Institute of Statistics (Flutter app and NestJS backend), the Face Scan Connector, and the PhumiYerng app.",
     kind: "work",
     projectId: "hrm",
     logo: camcyberLogo,

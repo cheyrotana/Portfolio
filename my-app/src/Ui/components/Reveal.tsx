@@ -178,7 +178,6 @@ export function SectionHeader({
           <span className="only-metro">
             <span className="metro-badge" aria-hidden="true">{Number(index)}</span>
           </span>
-          <span className="only-pop">{`#${index}`}</span>
           <span className="only-persona">{`▶ ${index}`}</span>
           <span className="only-retro">
             <span className="retro-eyebrow-code" aria-hidden="true">

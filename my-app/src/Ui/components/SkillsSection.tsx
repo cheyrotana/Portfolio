@@ -220,18 +220,18 @@ function SkillsSection() {
 
       {/* Scrolling strip of every tool (Retro has its own, in the receiver) */}
       {themeAttr !== "retro" && (
-      <div className="skills-strip mt-16 border-y border-line py-5 overflow-hidden [[data-theme=pop]_&]:bg-accent-2 [[data-theme=pop]_&]:border-y-[2.5px] [[data-theme=pop]_&]:-rotate-1 [[data-theme=persona]_&]:bg-accent [[data-theme=persona]_&]:border-y-[3px] [[data-theme=persona]_&]:-rotate-2 [[data-theme=persona]_&]:scale-105">
+      <div className="skills-strip mt-16 border-y border-line py-5 overflow-hidden [[data-theme=persona]_&]:bg-accent [[data-theme=persona]_&]:border-y-[3px] [[data-theme=persona]_&]:-rotate-2 [[data-theme=persona]_&]:scale-105">
         <div className="animate-marquee">
           {[0, 1].map((copy) => (
             <div key={copy} className="flex items-center gap-10 pr-10 flex-shrink-0" aria-hidden={copy === 1}>
               {[...all, ...all].map(({ name, icon: Icon }, i) => (
                 <span
                   key={`${name}-${i}`}
-                  className="flex items-center gap-3 heading text-2xl sm:text-3xl text-muted whitespace-nowrap [[data-theme=pop]_&]:text-white [[data-theme=persona]_&]:text-white"
+                  className="flex items-center gap-3 heading text-2xl sm:text-3xl text-muted whitespace-nowrap [[data-theme=persona]_&]:text-white"
                 >
                   <Icon size={26} />
                   {name}
-                  <span className="text-accent [[data-theme=pop]_&]:text-white [[data-theme=persona]_&]:text-black">✦</span>
+                  <span className="text-accent [[data-theme=persona]_&]:text-black">✦</span>
                 </span>
               ))}
             </div>

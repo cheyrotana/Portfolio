@@ -114,7 +114,7 @@ export const projects: Project[] = [
     title: "HRM System",
     client: "MLMUPC & NIS",
     year: "2026",
-    role: "Mobile & Web Developer",
+    role: "Mobile, Web & Backend Developer",
     categories: ["client", "mobile", "web"],
     featured: true,
     summary: "Government HR platform for attendance, leave and officer records, on web and mobile.",

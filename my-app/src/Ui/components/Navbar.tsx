@@ -66,9 +66,6 @@ export function Navbar({
           <span className="only-retro">
             <span className="retro-logo">Chey Rotana</span>
           </span>
-          <span className="only-pop">
-            rotana<span className="text-accent">!</span>
-          </span>
           <span className="only-persona">
             <Ransom text="Rotana" seed={0} />
           </span>
