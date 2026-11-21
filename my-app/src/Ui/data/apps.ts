@@ -1,7 +1,6 @@
 import { projects, type Project, type Splash } from "./projects";
 
-// The apps on the phone: one per project, except projects with separate builds (HRM has one for
-// MLMUPC and one for NIS), which get an app each.
+// The apps on the phone: one per project, except projects with separate builds, which get an app each.
 export interface PhoneApp {
   id: string;
   title: string;

@@ -207,7 +207,13 @@ export function CaseGallery({ images, alt, onOpen }: CaseGalleryProps) {
     <div className="case-gallery">
       <div className="case-stage">
         {pages.map((pg, p) => (
-          <div key={pg.join("-")} className="case-slide" data-on={p === cur} aria-hidden={p !== cur}>
+          <div
+            key={pg.join("-")}
+            className="case-slide"
+            data-on={p === cur}
+            data-side={p < cur ? "before" : p > cur ? "after" : undefined}
+            aria-hidden={p !== cur}
+          >
             {pg.map((i) => (
               <button
                 key={i}
@@ -218,7 +224,7 @@ export function CaseGallery({ images, alt, onOpen }: CaseGalleryProps) {
                 tabIndex={p === cur ? 0 : -1}
                 aria-label={`Open ${alt} screenshot ${i + 1}`}
               >
-                <img src={images[i]} alt={`${alt} screenshot ${i + 1}`} loading={p < 2 ? "eager" : "lazy"} />
+                <img src={images[i]} alt={`${alt} screenshot ${i + 1}`} decoding="async" />
               </button>
             ))}
           </div>

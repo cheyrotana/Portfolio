@@ -727,6 +727,9 @@ export const NEEDLE_DOWN = DROP.lower[0] + DROP.lower[1];
 // (level and square on to the middle of the scene, the window over the turntable, so the room sits
 // centred between the name and the crate; `lift` frames it without tilting)
 const HERO: Shot = { pos: [1.6, 4.9, REC.z + 7.6], look: [1.6, 4.9, REC.z], shift: 0, lift: 0.14 };
+// the opening on squarer screens and phones (narrower than 4:3): lenses, and how far down the room sits (a
+// share of the screen height), leaving the top for the title
+const TALL = { fov: 44, phoneFov: 60, drop: 0.15, phoneDrop: 0.2 };
 
 /** `heroOnly`: just the room behind the opening (RetroGateway), sized to its box, camera fixed on the
  *  record; the rest of the page stays 2D. Otherwise the whole-page room (opened with ?room). */
@@ -1264,20 +1267,25 @@ export function RetroRoom({ heroOnly = false }: { heroOnly?: boolean }) {
       // ── Size, and the shift that leaves room for the text on wide screens ──
       let shiftNow = OPEN.shift;
       let liftNow = 0;
+      // the opening on squarer screens and phones can't fit the whole room: a wider lens, and the room sits
+      // lower, so the title has clear wall above the window instead of covering it
+      let tall = false;
       const size = () => {
         const w = heroOnly ? host.clientWidth || window.innerWidth : window.innerWidth;
         const h = heroOnly ? host.clientHeight || window.innerHeight : window.innerHeight;
         renderer.setSize(w, h, false);
         camera.aspect = w / h;
+        tall = heroOnly && w / h < 4 / 3;
         // narrow screens see a bit more of the room
-        camera.fov = w / h < 0.8 ? 50 : 35;
+        camera.fov = tall ? (w / h < 0.8 ? TALL.phoneFov : TALL.fov) : w / h < 0.8 ? 50 : 35;
         camera.updateProjectionMatrix();
         dirty = true;
       };
       const applyShift = (s: number, l: number) => {
         const w = window.innerWidth;
         const h = window.innerHeight;
-        const x = w >= 1024 ? s : 0;
+        const x = w >= 1024 && !tall ? s : 0;
+        if (tall) l -= w / h < 0.8 ? TALL.phoneDrop : TALL.drop;
         if (x > 0.001 || Math.abs(l) > 0.001) camera.setViewOffset(w, h, -x * w, l * h, w, h);
         else camera.clearViewOffset();
       };

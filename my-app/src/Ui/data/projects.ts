@@ -89,6 +89,7 @@ export interface Project {
   id: string;
   title: string;
   client: string;
+  builtAt?: string; // the team it was built with
   year: string;
   role: string;
   status?: string;
@@ -101,7 +102,7 @@ export interface Project {
   tech: string[];
   images: string[];
   logo?: string; // app icon; without one, ProjectPhone draws one from an icon and a colour
-  // Separate builds shown as their own apps on the project phone (HRM has one per institution)
+  // Separate builds shown as their own apps on the project phone
   apps?: ProjectApp[];
   splash?: Splash;
   githubUrl?: string;
@@ -110,16 +111,17 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    id: "hrm",
-    title: "HRM System",
-    client: "MLMUPC & NIS",
+    id: "hrm-mlmupc",
+    title: "MLMUPC HRM",
+    client: "MLMUPC",
+    builtAt: "Digital Revolution team, MLMUPC (internship)",
     year: "2026",
-    role: "Mobile, Web & Backend Developer",
+    role: "Mobile & Web Developer (intern)",
     categories: ["client", "mobile", "web"],
     featured: true,
-    summary: "Government HR platform for attendance, leave and officer records, on web and mobile.",
+    summary: "A ministry-wide HR platform that takes civil-servant administration digital, on web and mobile.",
     description:
-      "A human resource management platform for the Ministry of Land Management, Urban Planning and Construction (MLMUPC) and the National Institute of Statistics (NIS). Officers check in, request leave and missions, and manage their records from the mobile app, while administrators run the organization from the web app.",
+      "HRM for the Ministry of Land Management, Urban Planning and Construction (MLMUPC). Officers check in, request leave and missions, and manage their records from the mobile app, while administrators run the ministry from the web app. I built on both during my internship with the Digital Revolution team.",
     highlights: [
       "Built attendance tracking in the Flutter app, with daily, weekly, monthly and yearly reports",
       "Built mission and leave requests, plus organization admin screens with QR features",
@@ -127,33 +129,40 @@ export const projects: Project[] = [
       "Worked on the Angular web app: officer CVs and profiles, organization statistics, attendance timelines and settings",
       "Shipped a Khmer and English interface throughout",
     ],
-    stat: { value: "500+", label: "officers at NIS" },
+    stat: { value: "~3,000", label: "officers at MLMUPC" },
     tech: ["Flutter", "Angular", "NestJS", "PostgreSQL", "Socket.IO"],
-    images: [hrmMlmupc1, hrmMlmupc2, hrmMlmupc3, hrmMlmupc4, hrmMlmupc5, hrmNisStore1, hrmNisStore2, hrmNisStore3, hrmNis1, hrmNis2],
-    apps: [
-      {
-        id: "hrm-mlmupc",
-        title: "HRM · MLMUPC",
-        client: "MLMUPC",
-        logo: hrmMlmupcLogo,
-        splash: { bg: "#0C7EA5", logo: hrmMlmupcSplash },
-        images: [hrmMlmupc1, hrmMlmupc2, hrmMlmupc3, hrmMlmupc4, hrmMlmupc5],
-      },
-      {
-        id: "hrm-nis",
-        title: "HRM · NIS",
-        client: "NIS",
-        logo: hrmNisLogo,
-        splash: { bg: "#FFFFFF", logo: hrmNisSplash },
-        images: [hrmNisStore1, hrmNisStore2, hrmNisStore3, hrmNis1, hrmNis2],
-        stat: { value: "500+", label: "officers at NIS" },
-      },
+    images: [hrmMlmupc1, hrmMlmupc2, hrmMlmupc3, hrmMlmupc4, hrmMlmupc5],
+    logo: hrmMlmupcLogo,
+    splash: { bg: "#0C7EA5", logo: hrmMlmupcSplash },
+  },
+  {
+    id: "hrm-nis",
+    title: "NIS HRM",
+    client: "NIS",
+    builtAt: "CamCyber Digital Tech Team",
+    year: "2026",
+    role: "Full-Stack Developer",
+    categories: ["client", "web"],
+    featured: true,
+    summary: "A government HR platform with on-site face-scanner check-ins connected to the cloud.",
+    description:
+      "HRM for the National Institute of Statistics (NIS), Ministry of Planning, built at the CamCyber Digital Tech Team. I work full-stack on it: the Angular web app and the NestJS backend, with face scanners on site sending check-ins in real time.",
+    highlights: [
+      "Work full-stack on the Angular web app and the NestJS backend",
+      "Connected on-site face scanners to HRM, so every scan becomes a real-time check-in",
+      "Worked on attendance, leave and personnel records for the institute's officers",
     ],
+    stat: { value: "500+", label: "officers at NIS" },
+    tech: ["Angular", "NestJS", "PostgreSQL", "Socket.IO"],
+    images: [hrmNisStore1, hrmNisStore2, hrmNisStore3, hrmNis1, hrmNis2],
+    logo: hrmNisLogo,
+    splash: { bg: "#FFFFFF", logo: hrmNisSplash },
   },
   {
     id: "face-scan",
     title: "Face Scan Connector",
-    client: "HRM · MLMUPC & NIS",
+    client: "NIS HRM",
+    builtAt: "CamCyber Digital Tech Team",
     year: "2026",
     role: "Full-Stack Developer",
     categories: ["client", "hardware"],
@@ -176,6 +185,7 @@ export const projects: Project[] = [
     id: "phumiyerng",
     title: "PhumiYerng",
     client: "LASED III communities",
+    builtAt: "CamCyber Digital Tech Team",
     year: "2026",
     role: "Mobile Developer",
     status: "In development",

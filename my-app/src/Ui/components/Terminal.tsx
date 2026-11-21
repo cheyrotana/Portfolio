@@ -157,7 +157,7 @@ export function Terminal({ open, onClose, onThemeChange }: TerminalProps) {
                 {p.title} <span className="term-dim">— {p.role}, {p.year}</span>
               </div>
             ))}
-            <div className="term-dim mt-1">Try: open hrm</div>
+            <div className="term-dim mt-1">Try: open nis hrm</div>
           </div>,
         );
         break;

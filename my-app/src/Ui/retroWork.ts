@@ -6,7 +6,9 @@ import { CATEGORIES, type Project } from "./data/projects";
 
 // The colour of each record's label (falls back to HRM's)
 export const LABELS: Record<string, string> = {
-  hrm: "#d4a03a",
+  hrm: "#d4a03a", // the fallback
+  "hrm-mlmupc": "#d4a03a",
+  "hrm-nis": "#3a7ca5",
   "face-scan": "#9a4a2a",
   phumiyerng: "#2e7d32",
   unifinder: "#9a4a2a",

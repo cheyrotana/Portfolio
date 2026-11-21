@@ -28,8 +28,8 @@ export function RetroAbout({ greeting }: { greeting: string }) {
           </p>
           <p className="retro-about-body">
             Computer Science student at CADT since Feb 2024. I interned with the Digital Revolution team at MLMUPC
-            (Apr – Jun 2026), and since Jul 2026 I've been a mobile and backend developer on the CamCyber Digital Tech
-            Team: Flutter apps, Angular dashboards, NestJS services and a Raspberry Pi face-scan connector.
+            (Apr – Jun 2026), and since Jul 2026 I've been a full-stack developer on the CamCyber Digital Tech Team:
+            Flutter apps, Angular dashboards, NestJS services and a Raspberry Pi face-scan connector.
           </p>
         </Reveal>
 

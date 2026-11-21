@@ -84,6 +84,15 @@
         icon.href = icons[theme][0];
         icon.type = icons[theme][1];
         document.querySelector('meta[name="theme-color"]').content = icons[theme][2];
+        // Retro: fetch the room's loading still now, so it's there at first paint (not popping in after the app mounts)
+        if (theme === "retro") {
+          var still = document.createElement("link");
+          still.rel = "preload";
+          still.as = "image";
+          still.href = "/textures/room-still.webp";
+          still.setAttribute("fetchpriority", "high");
+          document.head.appendChild(still);
+        }
       })();
     </script>
   </head>

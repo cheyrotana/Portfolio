@@ -33,7 +33,7 @@ const FREQ = ["88.1", "91.5", "95.3", "99.7", "103.9", "107.1"];
 const MAX_TOOLS = Math.max(...skillGroups.map((g) => g.skills.length));
 
 export function RetroTapes() {
-  const [pos, setPos] = useState(3); // Backend & Data: the group with the most to show
+  const [pos, setPos] = useState(0); // "All tools" first, like the other themes
   const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
   const n = STATIONS.length;
 

@@ -68,8 +68,8 @@ function AboutSection() {
               </p>
               <p className="mt-5 text-muted leading-relaxed">
                 I've studied Computer Science at the Cambodia Academy of Digital Technology since Feb 2024. I interned
-                with the Digital Revolution team at MLMUPC (Apr – Jun 2026), and since Jul 2026 I've been a mobile and
-                backend developer on the CamCyber Digital Tech Team. Across the whole stack: Flutter apps that officers use to check in and
+                with the Digital Revolution team at MLMUPC (Apr – Jun 2026), and since Jul 2026 I've been a full-stack
+                developer on the CamCyber Digital Tech Team. Across the whole stack: Flutter apps that officers use to check in and
                 request leave, Angular dashboards for administrators, NestJS services, and even a Raspberry Pi
                 connector that links face scanners to the HR system.
               </p>

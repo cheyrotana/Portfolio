@@ -14,7 +14,7 @@
 // While the record is showing, <html> gets data-gate="in" (the navbar and the player stay put) and
 // --gate-dock / --gate-nav (0 → 1: the corner player's label fades in and the navbar drops in at the end).
 // Styles: .retro-gate* and .retro-hero* in src/retro.css.
-import { ArrowDown, ArrowRight, ChevronsRight, Pause, Play } from "lucide-react";
+import { ArrowDown, ArrowRight, ChevronsRight, Pause, Play, Volume2, VolumeX } from "lucide-react";
 import { useEffect, useRef, type CSSProperties } from "react";
 import { setBgm } from "../bgm";
 import { NAV_SECTIONS } from "../data/sections";
@@ -420,24 +420,31 @@ export function RetroGateway() {
           <div ref={titleRef} className="retro-title">
             <p className="retro-title-kicker">Side A · Now playing</p>
             <p className="retro-title-name" aria-hidden="true">
-              Chey
+              Chey{" "}
               <br />
               Rotana
             </p>
             <p className="retro-title-role">
-              {profile.role} <span aria-hidden="true">·</span> {profile.location}
+              {profile.role} <span className="retro-title-dot" aria-hidden="true">·</span>{" "}
+              <span className="retro-title-where">{profile.location}</span>
             </p>
             <div className="retro-title-actions">
               <button type="button" className="retro-title-drop" onClick={() => goRef.current(1)}>
                 <span className="retro-title-needle" aria-hidden="true" />
                 Drop the needle
               </button>
-              <button type="button" className="retro-title-music" onClick={toggle} aria-label={playing ? "Pause music" : "Play music"}>
-                {playing ? <Pause size={14} /> : <Play size={14} />}
+              <button
+                type="button"
+                className="retro-title-music"
+                onClick={toggle}
+                aria-label={playing ? "Pause music" : "Play music"}
+                aria-pressed={playing}
+              >
+                {playing ? <Volume2 size={16} aria-hidden="true" /> : <VolumeX size={16} aria-hidden="true" />}
                 <span>Music</span>
               </button>
               <button type="button" className="retro-title-skip" onClick={() => goRef.current(1, true)}>
-                Skip intro <ChevronsRight size={14} aria-hidden="true" />
+                Skip intro <ChevronsRight size={16} aria-hidden="true" />
               </button>
             </div>
             <p className="retro-title-hint" aria-hidden="true">

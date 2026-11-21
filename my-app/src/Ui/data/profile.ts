@@ -16,14 +16,14 @@ export const profile = {
   location: "Phnom Penh, Cambodia",
   education: "B.Sc. Computer Science · CADT",
   studying: "Feb 2024 – Present",
-  currently: "Mobile & Backend Developer at CamCyber",
+  currently: "Full-Stack Developer at CamCyber",
   internship: "Interned with the Digital Revolution team at MLMUPC, Apr – Jun 2026",
 };
 
 // Where I study, work and interned, with the dates: every theme's About, hero and board read these
 export const places = {
   study: { place: "CADT", detail: "B.Sc. Computer Science", when: "Feb 2024 – Present" },
-  work: { place: "CamCyber", detail: "Mobile & Backend Developer", when: "Jul 2026 – Present" },
+  work: { place: "CamCyber", detail: "Full-Stack Developer", when: "Jul 2026 – Present" },
   intern: { place: "MLMUPC", detail: "Digital Revolution team", when: "Apr – Jun 2026" },
 };
 
@@ -135,17 +135,17 @@ export const journey: JourneyStop[] = [
     org: "Intern · Digital Revolution team",
     text: "Interned with the Digital Revolution team at the Ministry of Land Management, Urban Planning and Construction, building HRM's Flutter app and Angular web app.",
     kind: "work",
-    projectId: "hrm",
+    projectId: "hrm-mlmupc",
     logo: mlmupcLogo,
   },
   {
     date: "Jul 2026",
     range: "Jul 2026 – Present",
     title: "CamCyber",
-    org: "Mobile & Backend Developer · Digital Tech Team",
-    text: "HRM for the National Institute of Statistics (Flutter app and NestJS backend), the Face Scan Connector, and the PhumiYerng app.",
+    org: "Full-Stack Developer · Digital Tech Team",
+    text: "HRM for the National Institute of Statistics (Angular web app and NestJS backend), the Face Scan Connector, and the PhumiYerng app.",
     kind: "work",
-    projectId: "hrm",
+    projectId: "hrm-nis",
     logo: camcyberLogo,
   },
   {

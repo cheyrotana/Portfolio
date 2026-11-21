@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, CalendarDays, ExternalLink, Images, UserRound, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Building2, CalendarDays, ExternalLink, Images, UserRound, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { FaGithub, FaYoutube } from "react-icons/fa";
 import type { Project } from "../data/projects";
@@ -29,17 +29,24 @@ export function ProjectModal({ project, position, onClose, onPrev, onNext }: Pro
     return () => window.removeEventListener("keydown", onKey);
   }, [viewerIndex, onClose, onPrev, onNext]);
 
-  // Lock page scroll behind the modal.
+  // Lock page scroll behind the modal. The page scrolls on <html> (smooth scrolling), so lock that as well as
+  // the body, or the wheel still moved the page underneath.
   useEffect(() => {
-    const prev = document.body.style.overflow;
+    const root = document.documentElement;
+    const prev = [root.style.overflow, document.body.style.overflow];
+    root.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = prev; };
+    return () => {
+      root.style.overflow = prev[0];
+      document.body.style.overflow = prev[1];
+    };
   }, []);
 
   const facts = [
     { icon: UserRound, label: "Role", value: project.role },
     { icon: CalendarDays, label: "Year", value: project.year },
     { icon: ExternalLink, label: "For", value: project.client },
+    ...(project.builtAt ? [{ icon: Building2, label: "Built at", value: project.builtAt }] : []),
   ];
 
   return (
@@ -56,7 +63,7 @@ export function ProjectModal({ project, position, onClose, onPrev, onNext }: Pro
 
       <motion.article
         key={project.id}
-        className="project-modal card relative w-full max-w-5xl max-h-[92vh] sm:max-h-[88vh] overflow-y-auto !rounded-b-none sm:!rounded-b-[var(--radius)]"
+        className="project-modal card relative w-full max-w-5xl max-h-[92vh] sm:max-h-[88vh] overflow-y-auto overscroll-contain!rounded-b-none sm:!rounded-b-[var(--radius)]"
         initial={{ opacity: 0, y: 40, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 40, scale: 0.98 }}

@@ -5566,6 +5566,7 @@ html[data-rfx][data-theme="retro"] .rt-strip[data-in] {
 .retro-sc-tech {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center; /* centred over the "See the full project" key */
   gap: 8px;
   margin: 16px 0 0;
   padding: 0;
@@ -6877,4 +6878,219 @@ html[data-rfx][data-theme="retro"] .retro-about-facts > li:nth-child(n) {
 
 [data-theme="retro"] .project-modal .case-strip {
   background: #160e08;
+}
+
+/* The opening on squarer screens and phones (narrower than 4:3): the camera sits the room lower (TALL in
+   RetroRoom.tsx). Who I am goes on the clear wall above the window, the keys on the console at the bottom,
+   so nothing covers the view */
+@media (max-aspect-ratio: 4/3) {
+  .retro-title {
+    left: 0;
+    right: 0;
+    top: max(60px, 6vh);
+    bottom: max(26px, 3vh);
+    width: auto;
+    margin: 0;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background: none;
+    pointer-events: none;
+  }
+
+  .retro-title > * {
+    pointer-events: auto;
+  }
+
+  .retro-title-kicker {
+    justify-content: center;
+  }
+
+  .retro-title-kicker::before {
+    content: "";
+    flex: 0 0 64px;
+    height: 2px;
+    background: linear-gradient(270deg, var(--r-mustard), transparent);
+  }
+
+  /* the name on one line, as wide as fits */
+  .retro-title-name {
+    margin-top: 12px;
+    font-size: min(calc((100vw - 40px) / 7), 10vh, 6.5rem);
+    white-space: nowrap;
+  }
+
+  .retro-title-name br {
+    display: none;
+  }
+
+  .retro-title-role {
+    margin-top: 14px;
+  }
+
+  /* the keys at the bottom, on the console */
+  .retro-title-actions {
+    justify-content: center;
+    margin-top: auto;
+  }
+
+  .retro-title-hint {
+    margin-top: 12px;
+    color: rgb(226 207 166 / 0.75);
+  }
+
+  /* a soft shade at the bottom so the keys read over the wood */
+  .retro-room.is-hero::before {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    z-index: 1;
+    height: 30%;
+    background: linear-gradient(rgb(10 5 3 / 0), rgb(10 5 3 / 0.7));
+    pointer-events: none;
+  }
+
+  /* the loading still is the wide framing: here the room just fades in from the dark */
+  .retro-room.is-hero {
+    background-image: none;
+  }
+}
+
+/* phones: the name on two lines, and the main key wide, near the thumb */
+@media (max-aspect-ratio: 4/3) and (max-width: 640px) {
+  .retro-title {
+    top: max(56px, 6vh);
+    bottom: max(32px, 5vh);
+    padding: 0 16px;
+  }
+
+  .retro-title-kicker {
+    gap: 10px;
+    font-size: 0.95rem;
+    letter-spacing: 0.22em;
+  }
+
+  .retro-title-kicker::before,
+  .retro-title-kicker::after {
+    flex-basis: 28px;
+  }
+
+  .retro-title-name {
+    margin-top: 10px;
+    font-size: min(16vw, 8vh);
+    white-space: normal;
+  }
+
+  .retro-title-name br {
+    display: inline;
+  }
+
+  .retro-title-role {
+    margin-top: 12px;
+    font-size: 0.95rem;
+  }
+
+  /* the role on one line, where I'm based under it */
+  .retro-title-dot {
+    display: none;
+  }
+
+  .retro-title-where {
+    display: block;
+  }
+
+  .retro-title-actions {
+    gap: 4px 28px;
+  }
+
+  .retro-title-drop {
+    justify-content: center;
+    width: min(300px, 100%);
+  }
+
+  .retro-title-hint {
+    display: none;
+  }
+}
+
+/* The opening's keys, tidied: one height for all three; Music and Skip intro as quiet outlined keys beside
+   the main one, Music lit amber while it plays; the scroll hint centred under them */
+.retro-title-actions {
+  gap: 12px;
+}
+
+.retro-title-drop {
+  min-height: 48px;
+  padding: 0 22px 0 14px;
+}
+
+.retro-title-music,
+.retro-title-skip {
+  min-height: 48px;
+  padding: 0 18px;
+  border: 1.5px solid rgb(239 225 197 / 0.35);
+  border-radius: 999px;
+  background: rgb(20 12 8 / 0.45);
+  color: #efe1c5;
+  font-size: 1.02rem;
+  line-height: 1;
+  transition: border-color 0.2s, color 0.2s, background-color 0.2s;
+}
+
+.retro-title-music:hover,
+.retro-title-skip:hover {
+  border-color: var(--r-mustard);
+  color: var(--r-mustard);
+}
+
+.retro-title-music[aria-pressed="true"] {
+  border-color: rgb(212 160 58 / 0.7);
+  color: var(--r-mustard);
+}
+
+.retro-title-music svg,
+.retro-title-skip svg {
+  flex: none;
+}
+
+.retro-title-hint {
+  align-self: stretch;
+  justify-content: inherit;
+}
+
+@media (max-aspect-ratio: 4/3) {
+  .retro-title-hint {
+    justify-content: center;
+  }
+}
+
+/* phones: the main key across, the two quiet keys side by side under it, the same width */
+@media (max-aspect-ratio: 4/3) and (max-width: 640px) {
+  .retro-title-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: min(300px, 100%);
+  }
+
+  .retro-title-drop {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .retro-title-music,
+  .retro-title-skip {
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 12px;
+  }
+}
+
+/* small screens: no corner record player (the opening's keys and the settings menu still play the music) */
+@media (max-width: 640px) {
+  .retro-deck {
+    display: none;
+  }
 }
