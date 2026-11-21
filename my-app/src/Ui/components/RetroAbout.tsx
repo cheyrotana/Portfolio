@@ -7,10 +7,10 @@ import { Reveal, SectionHeader } from "./Reveal";
 import { RetroPolaroid } from "./RetroPolaroid";
 
 const facts = [
-  { k: "Based in", v: profile.location.split(",")[0] },
-  { k: "Studying", v: "CADT · Year 4" },
-  { k: "Internship", v: "3 months · MLMUPC" },
-  { k: "Focus", v: "Apps, dashboards, APIs" },
+  { k: "Studying", v: "CADT", d: "Feb 2024 – Present" },
+  { k: "Working", v: "CamCyber", d: "Jul 2026 – Present" },
+  { k: "Interned", v: "MLMUPC", d: "Apr – Jun 2026" },
+  { k: "Based in", v: profile.location.split(",")[0], d: "Cambodia" },
 ];
 
 export function RetroAbout({ greeting }: { greeting: string }) {
@@ -27,9 +27,9 @@ export function RetroAbout({ greeting }: { greeting: string }) {
             {greeting}! I'm {profile.name.split(" ")[1]}. I turn messy, real-world processes into apps that feel simple.
           </p>
           <p className="retro-about-body">
-            Fourth-year Computer Science student at CADT. During a three-month internship with the Digital Revolution
-            team at MLMUPC I built Flutter apps, Angular dashboards, NestJS services and a Raspberry Pi face-scan
-            connector.
+            Computer Science student at CADT since Feb 2024. I interned with the Digital Revolution team at MLMUPC
+            (Apr – Jun 2026), and since Jul 2026 I've been a mobile and backend developer on the CamCyber Digital Tech
+            Team: Flutter apps, Angular dashboards, NestJS services and a Raspberry Pi face-scan connector.
           </p>
         </Reveal>
 
@@ -39,6 +39,7 @@ export function RetroAbout({ greeting }: { greeting: string }) {
               <li key={f.k}>
                 <span className="retro-cond">{f.k}</span>
                 {f.v}
+                <small className="retro-about-when">{f.d}</small>
               </li>
             ))}
           </ul>

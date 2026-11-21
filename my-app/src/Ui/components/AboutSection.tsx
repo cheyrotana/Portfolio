@@ -16,7 +16,7 @@ function greetingFor(hour: number) {
 
 const facts = [
   { icon: MapPin, label: "Based in", value: profile.location },
-  { icon: GraduationCap, label: "Studying", value: `${profile.education} · ${profile.year}` },
+  { icon: GraduationCap, label: "Studying", value: `${profile.education} · ${profile.studying}` },
   { icon: Briefcase, label: "Currently", value: profile.currently },
   { icon: Sparkles, label: "Focus", value: "Mobile apps, dashboards and the APIs behind them" },
 ];
@@ -67,8 +67,9 @@ function AboutSection() {
                 that feel simple.
               </p>
               <p className="mt-5 text-muted leading-relaxed">
-                I'm a fourth-year Computer Science student at the Cambodia Academy of Digital Technology. During my
-                three-month internship with the Digital Revolution team at MLMUPC I worked across the whole stack: Flutter apps that officers use to check in and
+                I've studied Computer Science at the Cambodia Academy of Digital Technology since Feb 2024. I interned
+                with the Digital Revolution team at MLMUPC (Apr – Jun 2026), and since Jul 2026 I've been a mobile and
+                backend developer on the CamCyber Digital Tech Team. Across the whole stack: Flutter apps that officers use to check in and
                 request leave, Angular dashboards for administrators, NestJS services, and even a Raspberry Pi
                 connector that links face scanners to the HR system.
               </p>
@@ -86,7 +87,7 @@ function AboutSection() {
                 <span className="flex-1">
                   <span className="block heading text-xl sm:text-2xl text-fg">Fly through my journey</span>
                   <span className="block mt-1 text-sm text-muted">
-                    From my first year at CADT to my internship at MLMUPC — {journey.length} stops along the way.
+                    From my first year at CADT to the CamCyber digital team — {journey.length} stops along the way.
                   </span>
                 </span>
                 <ArrowRight size={18} className="text-muted transition-transform group-hover:translate-x-1 group-hover:text-accent" />

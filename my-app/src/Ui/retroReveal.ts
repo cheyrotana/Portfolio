@@ -8,7 +8,6 @@ const SEL = [
   ".retro-about-body",
   ".retro-about-facts > *",
   ".retro-about-keys > *",
-  ".retro-rx",
   ".retro-hf",
   ".retro-sc > *",
   "#journey .rt-head > *",
@@ -74,6 +73,28 @@ export function startRetroReveal() {
     });
   };
   scan();
+
+  // a safety net: the observer only speaks when something crosses the edge, so an entry that came too late
+  // (and was skipped) could leave a piece hidden on screen until you scrolled away and back (Skills' radio,
+  // sometimes). Once the page settles, anything on screen that's still waiting comes in.
+  let settle = 0;
+  const sweep = () => {
+    const waiting = [...document.querySelectorAll<HTMLElement>("[data-rfx-seen]:not([data-in])")].filter(onScreen);
+    waiting
+      .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top)
+      .forEach((el, i) => {
+        el.style.setProperty("--rfx-i", String(Math.min(i, 8)));
+        el.dataset.in = "";
+      });
+  };
+  window.addEventListener(
+    "scroll",
+    () => {
+      clearTimeout(settle);
+      settle = window.setTimeout(sweep, 180);
+    },
+    { passive: true },
+  );
 
   // sections mount later (lazy parts, theme switches): look again once per frame when the page changes
   let queued = 0;

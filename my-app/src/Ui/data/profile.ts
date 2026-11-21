@@ -6,15 +6,18 @@ import {
   SiTailwindcss, SiTypescript, SiUnity,
 } from "react-icons/si";
 import { TbBrandCSharp } from "react-icons/tb";
+import camcyberLogo from "../../assets/logos/camcyber.png";
+import cadtLogo from "../../assets/logos/cadt.png";
+import mlmupcLogo from "../../assets/logos/hrm-mlmupc-splash.png";
 
 export const profile = {
   name: "Chey Rotana",
   role: "Mobile & Full-Stack Developer",
   location: "Phnom Penh, Cambodia",
   education: "B.Sc. Computer Science · CADT",
-  year: "Year 4",
-  currently: "Fourth-year student at CADT",
-  internship: "Interned 3 months with the Digital Revolution team at MLMUPC",
+  studying: "Feb 2024 – Present",
+  currently: "Mobile & Backend Developer at CamCyber",
+  internship: "Interned with the Digital Revolution team at MLMUPC, Apr – Jun 2026",
 };
 
 export interface SocialLink {
@@ -97,70 +100,46 @@ export const skillGroups: SkillGroup[] = [
 ];
 
 export interface JourneyStop {
-  date: string;
+  date: string; // short, for the radio dial
+  range?: string; // from when to when, on the stop itself
   title: string;
   org: string;
   text: string;
   kind: "study" | "project" | "work" | "next";
   projectId?: string; // links the stop to its card in the Work section
+  logo?: string; // the organisation's own logo, shown on the stop instead of the project's app icon
 }
 
-// Stops on the Journey flight path, oldest first (dates from each project's git history).
+// Stops on the Journey: the career path, oldest first. The projects themselves live in the Work section.
 export const journey: JourneyStop[] = [
   {
-    date: "Year 1",
-    title: "Took off at CADT",
+    date: "Feb 2024",
+    range: "Feb 2024 – Present",
+    title: "CADT",
     org: "B.Sc. Computer Science",
     text: "Started my Computer Science degree at the Cambodia Academy of Digital Technology.",
     kind: "study",
-  },
-  {
-    date: "Nov 2025",
-    title: "Modula",
-    org: "CADT team project",
-    text: "Frontend for a modular point-of-sale system for small food & beverage businesses, in Flutter web.",
-    kind: "project",
-    projectId: "modula",
-  },
-  {
-    date: "Dec 2025",
-    title: "Frost Guard",
-    org: "CADT team project",
-    text: "A tower defense game built in Unity and C#.",
-    kind: "project",
-    projectId: "frost-guard",
-  },
-  {
-    date: "Dec 2025",
-    title: "UniFinder",
-    org: "CADT team project",
-    text: "Offline Flutter app that helps rural students choose their university major.",
-    kind: "project",
-    projectId: "unifinder",
+    logo: cadtLogo,
   },
   {
     date: "Apr 2026",
-    title: "Internship (3 months)",
-    org: "MLMUPC · Digital Revolution team",
-    text: "Three months on the HRM platform, building the Flutter app and Angular web app used by MLMUPC and NIS.",
+    range: "Apr – Jun 2026",
+    title: "MLMUPC",
+    org: "Intern · Digital Revolution team",
+    text: "Interned with the Digital Revolution team at the Ministry of Land Management, Urban Planning and Construction, building HRM's Flutter app and Angular web app.",
     kind: "work",
     projectId: "hrm",
+    logo: mlmupcLogo,
   },
   {
-    date: "Sep 2026",
-    title: "Face Scan Connector",
-    org: "HRM · MLMUPC & NIS",
-    text: "Linked Raspberry Pi face scanners to HRM so every scan becomes an attendance record.",
+    date: "Jul 2026",
+    range: "Jul 2026 – Present",
+    title: "CamCyber",
+    org: "Mobile & Backend Developer · Digital Tech Team",
+    text: "Joined the CamCyber digital team: HRM's Flutter app and NestJS backend for the National Institute of Statistics, the Face Scan Connector that turns Raspberry Pi face scans into attendance records, and the PhumiYerng app for LASED III communities.",
     kind: "work",
-    projectId: "face-scan",
-  },
-  {
-    date: "Oct 2026",
-    title: "PhumiYerng",
-    org: "LASED III communities",
-    text: "Started the Flutter app for a community marketplace and tourism platform.",
-    kind: "work",
-    projectId: "phumiyerng",
+    projectId: "hrm",
+    logo: camcyberLogo,
   },
   {
     date: "Now",

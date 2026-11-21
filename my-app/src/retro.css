@@ -2267,7 +2267,7 @@ html[data-gate] .retro-deck.is-tucked {
 .rt-strip ol {
   flex: 1;
   display: grid;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--n, 8), minmax(0, 1fr));
   gap: 4px;
 }
 
@@ -2498,7 +2498,7 @@ html[data-gate] .retro-deck.is-tucked {
 /* waiting to come in */
 html[data-rfx][data-theme="retro"] .section-header:not([data-in]) :is(.retro-sweep, .retro-odo, .eyebrow),
 html[data-rfx][data-theme="retro"] :is(.retro-about-photo, .retro-about-lead, .retro-about-body, .retro-about-facts > *, .retro-about-keys > *):not([data-in]),
-html[data-rfx][data-theme="retro"] :is(.retro-rx, .retro-hf, .retro-sc > *):not([data-in]),
+html[data-rfx][data-theme="retro"] :is(.retro-hf, .retro-sc > *):not([data-in]),
 html[data-rfx][data-theme="retro"] #contact .card:not([data-in]) {
   opacity: 0;
 }
@@ -6547,20 +6547,280 @@ html[data-rfx][data-theme="retro"] .retro-about-facts > li:nth-child(n) {
   }
 }
 
-/* Skills: the receiver rises in and fades up (no clip mask: on something this tall it was heavy while
-   scrolling, cut off the case's shadow, and the shadow snapped back on when it ended) */
-@keyframes rfx-rx-in {
-  from {
-    opacity: 0;
-    translate: 0 36px;
-  }
-}
-
-html[data-rfx][data-theme="retro"] .retro-rx[data-in] {
-  animation: rfx-rx-in 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s backwards;
-}
+/* Skills: the receiver has no entrance. It's most of the section, so waiting for it to come in left an
+   empty gap on screen (the title still sweeps in) */
 
 /* the line under the section label (it read as a stray brown bar over the title): gone */
 [data-theme="retro"] .retro-rule {
   display: none;
+}
+
+/* an organisation's own logo on a Journey sign (CADT, MLMUPC, CamCyber): whole, on a white card */
+.rt-board-pic img[data-org] {
+  object-fit: contain;
+  padding: 10%;
+  background: #fff;
+}
+
+/* Work: the highlights as real bullets (the reset strips list markers), each an amber dot */
+.retro-sc-highlights {
+  gap: 8px;
+  padding-left: 0;
+  list-style: none;
+}
+
+.retro-sc-highlights li {
+  position: relative;
+  padding-left: 20px;
+}
+
+.retro-sc-highlights li::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 0.5em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #e8a91c;
+  box-shadow: 0 0 6px rgb(232 169 28 / 0.6);
+}
+
+/* Work: the track list reads as buttons. A hint on top, each track a raised cream key with a play icon,
+   the one playing pressed in, dark, with a little equaliser dancing */
+.retro-sc-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+  font: 600 0.8rem "Fraunces", Georgia, serif;
+  font-style: italic;
+  color: rgb(58 35 20 / 0.7);
+}
+
+.retro-sc-hint::before {
+  content: "\2193";
+  font-style: normal;
+  color: #a8431b;
+}
+
+.retro-sc-list li + li {
+  margin-top: 6px;
+}
+
+.retro-sc-track {
+  border: 2px solid rgb(58 35 20 / 0.16);
+  border-radius: 6px;
+  background: #f8efdc;
+  box-shadow: 0 3px 0 rgb(58 35 20 / 0.22);
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.15s, translate 0.15s;
+}
+
+.retro-sc-track:hover {
+  border-color: #e8a91c;
+  background: #fff6e2;
+  translate: 0 -1px;
+  box-shadow: 0 4px 0 rgb(58 35 20 / 0.25);
+}
+
+.retro-sc-track:active {
+  translate: 0 2px;
+  box-shadow: 0 1px 0 rgb(58 35 20 / 0.25);
+}
+
+.retro-sc-track[aria-pressed="true"] {
+  border-color: #3a2314;
+  border-bottom-color: #3a2314;
+  border-radius: 6px;
+  background: #3a2314;
+  translate: 0 2px;
+  box-shadow: inset 0 2px 6px rgb(0 0 0 / 0.4);
+}
+
+.retro-sc-play {
+  flex: none;
+  color: #a8431b;
+  opacity: 0.45;
+  transition: opacity 0.2s, translate 0.2s;
+}
+
+.retro-sc-track:hover .retro-sc-play {
+  opacity: 1;
+  translate: 2px 0;
+}
+
+.retro-sc-eq {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+}
+
+.retro-sc-eq span {
+  width: 3px;
+  height: 100%;
+  border-radius: 1px;
+  background: #e8a91c;
+  transform-origin: bottom;
+  animation: retro-sc-eq 0.9s ease-in-out infinite alternate;
+}
+
+.retro-sc-eq span:nth-child(2) {
+  animation-delay: -0.3s;
+}
+
+.retro-sc-eq span:nth-child(3) {
+  animation-delay: -0.6s;
+}
+
+@keyframes retro-sc-eq {
+  from {
+    transform: scaleY(0.3);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .retro-sc-eq span {
+    animation: none;
+  }
+}
+
+/* room for the keys: a wider list, so names and the "in dev" tag sit side by side */
+@media (min-width: 1024px) {
+  .retro-sc {
+    grid-template-columns: 270px minmax(0, 1fr) 320px;
+  }
+}
+
+.retro-sc-track {
+  gap: 8px;
+}
+
+.retro-sc-status {
+  flex: none;
+  padding: 1px 6px;
+  font-size: 0.6rem;
+}
+
+/* About facts: the place, then its dates on their own line */
+.retro-about-when {
+  display: block;
+  margin-top: 2px;
+  font: 600 0.72rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.06em;
+  color: rgb(243 181 68 / 0.75);
+  white-space: nowrap;
+}
+
+/* Work, wide projects (web, games): a clean window. A title bar with three lamps and the name, the screens
+   all cropped alike from the top, a cover first, and no record peeking out behind */
+.retro-sc-screen {
+  display: grid;
+}
+
+.retro-sc-stage[data-wide="true"] .retro-sc-record {
+  display: none;
+}
+
+.retro-sc-stage[data-wide="true"] .retro-sc-device {
+  width: 100%;
+  max-width: 520px;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #1a110b;
+}
+
+.retro-sc-stage[data-wide="true"] .retro-sc-device img {
+  aspect-ratio: 16 / 10;
+  border-radius: 0;
+  object-position: top;
+}
+
+.retro-sc-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 12px;
+  background: linear-gradient(#2e1d11, #24170d);
+  box-shadow: inset 0 -1px 0 rgb(0 0 0 / 0.4);
+}
+
+.retro-sc-bar i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #e8462a;
+}
+
+.retro-sc-bar i:nth-child(2) {
+  background: #e8a91c;
+}
+
+.retro-sc-bar i:nth-child(3) {
+  background: #8a9a4a;
+}
+
+.retro-sc-bar b {
+  flex: 1;
+  margin-right: 33px; /* centred over the window, past the lamps */
+  font: 700 0.75rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: center;
+  color: rgb(243 181 68 / 0.7);
+}
+
+.retro-sc-cover {
+  grid-area: 1 / 1;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 8px;
+  aspect-ratio: 16 / 10;
+  padding: 24px;
+  text-align: center;
+  color: #f4e6c8;
+  background-image: radial-gradient(ellipse at 50% 30%, rgb(255 255 255 / 0.14), transparent 65%) !important;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.retro-sc-cover[data-on="true"] {
+  opacity: 1;
+}
+
+.retro-sc-cover[data-light] {
+  color: #1f2a44;
+  background-image: radial-gradient(ellipse at 50% 30%, rgb(0 0 0 / 0.04), transparent 65%) !important;
+}
+
+.retro-sc-stage[data-wide="true"] .retro-sc-device .retro-sc-cover img {
+  width: 76px;
+  height: 76px;
+  aspect-ratio: auto;
+  object-fit: contain;
+  border-radius: 18px;
+  opacity: 1;
+}
+
+.retro-sc-cover strong {
+  margin-top: 6px;
+  font: italic 800 1.7rem / 1 "Fraunces", Georgia, serif;
+}
+
+.retro-sc-cover small {
+  max-width: 30ch;
+  font: 500 0.85rem / 1.4 "Fraunces", Georgia, serif;
+  opacity: 0.8;
+}
+
+/* Work: the three columns line up along the top (the list, the screen's top edge, the notes). The stage keeps
+   its fixed height, so switching between a phone and a wide window still moves nothing below */
+.retro-sc-stage {
+  justify-content: flex-start;
 }

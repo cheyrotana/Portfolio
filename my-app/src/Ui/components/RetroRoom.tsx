@@ -171,8 +171,8 @@ function drawPlanks(g: CanvasRenderingContext2D) {
   }
 }
 
-// The view through the window: Phnom Penh at night. A moon, stars, the city's lit windows, a tiered Khmer
-// tower on the skyline, and the river along the bottom with the lights in it.
+// The view through the window: Phnom Penh at night from across the river. The Royal Palace in gold, the
+// Independence Monument, Canadia Tower, The Peak and Vattanac Capital, palms and lamps along Sisowath Quay.
 // The receiver's face: brushed metal, an amber tuning dial, two VU meters and knobs. `glow` draws only the
 // parts that light up (for the emissive map).
 function drawReceiver(g: CanvasRenderingContext2D, glow = false) {
@@ -180,11 +180,11 @@ function drawReceiver(g: CanvasRenderingContext2D, glow = false) {
   const H = g.canvas.height;
   if (!glow) {
     const metal = g.createLinearGradient(0, 0, 0, H);
-    metal.addColorStop(0, "#c9c2b4");
-    metal.addColorStop(1, "#8f887c");
+    metal.addColorStop(0, "#968d7d"); // aged, satin metal: lamp-lit, not a mirror
+    metal.addColorStop(1, "#62594c");
     g.fillStyle = metal;
     g.fillRect(0, 0, W, H);
-    g.strokeStyle = "rgba(255,255,255,0.08)";
+    g.strokeStyle = "rgba(255,255,255,0.04)";
     for (let x = 0; x < W; x += 3) {
       g.beginPath();
       g.moveTo(x, 0);
@@ -337,30 +337,55 @@ function drawWindowView(g: CanvasRenderingContext2D) {
     g.arc(rnd() * W, rnd() * horizon * 0.65, r, 0, Math.PI * 2);
     g.fill();
   }
-  // the moon, with its glow
+  // the moon, with its glow: high in the sky, clear of the window's cross bar
   const mx = W * 0.74;
-  const my = H * 0.44; // low, just rising over the city
-  const glow = g.createRadialGradient(mx, my, 0, mx, my, 110);
+  const my = H * 0.2;
+  const glow = g.createRadialGradient(mx, my, 0, mx, my, 120);
   glow.addColorStop(0, "rgba(255,236,190,0.45)");
   glow.addColorStop(1, "rgba(255,236,190,0)");
   g.fillStyle = glow;
-  g.fillRect(mx - 110, my - 110, 220, 220);
+  g.fillRect(mx - 120, my - 120, 240, 240);
   g.fillStyle = "#f6ead0";
   g.beginPath();
   g.arc(mx, my, 24, 0, Math.PI * 2);
   g.fill();
-  // the far city: blocks with lit windows
-  const city = (base: number, color: string, minH: number, maxH: number, lit: number) => {
+  g.fillStyle = "rgba(200,185,150,0.35)";
+  [[-7, -5, 5], [6, 4, 4], [-3, 9, 3]].forEach(([dx, dy, r]) => {
+    g.beginPath();
+    g.arc(mx + dx, my + dy, r, 0, Math.PI * 2);
+    g.fill();
+  });
+  // a warm glow where the city meets the sky
+  const rim = g.createLinearGradient(0, horizon - 130, 0, horizon);
+  rim.addColorStop(0, "rgba(255,150,90,0)");
+  rim.addColorStop(1, "rgba(255,150,90,0.3)");
+  g.fillStyle = rim;
+  g.fillRect(0, horizon - 130, W, 130);
+  // the city in three layers: far ones hazy and pale, near ones dark and sharp, each lit from below
+  const city = (base: number, top: string, bottom: string, minH: number, maxH: number, lit: number, winA: number, mastEvery: number) => {
     let x = -10;
     while (x < W) {
-      const w = 18 + rnd() * 46;
+      const w = 16 + rnd() * 44;
       const h = minH + rnd() * (maxH - minH);
-      g.fillStyle = color;
+      const body = g.createLinearGradient(0, base - h, 0, base);
+      body.addColorStop(0, top);
+      body.addColorStop(1, bottom);
+      g.fillStyle = body;
       g.fillRect(x, base - h, w, h + 2);
+      g.fillStyle = "rgba(255,190,130,0.16)"; // the lit edge facing the moon
+      g.fillRect(x + w - 1.5, base - h, 1.5, h + 2);
+      g.fillStyle = "rgba(255,200,140,0.12)"; // roof edge
+      g.fillRect(x, base - h, w, 1.2);
+      if (mastEvery && rnd() < 1 / mastEvery) {
+        g.fillStyle = top;
+        g.fillRect(x + w * 0.5 - 0.7, base - h - 14, 1.4, 14);
+        g.fillStyle = "rgba(255,70,50,0.95)"; // aircraft light
+        g.fillRect(x + w * 0.5 - 1.4, base - h - 16, 2.8, 2.8);
+      }
       for (let wy = base - h + 6; wy < base - 6; wy += 9) {
         for (let wx = x + 4; wx < x + w - 5; wx += 8) {
           if (rnd() < lit) {
-            g.fillStyle = `rgba(255,${190 + Math.floor(rnd() * 40)},110,${0.55 + rnd() * 0.4})`;
+            g.fillStyle = `rgba(255,${190 + Math.floor(rnd() * 40)},110,${winA * (0.55 + rnd() * 0.4)})`;
             g.fillRect(wx, wy, 3.5, 4.5);
           }
         }
@@ -368,41 +393,206 @@ function drawWindowView(g: CanvasRenderingContext2D) {
       x += w + rnd() * 6;
     }
   };
-  city(horizon, "#1c1a30", 20, 95, 0.22);
-  // a tiered Khmer tower on the skyline, warm light on its face
-  const tx = W * 0.34;
-  g.fillStyle = "#2a2234";
-  let ty = horizon;
-  let tw = 78;
-  for (let i = 0; i < 6; i++) {
-    const th = 22 - i * 2;
-    g.fillRect(tx - tw / 2, ty - th, tw, th);
-    g.fillStyle = "rgba(255,170,90,0.35)";
-    g.fillRect(tx - tw / 2, ty - th, tw, 2);
-    g.fillStyle = "#2a2234";
-    ty -= th;
-    tw *= 0.78;
+  // Phnom Penh from across the river: hazy towers far back, then the landmarks, then the riverfront
+  city(horizon - 4, "#3a3558", "#4a3c58", 24, 72, 0.08, 0.5, 0); // far, in haze
+  const tower = (x: number, w: number, h: number, top: string, lit: number) => {
+    const body = g.createLinearGradient(0, horizon - h, 0, horizon);
+    body.addColorStop(0, top);
+    body.addColorStop(1, "#2a2038");
+    g.fillStyle = body;
+    g.fillRect(x, horizon - h, w, h);
+    g.fillStyle = "rgba(255,190,130,0.18)";
+    g.fillRect(x + w - 1.5, horizon - h, 1.5, h);
+    for (let wy = horizon - h + 6; wy < horizon - 6; wy += 7) {
+      for (let wx = x + 3; wx < x + w - 4; wx += 6) {
+        if (rnd() < lit) {
+          g.fillStyle = `rgba(255,${200 + Math.floor(rnd() * 40)},150,${0.5 + rnd() * 0.4})`;
+          g.fillRect(wx, wy, 2.5, 3.5);
+        }
+      }
+    }
+  };
+  // Canadia Tower, with its crown
+  tower(268, 26, 90, "#232040", 0.3);
+  g.fillStyle = "#232040";
+  g.fillRect(275, horizon - 102, 12, 12);
+  g.fillRect(280, horizon - 114, 2, 12);
+  // The Peak: two towers with stepped tops
+  tower(410, 24, 98, "#25223f", 0.28);
+  g.fillStyle = "#25223f";
+  g.fillRect(414, horizon - 104, 16, 6);
+  tower(440, 24, 86, "#25223f", 0.28);
+  g.fillStyle = "#25223f";
+  g.fillRect(444, horizon - 92, 16, 6);
+  // Vattanac Capital: the tallest, its side sweeping in to the top like a dragon's tail
+  {
+    const x = 352;
+    const base = horizon - 24;
+    const top = horizon - 140;
+    g.fillStyle = "#1e1c36";
+    g.fillRect(x - 22, base, 78, 24); // the podium
+    const glass = g.createLinearGradient(x, 0, x + 38, 0);
+    glass.addColorStop(0, "#3a4a72");
+    glass.addColorStop(1, "#1c2240");
+    g.fillStyle = glass;
+    g.beginPath();
+    g.moveTo(x, base);
+    g.lineTo(x, top);
+    g.quadraticCurveTo(x + 36, top + 30, x + 38, top + 72);
+    g.lineTo(x + 38, base);
+    g.closePath();
+    g.fill();
+    g.strokeStyle = "rgba(200,225,255,0.55)"; // lit fins up the face
+    g.lineWidth = 1;
+    for (let i = 0; i < 4; i++) {
+      g.beginPath();
+      g.moveTo(x + 5 + i * 9, base);
+      g.lineTo(x + 5 + i * 9, top + 6 + i * i * 7);
+      g.stroke();
+    }
+    g.fillStyle = "rgba(255,70,50,0.95)";
+    g.fillRect(x - 1, top - 3, 3, 3);
   }
+  city(horizon, "#1e1b34", "#2c2038", 14, 55, 0.22, 1, 6); // the middle, kept low so the landmarks stand out
+  // Independence Monument: a lotus tower lit warm
+  {
+    const tx = 236;
+    g.fillStyle = "#3a2a2c";
+    let ty = horizon - 6;
+    let tw = 40;
+    for (let i = 0; i < 5; i++) {
+      const th = 12 - i;
+      g.fillRect(tx - tw / 2, ty - th, tw, th);
+      g.fillStyle = "rgba(255,170,90,0.45)";
+      g.fillRect(tx - tw / 2, ty - th, tw, 1.5);
+      g.fillStyle = "#3a2a2c";
+      ty -= th;
+      tw *= 0.8;
+    }
+    g.beginPath();
+    g.moveTo(tx - tw / 2, ty);
+    g.lineTo(tx, ty - 26);
+    g.lineTo(tx + tw / 2, ty);
+    g.fill();
+  }
+  // the Royal Palace: the Throne Hall's golden tiered roofs and spire, floodlit
+  const palace = (cx: number, s: number) => {
+    const base = horizon - 4;
+    const halo = g.createRadialGradient(cx, base - 30 * s, 0, cx, base - 30 * s, 100 * s);
+    halo.addColorStop(0, "rgba(255,190,90,0.35)");
+    halo.addColorStop(1, "rgba(255,190,90,0)");
+    g.fillStyle = halo;
+    g.fillRect(cx - 100 * s, base - 130 * s, 200 * s, 130 * s);
+    g.fillStyle = "#c98a3a"; // the hall
+    g.fillRect(cx - 62 * s, base - 16 * s, 124 * s, 16 * s);
+    g.fillStyle = "rgba(90,40,10,0.7)";
+    for (let i = -5; i <= 5; i++) g.fillRect(cx + i * 10 * s - 2 * s, base - 12 * s, 4 * s, 9 * s);
+    // three tiers of flared roofs, each narrower
+    let y = base - 16 * s;
+    [64, 48, 34].forEach((hw, i) => {
+      const rh = (14 - i * 2) * s;
+      const roof = g.createLinearGradient(0, y - rh, 0, y);
+      roof.addColorStop(0, "#f6cf6a");
+      roof.addColorStop(1, "#b9772a");
+      g.fillStyle = roof;
+      g.beginPath();
+      g.moveTo(cx - hw * s - 6 * s, y + 2 * s);
+      g.lineTo(cx - hw * s * 0.55, y - rh);
+      g.lineTo(cx + hw * s * 0.55, y - rh);
+      g.lineTo(cx + hw * s + 6 * s, y + 2 * s);
+      g.closePath();
+      g.fill();
+      g.fillStyle = "#f6cf6a"; // the upturned finials at the eaves
+      g.fillRect(cx - hw * s - 7 * s, y - 2 * s, 2 * s, 5 * s);
+      g.fillRect(cx + hw * s + 5 * s, y - 2 * s, 2 * s, 5 * s);
+      y -= rh;
+    });
+    // the spire: stacked tiers, then a needle
+    g.fillStyle = "#f2c35c";
+    let sw = 14 * s;
+    for (let i = 0; i < 5; i++) {
+      g.fillRect(cx - sw / 2, y - 5 * s, sw, 5 * s);
+      y -= 5 * s;
+      sw *= 0.78;
+    }
+    g.beginPath();
+    g.moveTo(cx - sw / 2, y);
+    g.lineTo(cx, y - 30 * s);
+    g.lineTo(cx + sw / 2, y);
+    g.fill();
+  };
+  palace(96, 1);
+  // a stupa beside it, like the Silver Pagoda's
+  g.fillStyle = "#d9a84e";
   g.beginPath();
-  g.moveTo(tx - tw / 2, ty);
-  g.lineTo(tx, ty - 46);
-  g.lineTo(tx + tw / 2, ty);
+  g.moveTo(170, horizon - 4);
+  g.quadraticCurveTo(170, horizon - 26, 178, horizon - 30);
+  g.lineTo(178, horizon - 52);
+  g.lineTo(179, horizon - 30);
+  g.quadraticCurveTo(188, horizon - 26, 188, horizon - 4);
+  g.closePath();
   g.fill();
-  city(horizon, "#120f1e", 6, 40, 0.3);
+  // Sisowath Quay: the riverside promenade, a row of lamps and palms
+  g.fillStyle = "#0d0a16";
+  g.fillRect(0, horizon - 4, W, 6);
+  const palm = (x: number, h: number) => {
+    g.strokeStyle = "#0d0a16";
+    g.lineWidth = 1.6;
+    g.beginPath();
+    g.moveTo(x, horizon - 2);
+    g.quadraticCurveTo(x + 3, horizon - h / 2, x + 1, horizon - h);
+    g.stroke();
+    g.fillStyle = "#0d0a16";
+    [-2.6, -2, -1.2, -0.5, 0.2].forEach((a) => {
+      g.beginPath();
+      g.ellipse(x + 1 + Math.cos(a) * 6, horizon - h + Math.sin(a) * 3 + 2, 7, 1.6, a, 0, Math.PI * 2);
+      g.fill();
+    });
+  };
+  [22, 58, 150, 205, 262, 330, 398, 470, 548, 612].forEach((x, i) => palm(x, 18 + (i % 3) * 4));
+  for (let x = 8; x < W; x += 15) {
+    g.fillStyle = "rgba(255,214,150,0.95)";
+    g.fillRect(x, horizon - 9, 2, 2);
+    g.fillStyle = "rgba(255,200,120,0.25)";
+    g.fillRect(x - 2, horizon - 11, 6, 6);
+  }
+  const haze = g.createLinearGradient(0, horizon - 24, 0, horizon + 4);
+  haze.addColorStop(0, "rgba(120,90,130,0)");
+  haze.addColorStop(1, "rgba(150,100,110,0.22)");
+  g.fillStyle = haze;
+  g.fillRect(0, horizon - 24, W, 28);
   // the river, the city's lights trailing in it
   const river = g.createLinearGradient(0, horizon, 0, H);
   river.addColorStop(0, "#1a1c34");
   river.addColorStop(1, "#0b0c1a");
   g.fillStyle = river;
-  g.fillRect(0, horizon, W, H - horizon);
+  g.fillRect(0, horizon + 2, W, H - horizon);
   for (let i = 0; i < 60; i++) {
     const x = rnd() * W;
     const y = horizon + 4 + rnd() * (H - horizon - 8);
     g.fillStyle = `rgba(255,200,120,${0.12 + rnd() * 0.3})`;
     g.fillRect(x, y, 6 + rnd() * 16, 1.5);
   }
+  // the palace's gold and the tower's lights, shimmering in the water
+  for (let y = horizon + 5; y < H; y += 4) {
+    const fade = 1 - (y - horizon) / (H - horizon);
+    g.fillStyle = `rgba(255,190,90,${0.5 * fade})`;
+    g.fillRect(96 - 26 - rnd() * 14, y, 52 + rnd() * 28, 1.5);
+    g.fillStyle = `rgba(190,210,255,${0.3 * fade})`;
+    g.fillRect(366 - 6 - rnd() * 6, y, 12 + rnd() * 10, 1.2);
+  }
   g.fillStyle = "rgba(255,236,190,0.35)";
   for (let y = horizon + 6; y < H; y += 5) g.fillRect(mx - 10 - rnd() * 8, y, 20 + rnd() * 16, 1.5);
+  // a lit dinner boat out on the river
+  g.fillStyle = "#120d18";
+  g.fillRect(196, horizon + 40, 60, 8);
+  g.fillRect(204, horizon + 33, 44, 7);
+  for (let x = 200; x < 254; x += 6) {
+    g.fillStyle = `hsl(${(x * 7) % 360} 90% 70%)`;
+    g.fillRect(x, horizon + 31, 2.5, 2.5);
+  }
+  g.fillStyle = "rgba(255,210,140,0.85)";
+  for (let x = 207; x < 246; x += 6) g.fillRect(x, horizon + 35, 3, 3);
 }
 
 function drawWalnut(g: CanvasRenderingContext2D, slats: boolean) {
@@ -701,15 +891,15 @@ export function RetroRoom({ heroOnly = false }: { heroOnly?: boolean }) {
           map: texture(512, 192, (g) => drawReceiver(g)),
           emissiveMap: texture(512, 192, (g) => drawReceiver(g, true)),
           emissive: 0xffffff,
-          emissiveIntensity: 0.7,
-          roughness: 0.45,
-          metalness: 0.3,
+          emissiveIntensity: 0.45,
+          roughness: 0.8,
+          metalness: 0.1,
         }),
       );
       face.position.set(RX.x, TOP_Y + RX.h / 2, CONSOLE.z + 0.15 + RX.d / 2 + 0.005);
       scene.add(face);
-      const dialGlow = new THREE.PointLight(0xffa040, 1.2, 4, 2);
-      dialGlow.position.set(RX.x - 0.2, TOP_Y + RX.h / 2, CONSOLE.z + 0.15 + RX.d / 2 + 0.35);
+      const dialGlow = new THREE.PointLight(0xffa040, 0.5, 3, 2); // a soft spill on the console, not on the face
+      dialGlow.position.set(RX.x - 0.2, TOP_Y + 0.05, CONSOLE.z + 0.15 + RX.d / 2 + 0.6);
       scene.add(dialGlow);
 
       // the left of the room: prints on the wall, and a plant in front (low, under the title card)

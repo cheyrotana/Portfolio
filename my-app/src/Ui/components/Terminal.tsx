@@ -128,7 +128,7 @@ export function Terminal({ open, onClose, onThemeChange }: TerminalProps) {
         push(
           "out",
           <>
-            {profile.education}, {profile.year.toLowerCase()}. {profile.currently}.
+            {profile.education}, {profile.studying}. {profile.currently}.
             <br />I build Flutter apps, Angular dashboards and NestJS services — and once, a Raspberry Pi face-scanner connector.
           </>,
         );

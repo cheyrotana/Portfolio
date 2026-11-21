@@ -125,7 +125,7 @@ export const projects: Project[] = [
       "Built mission and leave requests, plus organization admin screens with QR features",
       "Hosted the app as a Telegram Mini App with automatic sign-in",
       "Worked on the Angular web app: officer CVs and profiles, organization statistics, attendance timelines and settings",
-      "Khmer and English interface throughout",
+      "Shipped a Khmer and English interface throughout",
     ],
     stat: { value: "500+", label: "officers at NIS" },
     tech: ["Flutter", "Angular", "NestJS", "PostgreSQL", "Socket.IO"],
@@ -161,10 +161,10 @@ export const projects: Project[] = [
     description:
       "Connects Raspberry Pi face-scanner machines and Dahua face terminals to the HRM system. Each machine registers itself and shows a pairing QR code; administrators pair it and assign staff from the web app, and their faces are synced to the scanner automatically.",
     highlights: [
-      "Python connector registers each Raspberry Pi and shows its pairing QR code in Chromium kiosk mode",
-      "Admins create and pair machines from the Angular web app, then assign staff",
-      "NestJS worker syncs staff face photos to the Dahua scanner and reports success or failure back to HRM",
-      "Per-machine monitor page limited to its assigned users, with retry on temporary API failures",
+      "Built the Python connector that registers each Raspberry Pi and shows its pairing QR code in kiosk mode",
+      "Built the NestJS worker that syncs staff face photos to the Dahua scanner and reports back to HRM",
+      "Built the Angular screens where admins create and pair machines, then assign staff",
+      "Added a per-machine monitor page limited to its assigned users, with retry on temporary API failures",
       "Wrote the setup manual and deployment checklist for staff and future developers",
     ],
     tech: ["Python", "Raspberry Pi", "NestJS", "Angular", "PostgreSQL"],
@@ -186,9 +186,9 @@ export const projects: Project[] = [
       "PhumiYerng (ភូមិយើង, \"Our Village\") brings LASED III communities onto one platform to sell their products, promote trips and homestays, and share news through their own community pages. I'm building the Flutter mobile app.",
     highlights: [
       "Set up the Flutter app from scratch with MVVM and separate dev, UAT and production builds",
-      "Customer flows: product catalog, cart and checkout, trips and homestays",
-      "Community pages with posts and a project tab, plus OTP sign-in",
-      "Live notifications over WebSockets",
+      "Built the customer flows: product catalog, cart and checkout, trips and homestays",
+      "Built community pages with posts and a project tab, plus OTP sign-in",
+      "Added live notifications over WebSockets",
     ],
     stat: { value: "19", label: "partner communities" },
     tech: ["Flutter", "Dart", "MVVM", "NestJS", "Socket.IO"],
@@ -206,7 +206,11 @@ export const projects: Project[] = [
     summary: "Offline app that helps rural students find their best-fit university majors.",
     description:
       "A Flutter mobile application that helps students, especially those living in rural areas of Cambodia, find their best-fit university majors and plan their academic futures — 100% offline.",
-    highlights: [],
+    highlights: [
+      "Built the Flutter frontend, with go_router for navigation",
+      "Built the screens that guide students to their best-fit university majors",
+      "Made it work 100% offline, for students in rural areas of Cambodia",
+    ],
     tech: ["Flutter", "Dart", "go_router"],
     logo: unifinderLogo,
     splash: { bg: "#FFFFFF", logo: unifinderSplash },
@@ -227,7 +231,11 @@ export const projects: Project[] = [
     summary: "Modular point-of-sale system for small food & beverage businesses.",
     description:
       "Modula is a modular POS designed to help small F&B businesses manage daily operations efficiently. The Flutter frontend is web-first, with mobile support planned.",
-    highlights: [],
+    highlights: [
+      "Built the Flutter frontend, web-first with mobile support planned",
+      "Built the screens small food & beverage businesses use to run their day",
+      "Managed state with Riverpod and local data with Drift",
+    ],
     tech: ["Flutter", "Riverpod", "Drift"],
     logo: modulaLogo,
     splash: { bg: "#3A3A3A", logo: modulaLogo },
@@ -248,7 +256,11 @@ export const projects: Project[] = [
     summary: "Tower defense game set in an endless, magical winter.",
     description:
       "The Winter Siege is a tower defense strategy game where players defend their castle from waves of enemies in a magical, endless winter world. Players place and upgrade towers, manage resources, and plan strategically to survive increasingly difficult enemy waves.",
-    highlights: [],
+    highlights: [
+      "Built a tower defense game in Unity and C#",
+      "Built the towers players place and upgrade to hold the castle",
+      "Built the resources and enemy waves that get harder as the game goes on",
+    ],
     tech: ["Unity", "C#"],
     logo: frostGuardLogo,
     splash: { bg: "#0b1530" },

@@ -3,7 +3,7 @@
 // wide frame for web and game screens) as a carousel, two more fanned behind and a small record behind it;
 // short notes on the right. Every project's notes are always there, stacked, so nothing jumps on a change.
 // Styles: .retro-wk* / .retro-sc* in src/retro.css.
-import { ArrowRight, ChevronLeft, ChevronRight, ExternalLink, Github } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, ExternalLink, Github, Play } from "lucide-react";
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import type { Project } from "../data/projects";
 import { setRoomTrack } from "../retroRoomBus";
@@ -52,6 +52,14 @@ export function RetroWork({ projects, onOpen }: { projects: Project[]; onOpen: (
   );
 }
 
+// is a cover colour light (so its text goes dark)?
+const isLight = (hex?: string) => {
+  const m = hex?.match(/^#([0-9a-f]{6})$/i);
+  if (!m) return false;
+  const v = parseInt(m[1], 16);
+  return 0.299 * (v >> 16) + 0.587 * ((v >> 8) & 255) + 0.114 * (v & 255) > 170;
+};
+
 function RetroScreens({ projects, onOpen }: { projects: Project[]; onOpen: (id: string) => void }) {
   const { sideA, sideB, order, trackNo } = sides(projects);
   const [pickedId, setPickedId] = useState(order[0]?.id);
@@ -61,8 +69,10 @@ function RetroScreens({ projects, onOpen }: { projects: Project[]; onOpen: (id: 
   const lastId = useRef(pickedId);
   const k = Math.max(0, order.findIndex((p) => p.id === pickedId));
   const cur = order[k];
-  const shots = cur ? cur.images.slice(0, 5) : [];
-  const n = Math.max(1, shots.length);
+  const isWide = cur ? (wide[cur.id] ?? false) : false;
+  // a wide project (web, game) opens on a cover (its logo and name on its own colour), then four screens
+  const shots = cur ? cur.images.slice(0, isWide ? 4 : 5) : [];
+  const n = Math.max(1, shots.length + (isWide ? 1 : 0));
   const on = shot % n;
 
   useEffect(() => {
@@ -89,7 +99,6 @@ function RetroScreens({ projects, onOpen }: { projects: Project[]; onOpen: (id: 
   }, [n, pickedId, shot]);
 
   if (!cur) return null;
-  const isWide = wide[cur.id] ?? false;
 
   const go = (i: number) => {
     const next = order[(i + order.length) % order.length];
@@ -125,6 +134,15 @@ function RetroScreens({ projects, onOpen }: { projects: Project[]; onOpen: (id: 
                 <span className="retro-sc-no">{trackNo(p)}</span>
                 <span className="retro-sc-name">{p.title}</span>
                 {p.status && <span className="retro-sc-status">In dev</span>}
+                {p.id === cur.id ? (
+                  <span className="retro-sc-eq" aria-hidden="true">
+                    <span />
+                    <span />
+                    <span />
+                  </span>
+                ) : (
+                  <Play className="retro-sc-play" size={14} aria-hidden="true" />
+                )}
               </button>
             </li>
           ))}
@@ -137,6 +155,7 @@ function RetroScreens({ projects, onOpen }: { projects: Project[]; onOpen: (id: 
   return (
     <div className="retro-sc" onKeyDown={onKey}>
       <nav className="retro-sc-list" aria-label="Projects">
+        <p className="retro-sc-hint">Pick a track to play it</p>
         {side("Side A · Client work", sideA)}
         {side("Side B · Team & study", sideB)}
       </nav>
@@ -159,23 +178,45 @@ function RetroScreens({ projects, onOpen }: { projects: Project[]; onOpen: (id: 
           aria-label={`${cur.title}, screen ${on + 1} of ${n}: open the project`}
           data-cursor="Open"
         >
-          {shots.map((src, i) => (
-            <img
-              key={src}
-              src={src}
-              alt=""
-              data-on={i === on}
-              onLoad={
-                i === 0
-                  ? (e) => {
-                      const img = e.currentTarget;
-                      const w = img.naturalWidth > img.naturalHeight;
-                      setWide((m) => (m[cur.id] === w ? m : { ...m, [cur.id]: w }));
-                    }
-                  : undefined
-              }
-            />
-          ))}
+          {isWide && (
+            <span className="retro-sc-bar" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+              <b>{cur.title}</b>
+            </span>
+          )}
+          <span className="retro-sc-screen">
+            {isWide && (
+              <span
+                className="retro-sc-cover"
+                data-on={on === 0}
+                data-light={isLight(cur.splash?.bg) || undefined}
+                style={{ background: cur.splash?.bg ?? "#1a110b" }}
+              >
+                {(cur.splash?.logo ?? icon) && <img src={cur.splash?.logo ?? icon} alt="" />}
+                <strong>{cur.title}</strong>
+                <small>{cur.summary}</small>
+              </span>
+            )}
+            {shots.map((src, i) => (
+              <img
+                key={src}
+                src={src}
+                alt=""
+                data-on={(isWide ? i + 1 : i) === on}
+                onLoad={
+                  i === 0
+                    ? (e) => {
+                        const img = e.currentTarget;
+                        const w = img.naturalWidth > img.naturalHeight;
+                        setWide((m) => (m[cur.id] === w ? m : { ...m, [cur.id]: w }));
+                      }
+                    : undefined
+                }
+              />
+            ))}
+          </span>
         </button>
         {n > 1 && (
           <div className="retro-sc-controls">
@@ -183,8 +224,8 @@ function RetroScreens({ projects, onOpen }: { projects: Project[]; onOpen: (id: 
               <ChevronLeft size={18} aria-hidden="true" />
             </button>
             <span className="retro-sc-dots">
-              {shots.map((src, i) => (
-                <button key={src} type="button" data-on={i === on} onClick={() => setShot(i)} aria-label={`Screen ${i + 1}`} />
+              {Array.from({ length: n }, (_, i) => (
+                <button key={i} type="button" data-on={i === on} onClick={() => setShot(i)} aria-label={`Screen ${i + 1}`} />
               ))}
             </span>
             <button type="button" className="retro-sc-arrow" onClick={() => setShot(on + 1)} aria-label="Next screen">

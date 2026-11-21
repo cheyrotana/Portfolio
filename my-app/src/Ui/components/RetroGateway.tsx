@@ -466,7 +466,7 @@ export function RetroGateway() {
           </h1>
           <p className="retro-hero-role">{profile.role}</p>
           <p className="retro-hero-now">
-            {profile.currently} · {profile.internship}
+            {profile.currently}
           </p>
           <div className="retro-hero-actions">
             <a href="#work" className="retro-hero-btn">

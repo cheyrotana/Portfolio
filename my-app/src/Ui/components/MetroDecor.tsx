@@ -229,7 +229,7 @@ export function MetroHero({ go, portrait }: { go: boolean; portrait: string }) {
 
 const NEXT_STOP_NOTE: Record<string, string> = {
   about: "Who I am, where I study and what I'm working on",
-  journey: "Ride the route from CADT to MLMUPC",
+  journey: "Ride the route from CADT to CamCyber",
   skills: "The tools I build with",
   work: "Selected work · change here for case studies",
   contact: "Terminus · all messages welcome",

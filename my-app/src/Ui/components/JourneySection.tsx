@@ -439,7 +439,7 @@ function RouteJourney() {
                       >
                         <div className="flex items-center justify-between gap-2">
                           <span className="font-mono text-xs text-accent">
-                            {stop.date}
+                            {stop.range ?? stop.date}
                           </span>
                           <Icon size={16} className={reached ? "text-accent" : "text-muted"} />
                         </div>

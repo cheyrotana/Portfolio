@@ -9,14 +9,14 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { journey, type JourneyStop } from "../data/profile";
 import { projects } from "../data/projects";
 import { iconOf } from "../retroWork";
-import { showProject } from "../events";
+import { openProject } from "../events";
 import { unlock } from "../achievements";
 import { play } from "../sound";
 import { VanSprite } from "./JourneyVehicles";
 
 const KIND: Record<JourneyStop["kind"], string> = { study: "Study", project: "Project", work: "Work", next: "Next" };
 const LAST = journey.length - 1;
-const STEP_VH = 70; // scroll length per stop
+const STEP_VH = 50; // scroll length per stop: a few wheel notches each
 
 function Billboard({ stop, i, pos }: { stop: JourneyStop; i: number; pos: MotionValue<number> }) {
   // d = how far this stop is from the van, in stops (0 = right here)
@@ -28,7 +28,7 @@ function Billboard({ stop, i, pos }: { stop: JourneyStop; i: number; pos: Motion
   const link = stop.projectId;
   // the board shows a picture, not a paragraph: the project's app icon, or a symbol for study / what's next
   const project = link ? projects.find((p) => p.id === link) : undefined;
-  const icon = project && iconOf(project);
+  const icon = stop.logo ?? (project && iconOf(project));
   return (
     <motion.div className="rt-board" style={{ x, scale, opacity, y }} data-kind={stop.kind}>
       <article className="rt-board-face">
@@ -36,11 +36,11 @@ function Billboard({ stop, i, pos }: { stop: JourneyStop; i: number; pos: Motion
           <span /> <span /> <span /> <span />
         </span>
         <span className="rt-board-pic" aria-hidden="true">
-          {icon ? <img src={icon} alt="" /> : stop.kind === "next" ? <Compass /> : <GraduationCap />}
+          {icon ? <img src={icon} alt="" data-org={stop.logo ? "" : undefined} /> : stop.kind === "next" ? <Compass /> : <GraduationCap />}
         </span>
         <div className="rt-board-top">
           <span className="rt-board-date">
-            Stop {String(i + 1).padStart(2, "0")} · {stop.date}
+            {stop.range ?? stop.date}
           </span>
           <span className="rt-board-kind">{KIND[stop.kind]}</span>
         </div>
@@ -48,7 +48,7 @@ function Billboard({ stop, i, pos }: { stop: JourneyStop; i: number; pos: Motion
         <p className="rt-board-org">{stop.org}</p>
         <p className="rt-board-text sr-only">{stop.text}</p>
         {link && (
-          <button type="button" className="rt-board-link" onClick={() => showProject(link)} data-cursor="View">
+          <button type="button" className="rt-board-link" onClick={() => openProject(link)} data-cursor="View">
             See the project <ArrowRight size={14} aria-hidden="true" />
           </button>
         )}
@@ -203,7 +203,7 @@ export function RetroRoadTrip() {
             <small>Car radio · stop</small>
             {String(here + 1).padStart(2, "0")} / {String(journey.length).padStart(2, "0")}
           </span>
-          <div className="rt-dial" style={{ "--at": (here + 0.5) / journey.length } as CSSProperties}>
+          <div className="rt-dial" style={{ "--at": (here + 0.5) / journey.length, "--n": journey.length } as CSSProperties}>
             <span className="rt-needle" aria-hidden="true" />
           <ol>
             {journey.map((stop, i) => (
