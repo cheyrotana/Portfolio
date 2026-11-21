@@ -109,13 +109,18 @@ function shotAt(p: number, shots: Shot[]): [Shot, Shot, number] {
 // title card sits on the left like an album cover). The camera is level, so the window, the curtains and the
 // boards stand straight; `lift` frames it instead of a tilt.
 const HERO_START: Shot = { pos: [REC.x - 1.1, 5.05, REC.z + 6.2], look: [REC.x + 1.3, 5.05, REC.z - 1.2], shift: 0.16, lift: 0.27 };
-// The needle drop, along the opening's progress t (0 → 1, roomBus.heroP): the arm swings over the record,
-// lowers, touches down (the record starts turning), the floor lamp comes on, then the camera pulls back.
-const DROP = { swing: [0, 0.3], lower: [0.28, 0.1], lights: [0.4, 0.3], pull: [0.42, 0.58] } as const;
+// The opening, along its progress t (0 → 1, roomBus.heroP): the needle drops (`needle` runs 0 → 1 over the
+// first part), the floor lamp comes on, then the camera pulls back.
+const DROP = { needle: 0.38, lights: [0.4, 0.3], pull: [0.42, 0.58] } as const;
+// The needle, one value from 0 (parked) to 1 (down on the record): the swing over is its first 70%, the
+// lowering the rest. The opening drops it; so does the music, on its own (it swings over and lowers, then the
+// record spins up; off, the record spins down and the needle lifts and swings back, unless the opening has
+// it down). The music's part moves at a steady pace, `seconds` for the whole way.
+const NEEDLE = { seconds: 1.3, swing: [0, 0.7], lower: [0.68, 0.32] } as const;
+export const NEEDLE_DOWN = DROP.needle;
 const ARM_PARKED = 1.34 * TT;
 const ARM_ON = 0.94 * TT;
 const span = (t: number, [from, len]: readonly [number, number]) => clamp((t - from) / len);
-export const NEEDLE_DOWN = DROP.lower[0] + DROP.lower[1];
 // (level and square on to the middle of the scene, the window over the turntable, so the room sits
 // centred between the name and the crate; `lift` frames it without tilting)
 const HERO: Shot = { pos: [1.6, 4.9, REC.z + 7.6], look: [1.6, 4.9, REC.z], shift: 0, lift: 0.14 };
@@ -696,6 +701,7 @@ export function RetroRoom({ heroOnly = false }: { heroOnly?: boolean }) {
       const tmp = new THREE.Vector3();
       let spin = 0; // record speed, rad/s
       let armAngle = NaN;
+      let musicNeedle = isBgmOn() ? 1 : 0; // the music's part of the needle (see NEEDLE)
       let litNow = -1;
       const pulls = SLEEVES.map(() => 0);
       let last = performance.now();
@@ -741,11 +747,20 @@ export function RetroRoom({ heroOnly = false }: { heroOnly?: boolean }) {
         shots[2] = { pos: [tipX + 0.55, REC.y + 1.3, tipZ + 1.75], look: [tipX - 0.15, REC.y, tipZ - 0.15], shift: 0 };
 
         const p = heroOnly ? 0.65 : pagePosition();
-        // hero mode, the needle drop: the arm swings over and lowers, the lamp comes on, the camera pulls back
+        // hero mode: the needle drops, the lamp comes on and the camera pulls back
         // into the room (and all of it backwards on the way up)
         const t = heroOnly ? clamp(roomBus.heroP) : 1;
-        const lower = smooth(span(t, DROP.lower));
-        const armR = ARM_PARKED - (ARM_PARKED - ARM_ON) * smooth(span(t, DROP.swing));
+        // the needle: down once the opening drops it, or while the music plays; parked otherwise
+        const musicWant = isBgmOn() ? 1 : 0;
+        const needleMoving = musicNeedle !== musicWant;
+        musicNeedle = still
+          ? musicWant
+          : musicWant > musicNeedle
+            ? Math.min(1, musicNeedle + dt / NEEDLE.seconds)
+            : Math.max(0, musicNeedle - dt / NEEDLE.seconds);
+        const needle = Math.max(musicNeedle, heroOnly ? clamp(t / DROP.needle) : 0);
+        const lower = smooth(span(needle, NEEDLE.lower));
+        const armR = ARM_PARKED - (ARM_PARKED - ARM_ON) * smooth(span(needle, NEEDLE.swing));
         const [a, b, k]: [Shot, Shot, number] = heroOnly ? [HERO_START, HERO, smooth(span(t, DROP.pull))] : shotAt(p, shots);
         toPos.set(...a.pos).lerp(tmp.set(...b.pos), k);
         toLook.set(...a.look).lerp(tmp.set(...b.look), k);
@@ -782,10 +797,9 @@ export function RetroRoom({ heroOnly = false }: { heroOnly?: boolean }) {
           setRecordScreen({ x, y, d: Math.abs(((proj.x + 1) / 2) * w - x) * 2 });
         }
 
-        // the record: spins up and down like a real platter; plays while the music is on, or on Side B
+        // the record: spins up and down like a real platter; plays once the needle is down (or on Side B)
         const section = Math.floor(p);
-        // (the opening's record turns once the needle is down)
-        const playing = isBgmOn() || roomBus.sideB >= 0 || (heroOnly && t >= NEEDLE_DOWN);
+        const playing = needle >= 1 || roomBus.sideB >= 0;
         const want = playing && !still ? 3.49 : 0;
         spin += (want - spin) * (1 - Math.exp(-dt * (want ? 1.6 : 2.4)));
         if (spin > 0.002) {
@@ -798,10 +812,9 @@ export function RetroRoom({ heroOnly = false }: { heroOnly?: boolean }) {
         if (section === 4 && roomBus.track) relabel = setLabel(roomBus.track.title, "★ " + roomBus.track.side + " ★", "NOW PLAYING");
         else relabel = setLabel(profile.name, "★ PORTFOLIO ★", "NOW PLAYING · SIDE A");
 
-        // the tonearm: on Side B it follows the page from the outer groove inwards; with the music on it
-        // rests on the lead-in; otherwise it's parked
-        // (in the opening it swings over with the needle drop)
-        const r = heroOnly ? armR : roomBus.sideB >= 0 ? sideR : isBgmOn() ? ARM_ON : ARM_PARKED;
+        // the tonearm: on Side B it follows the page from the outer groove inwards; otherwise it follows the
+        // music (on the lead-in while it plays, parked when it's off)
+        const r = !heroOnly && roomBus.sideB >= 0 ? sideR : armR;
         const glowWant = roomBus.sideB >= 0 ? 0.75 : 0;
         const glowMoving = Math.abs(glowMat.opacity - glowWant) > 0.005 || (glowWant > 0 && Math.abs(glow.scale.x - r) > 1e-4);
         glowMat.opacity += (glowWant - glowMat.opacity) * (still ? 1 : 1 - Math.exp(-dt * 4));
@@ -811,7 +824,7 @@ export function RetroRoom({ heroOnly = false }: { heroOnly?: boolean }) {
         armAngle = Number.isNaN(armAngle) ? wantAngle : armAngle + (wantAngle - armAngle) * (still ? 1 : 1 - Math.exp(-dt * 5));
         arm.rotation.y = armAngle;
         // the needle lifts a little while it's parked
-        arm.position.y = REC.y + (heroOnly ? 0.22 - 0.06 * lower : r > 1.2 * TT ? 0.22 : 0.16);
+        arm.position.y = REC.y + 0.22 - 0.06 * (!heroOnly && roomBus.sideB >= 0 ? 1 : lower);
 
         // the lights: dark but for the spot on the turntable until the needle's down, then the lamp comes on
         const lit = heroOnly ? smooth(span(t, DROP.lights)) : 1;
@@ -837,7 +850,7 @@ export function RetroRoom({ heroOnly = false }: { heroOnly?: boolean }) {
           s.rotation.x = -0.12 - next * 0.12;
         });
 
-        if (moving || spin > 0.002 || armMoving || lightsMoving || pulling || relabel || glowMoving || dirty || first) {
+        if (moving || spin > 0.002 || armMoving || needleMoving || lightsMoving || pulling || relabel || glowMoving || dirty || first) {
           renderer.render(scene, camera);
           dirty = false;
           if (first) {

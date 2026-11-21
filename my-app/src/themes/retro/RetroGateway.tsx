@@ -8,7 +8,8 @@
 //   3. the label sinks to the horizon and grows into the sun; the striped hills rise over it;
 //   4. my name and a few highlights come in, the navbar drops in from above and the corner record
 //      player fades up. (My photo hangs in About: RetroPolaroid.)
-// "Play music" (or clicking the record) lowers the tonearm and starts the background music.
+// The room's needle drops with the opening, and with the music: "Music" (or clicking the record) lowers it and
+// starts the background music (RetroRoom).
 // Two layers: .retro-gate-bg (sky, sun, hero text, photo) sits under the corner player, and
 // .retro-gate-stage (record, rings, label) above it, so the label can land on the player.
 // While the record is showing, <html> gets data-gate="in" (the navbar and the player stay put) and
@@ -16,7 +17,7 @@
 // Styles: .retro-gate* and .retro-hero* in styles/opening.css.
 import { ArrowDown, ArrowRight, ChevronsRight, Pause, Play, Volume2, VolumeX } from "lucide-react";
 import { useEffect, useRef, type CSSProperties } from "react";
-import { setBgm } from "../../lib/bgm";
+import { isBgmOn, setBgm } from "../../lib/bgm";
 import { NAV_SECTIONS } from "../../data/sections";
 import { profile, socials } from "../../data/profile";
 import { useBgmOn } from "../../hooks/interactive";
@@ -73,6 +74,7 @@ export function RetroGateway() {
   useEffect(() => {
     const root = document.documentElement;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let dropped = false; // the opening's needle is down (for the crackle)
     let p = 0; // where the move is, 0 → END
     let target = 0;
     let raf = 0;
@@ -90,7 +92,6 @@ export function RetroGateway() {
       if (labelTextRef.current) labelTextRef.current.style.transform = r;
     };
 
-    let dropped = false; // the opening's needle is down (for the crackle)
     let sized = -1; // disc size the rings were last sized for
     let lastNav = "";
     let lastDock = "";
@@ -173,11 +174,12 @@ export function RetroGateway() {
       if (skyRef.current) skyRef.current.style.opacity = String(seg(p, 0.1, 0.3));
       // the room is there from the disc screen, dim; it lights up as the camera pulls back from the record
       // the room: the needle drop, the lights, the camera (RetroRoom); a crackle as the needle touches down
+      // (none if the music already has it down)
       const t = p / END;
       setHeroProgress(t);
       if (t >= NEEDLE_DOWN && !dropped) {
         dropped = true;
-        if (raf) play("tick");
+        if (raf && !isBgmOn()) play("tick");
       } else if (t < NEEDLE_DOWN - 0.05) dropped = false;
       if (groundRef.current)
         groundRef.current.style.transform = `translateY(${((1 - ease(seg(p, 0.48, 0.24))) * 45).toFixed(2)}vh)`;

@@ -216,7 +216,7 @@ export function SectionHeader({
             </span>
           </span>
         </h2>
-        {intro && <p className="mt-4 max-w-2xl text-base sm:text-lg text-muted leading-relaxed">{intro}</p>}
+        {intro && <p className="section-intro mt-4 max-w-2xl text-base sm:text-lg text-muted leading-relaxed">{intro}</p>}
       </div>
     </Reveal>
   );

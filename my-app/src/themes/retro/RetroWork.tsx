@@ -31,6 +31,7 @@ function RetroScreens({ projects, onOpen }: { projects: Project[]; onOpen: (id: 
   const [shot, setShot] = useState(0);
   const [wide, setWide] = useState<Record<string, boolean>>({}); // landscape screens (web, games): a wide frame
   const recordRef = useRef<HTMLSpanElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
   const lastId = useRef(pickedId);
   const k = Math.max(0, order.findIndex((p) => p.id === pickedId));
   const cur = order[k];
@@ -49,12 +50,39 @@ function RetroScreens({ projects, onOpen }: { projects: Project[]; onOpen: (id: 
   useEffect(() => {
     if (!cur || lastId.current === cur.id) return;
     lastId.current = cur.id;
+    // on narrower screens the list is one row you swipe: bring the playing track to the middle of it
+    // (the row's own scroll only, never the page's)
+    const list = listRef.current;
+    const chip = list?.querySelector<HTMLElement>('.retro-sc-track[aria-pressed="true"]');
+    if (list && chip && list.scrollWidth > list.clientWidth + 1) {
+      const left = chip.getBoundingClientRect().left - list.getBoundingClientRect().left + list.scrollLeft;
+      list.scrollTo({ left: left - (list.clientWidth - chip.offsetWidth) / 2, behavior: "smooth" });
+    }
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     recordRef.current?.animate([{ rotate: "0deg" }, { rotate: "360deg" }], {
       duration: 900,
       easing: "cubic-bezier(0.2, 0.7, 0.2, 1)",
     });
   }, [cur]);
+
+  // on narrower screens the list is a row: a mouse wheel scrolls it sideways, and once it reaches either end
+  // the wheel goes back to scrolling the page (the smooth scroll listens on the window, so it's held back
+  // only while the row itself moves)
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list) return;
+    const onWheel = (e: WheelEvent) => {
+      const max = list.scrollWidth - list.clientWidth;
+      if (max <= 1 || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return; // not a row, or already a sideways swipe
+      const d = e.deltaMode === 1 ? e.deltaY * 32 : e.deltaY;
+      if ((d < 0 && list.scrollLeft <= 0) || (d > 0 && list.scrollLeft >= max - 1)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      list.scrollLeft += d;
+    };
+    list.addEventListener("wheel", onWheel, { passive: false });
+    return () => list.removeEventListener("wheel", onWheel);
+  }, []);
 
   // the screens take turns on their own (a click on the arrows or dots restarts the wait)
   useEffect(() => {
@@ -82,10 +110,13 @@ function RetroScreens({ projects, onOpen }: { projects: Project[]; onOpen: (id: 
     e.preventDefault();
   };
 
-  const side = (label: string, list: Project[]) =>
+  const side = (label: string, what: string, list: Project[]) =>
     list.length > 0 && (
       <>
-        <p className="retro-sc-side">{label}</p>
+        <p className="retro-sc-side">
+          {label}
+          <span> · {what}</span>
+        </p>
         <ol>
           {list.map((p) => (
             <li key={p.id}>
@@ -121,8 +152,10 @@ function RetroScreens({ projects, onOpen }: { projects: Project[]; onOpen: (id: 
     <div className="retro-sc" onKeyDown={onKey}>
       <nav className="retro-sc-list" aria-label="Projects">
         <p className="retro-sc-hint">Pick a track to play it</p>
-        {side("Side A · Client work", sideA)}
-        {side("Side B · Team & study", sideB)}
+        <div className="retro-sc-tracks" ref={listRef}>
+          {side("Side A", "Client work", sideA)}
+          {side("Side B", "Team & study", sideB)}
+        </div>
       </nav>
 
       {/* The stage: the app's screens */}

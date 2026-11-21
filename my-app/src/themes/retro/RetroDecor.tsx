@@ -1,11 +1,12 @@
 // Retro theme: the portfolio as a 70s jazz record.
-// - RetroTurntable: a record player in the corner. Each groove is a section; the tonearm follows the scroll,
-//   clicking a groove jumps there, and dropping the needle plays the background music (bgm.ts).
+// - RetroTurntable: a record player in the corner. Each groove is a section (the playing one lights up),
+//   clicking a groove jumps there, and the needle plays the music (bgm.ts): it rides the groove on screen while
+//   the music plays and swings back to its rest when it stops.
 // - RetroStripes: the sunset stripes between sections.
 // - RetroEq / RetroSticker: an equaliser that moves with the music, and starburst stickers.
 // Styles: styles/base.css (the shared pieces) and the section files in styles/.
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { bgmLevels, setBgm } from "../../lib/bgm";
 import { NAV_SECTIONS } from "../../data/sections";
 import { useBgmOn, useThemeAttr } from "../../hooks/interactive";
@@ -72,6 +73,42 @@ export function RetroTurntable() {
   const [collapsed, setCollapsed] = useState(initiallyCollapsed);
   const [tucked, setTucked] = useState(false); // the mini deck slides away while scrolling down
   const armRef = useRef<SVGGElement>(null);
+  const armTarget = useRef(REST);
+  const armNow = useRef(REST);
+  const armRaf = useRef(0);
+
+  // The tonearm follows the music: while it plays, the needle rides the groove of the section on screen;
+  // off, the arm swings back to its rest beside the record. It eases to where it should be (a frame loop only
+  // while it moves; the scroll just moves the target).
+  const moveArm = useCallback(() => {
+    if (armRaf.current) return;
+    let last = performance.now();
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const step = (now: number) => {
+      const dt = Math.min(0.25, (now - last) / 1000); // (a slow frame catches up instead of lagging)
+      last = now;
+      const want = armTarget.current;
+      const next = still ? want : armNow.current + (want - armNow.current) * (1 - Math.exp(-dt * 7));
+      armNow.current = Math.abs(want - next) < 0.05 ? want : next;
+      armRef.current?.setAttribute("transform", `rotate(${armNow.current.toFixed(2)} ${PX} ${PY})`);
+      armRaf.current = armNow.current === want ? 0 : requestAnimationFrame(step);
+    };
+    armRaf.current = requestAnimationFrame(step);
+  }, []);
+
+  const playingRef = useRef(playing);
+  useEffect(() => {
+    playingRef.current = playing;
+    armTarget.current = playing ? armAngle(radiusAt(pagePosition())) : REST;
+    moveArm();
+  }, [playing, moveArm]);
+  useEffect(
+    () => () => {
+      cancelAnimationFrame(armRaf.current);
+      armRaf.current = 0; // (or the next mount's moves would think one is still running)
+    },
+    [],
+  );
 
   useEffect(() => {
     let raf = 0;
@@ -83,7 +120,10 @@ export function RetroTurntable() {
       lastY = y;
       const p = pagePosition();
       setTrack(Math.min(5, Math.floor(p)));
-      armRef.current?.setAttribute("transform", `rotate(${armAngle(radiusAt(p)).toFixed(2)} ${PX} ${PY})`);
+      if (playingRef.current) {
+        armTarget.current = armAngle(radiusAt(p));
+        moveArm();
+      }
     };
     const schedule = () => {
       if (!raf) raf = requestAnimationFrame(update);
@@ -96,7 +136,7 @@ export function RetroTurntable() {
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
     };
-  }, []);
+  }, [moveArm]);
 
   // While the needle is down, the music's levels drive CSS variables (--eq1…--eq6, --vu-l, --vu-r) that the
   // meters, the equalisers and the hero's rings read. They are written only on the elements that read them, only
