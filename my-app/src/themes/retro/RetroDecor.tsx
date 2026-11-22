@@ -9,7 +9,7 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { bgmLevels, setBgm } from "../../lib/bgm";
 import { NAV_SECTIONS } from "../../data/sections";
-import { useBgmOn, useThemeAttr } from "../../hooks/interactive";
+import { useBgmLive, useBgmOn, useThemeAttr } from "../../hooks/interactive";
 import { rideProgress } from "../metro/metroRide";
 import { play } from "../../lib/sound";
 
@@ -68,7 +68,8 @@ function initiallyCollapsed() {
 }
 
 export function RetroTurntable() {
-  const playing = useBgmOn();
+  const playing = useBgmOn(); // the setting (the keys)
+  const live = useBgmLive(); // actually playing (the arm, the spin, the meters): a remembered "on" waits for a click
   const [track, setTrack] = useState(0); // 0 = lead-in (hero), 1–5 = the sections
   const [collapsed, setCollapsed] = useState(initiallyCollapsed);
   const [tucked, setTucked] = useState(false); // the mini deck slides away while scrolling down
@@ -96,12 +97,12 @@ export function RetroTurntable() {
     armRaf.current = requestAnimationFrame(step);
   }, []);
 
-  const playingRef = useRef(playing);
+  const liveRef = useRef(live);
   useEffect(() => {
-    playingRef.current = playing;
-    armTarget.current = playing ? armAngle(radiusAt(pagePosition())) : REST;
+    liveRef.current = live;
+    armTarget.current = live ? armAngle(radiusAt(pagePosition())) : REST;
     moveArm();
-  }, [playing, moveArm]);
+  }, [live, moveArm]);
   useEffect(
     () => () => {
       cancelAnimationFrame(armRaf.current);
@@ -120,7 +121,7 @@ export function RetroTurntable() {
       lastY = y;
       const p = pagePosition();
       setTrack(Math.min(5, Math.floor(p)));
-      if (playingRef.current) {
+      if (liveRef.current) {
         armTarget.current = armAngle(radiusAt(p));
         moveArm();
       }
@@ -144,7 +145,7 @@ export function RetroTurntable() {
   // changed on a big element (or <html>) makes the browser restyle everything inside it.
   useEffect(() => {
     const root = document.documentElement;
-    root.dataset.music = playing ? "on" : "off";
+    root.dataset.music = live ? "on" : "off";
     const names = ["--eq1", "--eq2", "--eq3", "--eq4", "--eq5", "--eq6", "--vu-l", "--vu-r"];
     const READERS = ".retro-eq, .retro-vu, .retro-gate-rings"; // small elements only: never a whole section
     const seen = new Set<HTMLElement>(); // elements we've written to (to clean up)
@@ -164,7 +165,7 @@ export function RetroTurntable() {
         io.observe(el);
       });
     const clear = () => seen.forEach((t) => names.forEach((n) => t.style.removeProperty(n)));
-    if (!playing) {
+    if (!live) {
       io.disconnect();
       return () => delete root.dataset.music;
     }
@@ -201,7 +202,7 @@ export function RetroTurntable() {
       clear();
       delete root.dataset.music;
     };
-  }, [playing]);
+  }, [live]);
 
   const toggleCollapsed = () => {
     const next = !collapsed;
@@ -223,7 +224,7 @@ export function RetroTurntable() {
 
   return (
     <aside
-      className={`retro-deck ${collapsed ? "is-collapsed" : ""} ${collapsed && tucked ? "is-tucked" : ""} ${playing ? "is-playing" : ""}`}
+      className={`retro-deck ${collapsed ? "is-collapsed" : ""} ${collapsed && tucked ? "is-tucked" : ""} ${live ? "is-playing" : ""}`}
       aria-label="Music player and sections"
     >
       {/* three layers: the wood, the record on its own (so its spin runs on the GPU, not the main thread:

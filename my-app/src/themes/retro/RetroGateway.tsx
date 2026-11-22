@@ -16,8 +16,8 @@
 // --gate-dock / --gate-nav (0 → 1: the corner player's label fades in and the navbar drops in at the end).
 // Styles: .retro-gate* and .retro-hero* in styles/opening.css.
 import { ArrowDown, ArrowRight, ChevronsRight, Pause, Play, Volume2, VolumeX } from "lucide-react";
-import { useEffect, useRef, type CSSProperties } from "react";
-import { isBgmOn, setBgm } from "../../lib/bgm";
+import { useLayoutEffect, useRef, type CSSProperties } from "react";
+import { isBgmLive, setBgm } from "../../lib/bgm";
 import { NAV_SECTIONS } from "../../data/sections";
 import { profile, socials } from "../../data/profile";
 import { useBgmOn } from "../../hooks/interactive";
@@ -71,11 +71,17 @@ export function RetroGateway() {
     setBgm(!playing);
   };
 
-  useEffect(() => {
+  // (a layout effect: the opening is laid out before the first paint, so nothing shows in its CSS default state first)
+  useLayoutEffect(() => {
     const root = document.documentElement;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let dropped = false; // the opening's needle is down (for the crackle)
     let p = 0; // where the move is, 0 → END
+    // A page that comes back already open (a reload past the opening): the room is there at once, but my name,
+    // the highlights, the navbar and the corner player come in as at the end of the move. `ui` is where they
+    // are on p's scale while that plays, -1 otherwise (they follow p).
+    let ui = -1;
+    let uiRaf = 0;
     let target = 0;
     let raf = 0;
     let last = 0;
@@ -179,13 +185,14 @@ export function RetroGateway() {
       setHeroProgress(t);
       if (t >= NEEDLE_DOWN && !dropped) {
         dropped = true;
-        if (raf && !isBgmOn()) play("tick");
+        if (raf && !isBgmLive()) play("tick");
       } else if (t < NEEDLE_DOWN - 0.05) dropped = false;
       if (groundRef.current)
         groundRef.current.style.transform = `translateY(${((1 - ease(seg(p, 0.48, 0.24))) * 45).toFixed(2)}vh)`;
-      const show = (el: HTMLElement | null, from: number, dx: number, dy: number) => {
+      const q = ui >= 0 ? ui : p;
+      const show =(el: HTMLElement | null, from: number, dx: number, dy: number) => {
         if (!el) return;
-        const t = ease(seg(p, from, 0.18));
+        const t = ease(seg(q, from, 0.18));
         el.style.opacity = String(t);
         el.style.transform = `translate(${((1 - t) * dx).toFixed(1)}px, ${((1 - t) * dy).toFixed(1)}px)`;
         el.style.visibility = t > 0 ? "visible" : "hidden";
@@ -194,7 +201,7 @@ export function RetroGateway() {
       // the room's title card (like an album cover) lifts away as the needle goes over
       const title = titleRef.current;
       if (title) {
-        const out = ease(seg(p, 0, 0.16));
+        const out = ease(seg(q, 0, 0.16));
         title.style.opacity = String(1 - out);
         title.style.transform = `translateY(${(-out * 40).toFixed(1)}px)`;
         title.style.visibility = out < 1 ? "visible" : "hidden";
@@ -203,8 +210,8 @@ export function RetroGateway() {
 
       // 5 · the navbar drops in from above, the corner player fades up
       // written on the navbar and the player only: a variable on <html> restyles the whole page every frame
-      const nav = ease(seg(p, 0.6, 0.22)).toFixed(3);
-      const dock = seg(p, 0.66, 0.14).toFixed(3);
+      const nav = ease(seg(q, 0.6, 0.22)).toFixed(3);
+      const dock = seg(q, 0.66, 0.14).toFixed(3);
       if (nav !== lastNav) {
         document.querySelectorAll<HTMLElement>(".nav-bar").forEach((el) => el.style.setProperty("--gate-nav", nav));
         lastNav = nav;
@@ -254,6 +261,12 @@ export function RetroGateway() {
       }
     };
     const go = (dir: 1 | -1, instant = false) => {
+      if (ui >= 0) {
+        // (cuts a reload's entrance short)
+        cancelAnimationFrame(uiRaf);
+        ui = -1;
+        render();
+      }
       target = dir > 0 ? END : 0;
       if (p === target) return;
       if (instant || reduced) {
@@ -379,8 +392,36 @@ export function RetroGateway() {
     };
     const onResize = () => render();
 
-    if (window.scrollY > 8 || window.location.hash.length > 1) p = target = END;
+    // (index.html marks a reload of a page that was past the opening: the browser restores the scroll only at load)
+    if (window.scrollY > 8 || window.location.hash.length > 1 || root.hasAttribute("data-gate-resume")) p = target = END;
+    if (p === END && !reduced) {
+      // the end of the move, at its own pace, once the fonts are in (so my name doesn't change font as it rises)
+      const from = 0.56;
+      ui = from;
+      let start = 0;
+      const step = (now: number) => {
+        start ||= now;
+        ui = Math.min(END, from + ((now - start) * END) / DURATION);
+        if (ui >= END) ui = -1;
+        render();
+        uiRaf = ui >= 0 ? requestAnimationFrame(step) : 0;
+      };
+      const begin = () => {
+        if (ui === from && !uiRaf) uiRaf = requestAnimationFrame(step);
+      };
+      document.fonts?.ready.then(begin);
+      setTimeout(begin, 800); // (fonts slow to come: go anyway)
+    }
     render();
+    // for that reload: whether the page was past the opening when it was left
+    const onHide = () => {
+      try {
+        sessionStorage.setItem("retro-open", window.scrollY > 8 ? "1" : "0");
+      } catch {
+        // storage blocked: a reload just plays the opening's close-up first
+      }
+    };
+    window.addEventListener("pagehide", onHide);
     // off screen, the hero's own animations (rays, rings, grooves) pause
     const away = new IntersectionObserver(([e]) => {
       if (sectionRef.current) sectionRef.current.dataset.away = e.isIntersecting ? "false" : "true";
@@ -401,6 +442,9 @@ export function RetroGateway() {
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("pagehide", onHide);
+      cancelAnimationFrame(uiRaf);
+      ui = -1; // (and a pending start does nothing)
       delete root.dataset.gateHold;
       root.style.removeProperty("--gate-dock");
       root.style.removeProperty("--gate-nav");

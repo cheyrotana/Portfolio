@@ -84,12 +84,25 @@
         icon.href = icons[theme][0];
         icon.type = icons[theme][1];
         document.querySelector('meta[name="theme-color"]').content = icons[theme][2];
-        // Retro: fetch the room's loading still now, so it's there at first paint (not popping in after the app mounts)
+        // Retro: fetch the room's loading still now, so it's there at first paint (not popping in after the app mounts).
+        // A reload (or back/forward) of a page that was scrolled past the opening comes back with the opening already
+        // open (RetroGateway saves that on pagehide): the browser puts the scroll back only at load, so the page
+        // says so now, and the still is the open room instead of the close-up (no zoomed-in flash first).
         if (theme === "retro") {
+          var nav = performance.getEntriesByType && performance.getEntriesByType("navigation")[0];
+          var back = nav && (nav.type === "reload" || nav.type === "back_forward");
+          var wasOpen = false;
+          try {
+            wasOpen = back && sessionStorage.getItem("retro-open") === "1";
+          } catch (e) {}
+          if (wasOpen || location.hash.length > 1) document.documentElement.setAttribute("data-gate-resume", "");
+          // otherwise the page opens on the opening: mark it now (RetroGateway keeps it up to date), so what hides
+          // while it shows (the wavy seam under it) is hidden from the first paint instead of fading out after it
+          else document.documentElement.setAttribute("data-gate", "in");
           var still = document.createElement("link");
           still.rel = "preload";
           still.as = "image";
-          still.href = "/textures/room-still.webp";
+          still.href = document.documentElement.hasAttribute("data-gate-resume") ? "/textures/room-still-open.webp" : "/textures/room-still.webp";
           still.setAttribute("fetchpriority", "high");
           document.head.appendChild(still);
         }

@@ -1114,12 +1114,19 @@
 
 /* ══ Polish pass: the loading still, About / Journey / footer in the stereo set's look ══ */
 
-/* while the 3D room loads: a still of its first frame (public/textures/room-still.webp, 39 KB), sized to
-   the height like the camera, so the real room fades in over the same picture */
+/* while the 3D room loads: a still of its first frame (public/textures/room-still.webp, 49 KB), sized to
+   the height like the camera and placed by RetroRoom (STILL_AXIS), so the real room fades in over the same picture */
 .retro-room.is-hero {
   position: absolute;
   pointer-events: none;
   background: #0d0805 url("/textures/room-still.webp") center / auto 100% no-repeat;
+  background-position-x: var(--still-x, center);
+}
+
+/* a reload past the opening (index.html sets data-gate-resume) comes back open: the still of the open room */
+:root[data-gate-resume] .retro-room.is-hero {
+  background-image: url("/textures/room-still-open.webp");
+  background-position-x: var(--still-open-x, center);
 }
 
 /* the opening's kicker sits under my role, off the bright moon */
@@ -1247,8 +1254,9 @@
     pointer-events: none;
   }
 
-  /* the loading still is the wide framing: here the room just fades in from the dark */
-  .retro-room.is-hero {
+  /* the loading stills are the wide framing: here the room just fades in from the dark */
+  .retro-room.is-hero,
+  :root[data-gate-resume] .retro-room.is-hero {
     background-image: none;
   }
 }

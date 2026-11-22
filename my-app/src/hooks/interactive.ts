@@ -2,7 +2,7 @@ import { useReducedMotion } from "framer-motion";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { getUnlocked, subscribeAchievements } from "../lib/achievements";
 import { isSoundOn, subscribeSound } from "../lib/sound";
-import { isBgmOn, subscribeBgm } from "../lib/bgm";
+import { isBgmLive, isBgmOn, subscribeBgm } from "../lib/bgm";
 import { getSky, getSkyPick, getWeather, getWeatherPick, subscribeWeather } from "../lib/weather";
 
 // True on devices with a precise pointer (mouse / trackpad) — hover effects make no sense on touch.
@@ -87,6 +87,11 @@ export function useSoundOn() {
 /** Whether the background music is on (changes when toggled anywhere). */
 export function useBgmOn() {
   return useSyncExternalStore(subscribeBgm, isBgmOn);
+}
+
+/** Whether the music is actually playing (a remembered "on" waits for the first click): see isBgmLive. */
+export function useBgmLive() {
+  return useSyncExternalStore(subscribeBgm, isBgmLive);
 }
 
 /** Current Phnom Penh weather (or the visitor's pick); null until it has loaded. */

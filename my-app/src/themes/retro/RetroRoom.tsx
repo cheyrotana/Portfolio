@@ -6,8 +6,8 @@
 // see RetroSideB), the poster for Skills, the turntable for Work, the lamp for Contact. The record spins
 // while the music plays. Everything is built from simple shapes and textures drawn on canvases: no assets.
 // three.js is loaded only when this mounts, so the other themes never download it.
-import { useEffect, useRef, useState } from "react";
-import { isBgmOn } from "../../lib/bgm";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { isBgmLive } from "../../lib/bgm";
 import { NAV_SECTIONS } from "../../data/sections";
 import { profile } from "../../data/profile";
 import { roomBus, setRecordScreen } from "./retroRoomBus";
@@ -127,12 +127,37 @@ const HERO: Shot = { pos: [1.6, 4.9, REC.z + 7.6], look: [1.6, 4.9, REC.z], shif
 // the opening on squarer screens and phones (narrower than 4:3): lenses, and how far down the room sits (a
 // share of the screen height), leaving the top for the title
 const TALL = { fov: 44, phoneFov: 60, drop: 0.15, phoneDrop: 0.2 };
+// The loading stills (public/textures/room-still.webp, the close-up the opening starts on, and
+// room-still-open.webp, the room once it's open, for a reload past the opening; both the first frame rendered at
+// 2340 × 1083 on a wide screen): where the camera's centre line sits in each, in still heights from its left
+// edge ((0.5 + shift) × width). They're laid over the box with the same maths as the camera, so the room fades
+// in exactly on top of them.
+const STILL_AXIS = { start: ((0.5 + HERO_START.shift) * 2340) / 1083, open: ((0.5 + HERO.shift) * 2340) / 1083 };
 
 /** `heroOnly`: just the room behind the opening (RetroGateway), sized to its box, camera fixed on the
  *  record; the rest of the page stays 2D. Otherwise the whole-page room (opened with ?room). */
 export function RetroRoom({ heroOnly = false }: { heroOnly?: boolean }) {
   const hostRef = useRef<HTMLDivElement>(null);
   const [ready, setReady] = useState(false);
+
+  // line the loading stills up with the room's first frame (before the first paint, and on resize): the camera
+  // scales with the height and puts its centre at (0.5 + shift) of the width (the shift only from 1024px, as
+  // in applyShift below). opening.css picks the still; squarer screens show none.
+  useLayoutEffect(() => {
+    const host = hostRef.current;
+    if (!heroOnly || !host) return;
+    const place = () => {
+      const w = host.clientWidth || window.innerWidth;
+      const h = host.clientHeight || window.innerHeight;
+      const wide = window.innerWidth >= 1024;
+      const x = (shot: Shot, axis: number) => `${(0.5 + (wide ? shot.shift : 0)) * w - axis * h}px`;
+      host.style.setProperty("--still-x", x(HERO_START, STILL_AXIS.start));
+      host.style.setProperty("--still-open-x", x(HERO, STILL_AXIS.open));
+    };
+    place();
+    window.addEventListener("resize", place);
+    return () => window.removeEventListener("resize", place);
+  }, [heroOnly]);
 
   useEffect(() => {
     const host = hostRef.current;
@@ -701,7 +726,7 @@ export function RetroRoom({ heroOnly = false }: { heroOnly?: boolean }) {
       const tmp = new THREE.Vector3();
       let spin = 0; // record speed, rad/s
       let armAngle = NaN;
-      let musicNeedle = isBgmOn() ? 1 : 0; // the music's part of the needle (see NEEDLE)
+      let musicNeedle = isBgmLive() ? 1 : 0; // the music's part of the needle (see NEEDLE): while it actually plays
       let litNow = -1;
       const pulls = SLEEVES.map(() => 0);
       let last = performance.now();
@@ -751,7 +776,7 @@ export function RetroRoom({ heroOnly = false }: { heroOnly?: boolean }) {
         // into the room (and all of it backwards on the way up)
         const t = heroOnly ? clamp(roomBus.heroP) : 1;
         // the needle: down once the opening drops it, or while the music plays; parked otherwise
-        const musicWant = isBgmOn() ? 1 : 0;
+        const musicWant = isBgmLive() ? 1 : 0;
         const needleMoving = musicNeedle !== musicWant;
         musicNeedle = still
           ? musicWant
@@ -764,13 +789,8 @@ export function RetroRoom({ heroOnly = false }: { heroOnly?: boolean }) {
         const [a, b, k]: [Shot, Shot, number] = heroOnly ? [HERO_START, HERO, smooth(span(t, DROP.pull))] : shotAt(p, shots);
         toPos.set(...a.pos).lerp(tmp.set(...b.pos), k);
         toLook.set(...a.look).lerp(tmp.set(...b.look), k);
-        // at rest the opening's camera breathes a little, so the room doesn't look like a still
-        if (heroOnly && t < 0.02 && !still) {
-          toPos.x += Math.sin(now / 3100) * 0.05;
-          const bob = Math.sin(now / 2300) * 0.025;
-          toPos.y += bob;
-          toLook.y += bob; // (rises and falls level, never tilts)
-        }
+        // (at rest the opening's camera holds still: it used to sway a little, but the tonearm is close to the
+        // lens and visibly moved against the room once it had faded in over the loading still)
         const toShift = a.shift + (b.shift - a.shift) * k;
         const toLift = (a.lift ?? 0) + ((b.lift ?? 0) - (a.lift ?? 0)) * k;
         const moving =
@@ -852,6 +872,10 @@ export function RetroRoom({ heroOnly = false }: { heroOnly?: boolean }) {
 
         if (moving || spin > 0.002 || armMoving || needleMoving || lightsMoving || pulling || relabel || glowMoving || dirty || first) {
           renderer.render(scene, camera);
+          // the very first draw is a frame behind (the lights' shadows and matrices settle in it): draw it again,
+          // so what fades in over the loading still is already the room as it stays (the arm otherwise shifted
+          // on the next redraw)
+          if (first) renderer.render(scene, camera);
           dirty = false;
           if (first) {
             first = false;

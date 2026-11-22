@@ -22,6 +22,17 @@ const listeners = new Set<() => void>();
 
 export const isBgmOn = () => on;
 
+// Whether the music is actually playing: a remembered "on" waits for the first click or key (browsers block
+// sound before that), so it isn't the same as `on`. What shows the music playing (the needles on the record,
+// the corner player's spin and meters) follows this one; the Music keys show the setting.
+let live = false;
+export const isBgmLive = () => live;
+const setLive = (next: boolean) => {
+  if (live === next) return;
+  live = next;
+  listeners.forEach((l) => l());
+};
+
 export function subscribeBgm(listener: () => void) {
   listeners.add(listener);
   return () => {
@@ -559,9 +570,11 @@ function start() {
   master.gain.linearRampToValueAtTime(track.volume, now + 1.5);
   timer = window.setInterval(tick, 25);
   tick();
+  setLive(true);
 }
 
 function stop() {
+  setLive(false);
   if (!ctx || !master) return;
   const now = ctx.currentTime;
   master.gain.cancelScheduledValues(now);
