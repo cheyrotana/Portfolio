@@ -74,6 +74,11 @@ export function RetroGateway() {
   // (a layout effect: the opening is laid out before the first paint, so nothing shows in its CSS default state first)
   useLayoutEffect(() => {
     const root = document.documentElement;
+    // the opening is up now (with its own still): the screen no longer stands in for it while the app loads
+    // (index.html, data-boot)
+    root.removeAttribute("data-boot");
+    root.style.removeProperty("--boot-still");
+    root.style.removeProperty("--boot-x");
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let dropped = false; // the opening's needle is down (for the crackle)
     let p = 0; // where the move is, 0 → END

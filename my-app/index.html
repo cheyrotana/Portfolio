@@ -68,6 +68,25 @@
       href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Alfa+Slab+One&family=Anton&family=Archivo+Black&family=Barlow+Condensed:ital,wght@0,600;0,800;1,800&family=Bebas+Neue&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700;12..96,800&family=Caveat:wght@600&family=DotGothic16&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400;1,9..144,600&family=Overpass:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:wght@900&family=Shrikhand&display=swap"
     />
 
+    <!-- Retro, while the app loads (data-boot, set below; RetroGateway clears it once the opening is up): the
+         screen is the dark room with its loading still, not the cream page under everything -->
+    <style>
+      html[data-boot] {
+        background-color: #0d0805;
+        /* the opening's darker corners (.retro-room.is-hero::after in opening.css) over the still */
+        background-image:
+          radial-gradient(ellipse 75% 70% at 62% 45%, transparent 40%, rgb(10 5 2 / 0.55) 100%),
+          var(--boot-still, none);
+        background-repeat: no-repeat;
+        /* (100vh, not 100%: the page is still empty, so <html> has no height yet) */
+        background-size: 100vw 100vh, auto 100vh;
+        background-position: 0 0, var(--boot-x, center) 0;
+      }
+      html[data-boot] body {
+        background: transparent;
+      }
+    </style>
+
     <!-- Apply the saved theme before first paint so the page never flashes the wrong one, with its
          favicon and browser colour. First-time visitors get the Retro theme. -->
     <script>
@@ -105,6 +124,19 @@
           still.href = document.documentElement.hasAttribute("data-gate-resume") ? "/textures/room-still-open.webp" : "/textures/room-still.webp";
           still.setAttribute("fetchpriority", "high");
           document.head.appendChild(still);
+          // until the opening is up, the screen shows that still (the style above), placed the way RetroRoom
+          // places it (its STILL_AXIS: the stills are 2340 × 1083, the camera's centre at (0.5 + shift) of
+          // the width). Squarer screens have no still: just the dark room colour.
+          var root = document.documentElement;
+          root.setAttribute("data-boot", "");
+          var w = window.innerWidth;
+          var h = window.innerHeight;
+          if (w / h > 4 / 3) {
+            var open = root.hasAttribute("data-gate-resume");
+            var x = open ? 0.5 * w - ((0.5 * 2340) / 1083) * h : (w >= 1024 ? 0.66 : 0.5) * w - ((0.66 * 2340) / 1083) * h;
+            root.style.setProperty("--boot-still", 'url("' + still.href + '")');
+            root.style.setProperty("--boot-x", x + "px");
+          }
         }
       })();
     </script>
