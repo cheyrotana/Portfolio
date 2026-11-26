@@ -54,24 +54,11 @@ function pagePosition() {
 
 const radiusAt = (p: number) => (p < 1 ? R_EDGE - (R_EDGE - R_FIRST) * p : R_FIRST - BAND * Math.min(5, p - 1));
 
-const COLLAPSE_KEY = "portfolio-retro-deck";
-
-function initiallyCollapsed() {
-  try {
-    const saved = localStorage.getItem(COLLAPSE_KEY);
-    if (saved) return saved === "1";
-  } catch {
-    // storage blocked: fall back to the screen size
-  }
-  // small and medium screens start with the mini deck, so it doesn't cover the content
-  return window.matchMedia("(max-width: 1439px)").matches;
-}
-
 export function RetroTurntable() {
   const playing = useBgmOn(); // the setting (the keys)
   const live = useBgmLive(); // actually playing (the arm, the spin, the meters): a remembered "on" waits for a click
   const [track, setTrack] = useState(0); // 0 = lead-in (hero), 1–5 = the sections
-  const [collapsed, setCollapsed] = useState(initiallyCollapsed);
+  const [collapsed, setCollapsed] = useState(true); // always starts as the mini deck; opening it lasts for this visit only
   const [tucked, setTucked] = useState(false); // the mini deck slides away while scrolling down
   const armRef = useRef<SVGGElement>(null);
   const armTarget = useRef(REST);
@@ -204,15 +191,7 @@ export function RetroTurntable() {
     };
   }, [live]);
 
-  const toggleCollapsed = () => {
-    const next = !collapsed;
-    setCollapsed(next);
-    try {
-      localStorage.setItem(COLLAPSE_KEY, next ? "1" : "0");
-    } catch {
-      // storage blocked: remembered for this visit only
-    }
-  };
+  const toggleCollapsed = () => setCollapsed((c) => !c);
 
   const needle = () => {
     play(playing ? "tick" : "pop");
