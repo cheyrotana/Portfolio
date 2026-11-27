@@ -185,7 +185,8 @@ function RetroScreens({ projects, onOpen }: { projects: Project[]; onOpen: (id: 
             </span>
           )}
           <span className="retro-sc-screen">
-            {isWide && (
+            {isWide && cur.cover && <img src={cur.cover} alt="" data-on={on === 0} />}
+            {isWide && !cur.cover && (
               <span
                 className="retro-sc-cover"
                 data-on={on === 0}

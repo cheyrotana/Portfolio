@@ -8,7 +8,6 @@ import {
 import { TbBrandCSharp } from "react-icons/tb";
 import camcyberLogo from "../assets/logos/camcyber.png";
 import cadtLogo from "../assets/logos/cadt.png";
-import mlmupcLogo from "../assets/logos/hrm-mlmupc-splash.png";
 
 export const profile = {
   name: "Chey Rotana",
@@ -16,15 +15,15 @@ export const profile = {
   location: "Phnom Penh, Cambodia",
   education: "B.Sc. Computer Science · CADT",
   studying: "Feb 2024 – Present",
-  currently: "Full-Stack Developer at CamCyber",
-  internship: "Interned with the Digital Revolution team at MLMUPC, Apr – Jun 2026",
+  currently: "Full-Stack Developer Intern at CamCyber",
+  internship: "Mobile Developer Intern on the CamCyber Digital Tech Team, Apr – Jun 2026",
 };
 
 // Where I study, work and interned, with the dates: every theme's About, hero and board read these
 export const places = {
   study: { place: "CADT", detail: "B.Sc. Computer Science", when: "Feb 2024 – Present" },
-  work: { place: "CamCyber", detail: "Full-Stack Developer", when: "Jul 2026 – Present" },
-  intern: { place: "MLMUPC", detail: "Digital Revolution team", when: "Apr – Jun 2026" },
+  work: { place: "CamCyber", detail: "Full-Stack Developer Intern", when: "Jul 2026 – Present" },
+  intern: { place: "CamCyber", detail: "Mobile Developer Intern", when: "Apr – Jun 2026" },
 };
 
 export interface SocialLink {
@@ -131,19 +130,19 @@ export const journey: JourneyStop[] = [
   {
     date: "Apr 2026",
     range: "Apr – Jun 2026",
-    title: "MLMUPC",
-    org: "Intern · Digital Revolution team",
-    text: "Interned with the Digital Revolution team at the Ministry of Land Management, Urban Planning and Construction, building HRM's Flutter app and Angular web app.",
+    title: "CamCyber",
+    org: "Mobile Developer Intern · Digital Tech Team",
+    text: "Joined the CamCyber Digital Tech Team as a mobile developer intern, building the HR system for the Ministry of Land Management, Urban Planning and Construction (MLMUPC), used by about 3,000 officers. In the Flutter app: attendance with daily to yearly reports, leave and mission requests, and a Telegram Mini App with automatic sign-in. In the Angular web app: officer CVs and profiles, organization statistics and attendance timelines, all in Khmer and English.",
     kind: "work",
     projectId: "hrm-mlmupc",
-    logo: mlmupcLogo,
+    logo: camcyberLogo,
   },
   {
     date: "Jul 2026",
     range: "Jul 2026 – Present",
     title: "CamCyber",
-    org: "Full-Stack Developer · Digital Tech Team",
-    text: "HRM for the National Institute of Statistics (Angular web app and NestJS backend), the Face Scan Connector, and the PhumiYerng app.",
+    org: "Full-Stack Developer Intern · Digital Tech Team",
+    text: "Stayed on as a full-stack developer intern, building platforms for government and the communities they serve: HRM for the National Institute of Statistics (Angular web app and NestJS backend), a Raspberry Pi connector that turns on-site face scans into real-time check-ins, and the Flutter app for PhumiYerng, a marketplace and community-tourism app for the World Bank-backed LASED III program.",
     kind: "work",
     projectId: "hrm-nis",
     logo: camcyberLogo,

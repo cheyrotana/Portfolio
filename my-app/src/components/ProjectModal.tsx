@@ -16,6 +16,8 @@ interface ProjectModalProps {
 
 export function ProjectModal({ project, position, onClose, onPrev, onNext }: ProjectModalProps) {
   const [viewerIndex, setViewerIndex] = useState<number | null>(null);
+  // the case-study cover (client logo and app) leads the gallery
+  const photos = project.cover ? [project.cover, ...project.images] : project.images;
 
   // Keyboard: Esc closes, ← → switch projects. The photo viewer handles keys itself while open.
   useEffect(() => {
@@ -87,7 +89,7 @@ export function ProjectModal({ project, position, onClose, onPrev, onNext }: Pro
 
         {/* Gallery */}
         <div className="border-b border-line" data-cursor="Zoom">
-          <CaseGallery images={project.images} alt={project.title} onOpen={(i) => setViewerIndex(i)} />
+          <CaseGallery images={photos} alt={project.title} onOpen={(i) => setViewerIndex(i)} />
         </div>
 
         <div className="grid md:grid-cols-[1.5fr_1fr] gap-8 md:gap-10 p-5 sm:p-8">
@@ -161,7 +163,7 @@ export function ProjectModal({ project, position, onClose, onPrev, onNext }: Pro
                 </a>
               )}
               <button className="btn btn-ghost" onClick={() => setViewerIndex(0)}>
-                <Images size={16} /> {project.images.length} photos
+                <Images size={16} /> {photos.length} photos
               </button>
             </div>
             {!project.githubUrl && (
@@ -173,7 +175,7 @@ export function ProjectModal({ project, position, onClose, onPrev, onNext }: Pro
 
       {viewerIndex !== null && (
         <PhotoViewer
-          images={project.images}
+          images={photos}
           startIndex={viewerIndex}
           alt={project.title}
           onClose={() => setViewerIndex(null)}

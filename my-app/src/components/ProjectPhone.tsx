@@ -47,8 +47,8 @@ function SplashLogo({ app }: { app: PhoneApp }) {
   return Icon ? <Icon className="ph-splash-glyph" strokeWidth={1.8} /> : <AppLogo app={app} className="ph-splash-icon" />;
 }
 
-// "Mobile & Web Developer" → "Mobile & Web"
-const shortRole = (p: Project) => p.role.replace(/\s*Developer$/, "");
+// "Mobile & Web Developer" → "Mobile & Web", "Full-Stack Developer (intern)" → "Full-Stack (intern)"
+const shortRole = (p: Project) => p.role.replace(/\s*Developer(?=\s*\(intern\)$|$)/, "");
 
 // An app's store-style page, shown inside the phone once it has launched
 function AppPage({ app, onBack, onOpen }: { app: PhoneApp; onBack: () => void; onOpen: (id: string) => void }) {

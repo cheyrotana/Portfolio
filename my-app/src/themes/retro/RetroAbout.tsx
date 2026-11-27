@@ -8,7 +8,7 @@ import { RetroPolaroid } from "./RetroPolaroid";
 
 const facts = [
   { k: "Studying", v: places.study.place, d: places.study.when },
-  { k: "Working", v: places.work.place, d: places.work.when },
+  { k: "Interning", v: places.work.place, d: places.work.when },
   { k: "Interned", v: places.intern.place, d: places.intern.when },
   { k: "Based in", v: profile.location.split(",")[0], d: "Cambodia" },
 ];
@@ -27,8 +27,8 @@ export function RetroAbout({ greeting }: { greeting: string }) {
             {greeting}! I'm {profile.name.split(" ")[1]}. I turn messy, real-world processes into apps that feel simple.
           </p>
           <p className="retro-about-body">
-            Computer Science student at CADT since Feb 2024. I interned with the Digital Revolution team at MLMUPC
-            (Apr – Jun 2026), and since Jul 2026 I've been a full-stack developer on the CamCyber Digital Tech Team:
+            Computer Science student at CADT since Feb 2024. I joined the CamCyber Digital Tech Team as a mobile developer
+            intern (Apr – Jun 2026), building MLMUPC's HR system, and since Jul 2026 I've been a full-stack developer intern there:
             Flutter apps, Angular dashboards, NestJS services and a Raspberry Pi face-scan connector.
           </p>
         </Reveal>

@@ -35,10 +35,15 @@ import hrmMlmupc4 from "../assets/hrm/mlmupc-4.webp";
 import hrmMlmupc5 from "../assets/hrm/mlmupc-5.jpg";
 import hrmNis1 from "../assets/hrm/nis-1.webp";
 import hrmNis2 from "../assets/hrm/nis-2.webp";
+import hrmNisScanners from "../assets/hrm/nis-3.webp";
 import hrmNisStore1 from "../assets/hrm/nis-store-1.webp";
 import hrmNisStore2 from "../assets/hrm/nis-store-2.webp";
 import hrmNisStore3 from "../assets/hrm/nis-store-3.webp";
 import faceScan1 from "../assets/face-scan/1.webp";
+// Case-study covers: the client's logo with the app, shown first in the project's gallery
+import hrmMlmupcCover from "../assets/hrm/mlmupc-cover.webp";
+import hrmNisCover from "../assets/hrm/nis-cover.webp";
+import phumiYerngCover from "../assets/phumiyerng/cover.webp";
 // App icons, copied from each app's own repo
 import faceScanLogo from "../assets/logos/face-scan.svg";
 import faceScanGlyph from "../assets/logos/face-scan-glyph.svg";
@@ -101,6 +106,7 @@ export interface Project {
   stat?: { value: string; label: string };
   tech: string[];
   images: string[];
+  cover?: string; // a wide case-study cover with the client's logo: first in the gallery, never on a phone screen
   logo?: string; // app icon; without one, ProjectPhone draws one from an icon and a colour
   // Separate builds shown as their own apps on the project phone
   apps?: ProjectApp[];
@@ -114,14 +120,14 @@ export const projects: Project[] = [
     id: "hrm-mlmupc",
     title: "MLMUPC HRM",
     client: "MLMUPC",
-    builtAt: "Digital Revolution team, MLMUPC (internship)",
+    builtAt: "CamCyber Digital Tech Team (mobile internship)",
     year: "2026",
-    role: "Mobile & Web Developer (intern)",
+    role: "Mobile Developer (intern)",
     categories: ["client", "mobile", "web"],
     featured: true,
     summary: "A ministry-wide HR platform that takes civil-servant administration digital, on web and mobile.",
     description:
-      "HRM for the Ministry of Land Management, Urban Planning and Construction (MLMUPC). Officers check in, request leave and missions, and manage their records from the mobile app, while administrators run the ministry from the web app. I built on both during my internship with the Digital Revolution team.",
+      "HRM for the Ministry of Land Management, Urban Planning and Construction (MLMUPC). Officers check in, request leave and missions, and manage their records from the mobile app, while administrators run the ministry from the web app. I built on both as a mobile developer intern on the CamCyber Digital Tech Team.",
     highlights: [
       "Built attendance tracking in the Flutter app, with daily, weekly, monthly and yearly reports",
       "Built mission and leave requests, plus organization admin screens with QR features",
@@ -132,6 +138,7 @@ export const projects: Project[] = [
     stat: { value: "~3,000", label: "officers at MLMUPC" },
     tech: ["Flutter", "Angular", "NestJS", "PostgreSQL", "Socket.IO"],
     images: [hrmMlmupc1, hrmMlmupc2, hrmMlmupc3, hrmMlmupc4, hrmMlmupc5],
+    cover: hrmMlmupcCover,
     logo: hrmMlmupcLogo,
     splash: { bg: "#0C7EA5", logo: hrmMlmupcSplash },
   },
@@ -141,7 +148,7 @@ export const projects: Project[] = [
     client: "NIS",
     builtAt: "CamCyber Digital Tech Team",
     year: "2026",
-    role: "Full-Stack Developer",
+    role: "Full-Stack Developer (intern)",
     categories: ["client", "web"],
     featured: true,
     summary: "A government HR platform with on-site face-scanner check-ins connected to the cloud.",
@@ -154,7 +161,8 @@ export const projects: Project[] = [
     ],
     stat: { value: "500+", label: "officers at NIS" },
     tech: ["Angular", "NestJS", "PostgreSQL", "Socket.IO"],
-    images: [hrmNisStore1, hrmNisStore2, hrmNisStore3, hrmNis1, hrmNis2],
+    images: [hrmNisStore1, hrmNisStore2, hrmNisStore3, hrmNis1, hrmNisScanners, hrmNis2],
+    cover: hrmNisCover,
     logo: hrmNisLogo,
     splash: { bg: "#FFFFFF", logo: hrmNisSplash },
   },
@@ -164,7 +172,7 @@ export const projects: Project[] = [
     client: "NIS HRM",
     builtAt: "CamCyber Digital Tech Team",
     year: "2026",
-    role: "Full-Stack Developer",
+    role: "Full-Stack Developer (intern)",
     categories: ["client", "hardware"],
     summary: "Pairs on-site face scanners with HRM so every scan becomes an attendance record.",
     description:
@@ -187,7 +195,7 @@ export const projects: Project[] = [
     client: "LASED III communities",
     builtAt: "CamCyber Digital Tech Team",
     year: "2026",
-    role: "Mobile Developer",
+    role: "Mobile Developer (intern)",
     status: "In development",
     categories: ["client", "mobile"],
     featured: true,
@@ -205,6 +213,7 @@ export const projects: Project[] = [
     logo: phumiYerngLogo,
     splash: { bg: "#2E7D32", logo: phumiYerngSplash },
     images: [phumiYerng1, phumiYerng2, phumiYerng3, phumiYerng4, phumiYerng5],
+    cover: phumiYerngCover,
   },
   {
     id: "unifinder",
